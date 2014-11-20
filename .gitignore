@@ -1,7 +1,6 @@
 # Build
 *.class
 *.log
-*.properties
 
 # NetBeans
 nbproject/private/
