@@ -1,4 +1,4 @@
-![assets/logo.jpg](Logo)
+![https://raw.githubusercontent.com/PortuguesDoSeculoXXI/PortuguesDoSeculoXXI/master/assets/logo.jpg](Logo)
 
 The main goal of the project is to create an easy to use application that helps people transition to the new orthographic agreement.
 
@@ -14,7 +14,7 @@ SQLite
 ###### Compiling:
 Project Properties -> Libraries -> Add JAR/Folder -> add `db/sqlite-jdbc-(VERSION).jar`
 
-###### Driver
+###### Driver:
 https://bitbucket.org/xerial/sqlite-jdbc
 
 ###### Monitor:
