@@ -1,4 +1,4 @@
-![https://raw.githubusercontent.com/PortuguesDoSeculoXXI/PortuguesDoSeculoXXI/master/assets/logo.jpg](Logo)
+![Logo](https://raw.githubusercontent.com/PortuguesDoSeculoXXI/PortuguesDoSeculoXXI/master/assets/logo.jpg)
 
 The main goal of the project is to create an easy to use application that helps people transition to the new orthographic agreement.
 
