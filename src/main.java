@@ -1,5 +1,4 @@
-import gui.Controller;
-import gui.FrameMain;
+import gui.JFrames;
 
 public class main {
 
@@ -8,7 +7,8 @@ public class main {
      */
     public static void main(String[] args) {
         // Entrance window
-        new FrameMain(new Controller());
+        JFrames main = new JFrames();
+        main.createFrames();
     }
     
 }
