@@ -50,13 +50,24 @@ class SQLBuilder {
      *
      * @param tableName name o the table to be added.
      */
-    public boolean addTable(String tableName) {
+    public SQLBuilder addTable(String tableName) {
         if (!QTableList.contains(tableName)) {
             QTableList.add(tableName);
-            return true;
-        } else {
-            return false;
         }
+        return this;
+    }
+    
+    /**
+     * Check if has regular chars for the query.
+     * 
+     * @param str
+     * @returns normalized string for query
+     */    
+    private String checkValidQueryString(String str) {
+        if (StringUtilities.indexOfFirstContainedCharacter(str, " /-") != -1) {
+            return "`" + str + "`";
+        }
+        return str;
     }
 
     /**
@@ -65,18 +76,16 @@ class SQLBuilder {
      * @param fieldName
      * @param value
      * @param dataType data type of the field (Specify it as "text" for string
-     * types , "num" for numerical types)
+     * types , "num" for numerical types).
      */
     private void addField(String fieldName, String value, String dataType) {
 
         if (dataType.equals("text")) {
-
             boolean isWildchar = (StringUtilities.indexOfFirstContainedCharacter(value, "'") != -1);
             value = getInsertValueLeftChar(isWildchar) + value + getInsertValueRightChar(isWildchar);
         }
 
         QField field = new QField(fieldName, value, dataType);
-
         QFieldList.add(field);
     }
 
@@ -85,35 +94,29 @@ class SQLBuilder {
      *
      * @param fieldName Field name to be added.
      * @param aliasName Alias name for the select field.
+     * @returns SQLBuilder instance.
      */
-    public void addSelectField(String fieldName, String aliasName) {
-
-        if (StringUtilities.indexOfFirstContainedCharacter(fieldName, " /-") != -1) {
-            fieldName = "`" + fieldName + "`";
-        }
-
-        if (StringUtilities.indexOfFirstContainedCharacter(aliasName, " /-") != -1) {
-            aliasName = "`" + aliasName + "`";
-        }
-
+    public SQLBuilder selectField(String fieldName, String aliasName) {
+        fieldName = checkValidQueryString(fieldName);
+        aliasName = checkValidQueryString(aliasName);
+        // Add field in the query
         QSelectField field = new QSelectField(fieldName, aliasName);
-
         QSelectFieldList.add(field);
+        return this;
     }
 
     /**
      * Overloaded function To add a field for Select query.
      *
      * @param fieldName Field name to be added.
+     * @returns SQLBuilder instance.
      */
-    public void addSelectField(String fieldName) {
-
-        if (StringUtilities.indexOfFirstContainedCharacter(fieldName, " /-") != -1) {
-            fieldName = "`" + fieldName + "`";
-        }
+    public SQLBuilder selectField(String fieldName) {
+        fieldName = checkValidQueryString(fieldName);
+        // Add field in the query
         QSelectField field = new QSelectField(fieldName);
-
         QSelectFieldList.add(field);
+        return this;
     }
 
     /**
@@ -121,16 +124,15 @@ class SQLBuilder {
      *
      * @param fieldName Field name for the condition.
      * @param val Value for the field to be compared.
-     * @param op Operator('=', '<', '>' etc...for the condition)
+     * @param op Operator('=', '<', '>' etc...for the condition).
+     * @returns SQLBuilder instance.
      */
-    public void addWhereField(String fieldName, String val, String op) {
-
-        if (StringUtilities.indexOfFirstContainedCharacter(fieldName, " /-") != -1) {
-            fieldName = "`" + fieldName + "`";
-        }
+    public SQLBuilder whereField(String fieldName, String val, String op) {
+        fieldName = checkValidQueryString(fieldName);
+        // Add field in the query
         QWhereField field = new QWhereField(fieldName, val, op, "AND", false);
-
         QWhereFieldList.add(field);
+        return this;
     }
 
     /**
@@ -138,17 +140,16 @@ class SQLBuilder {
      *
      * @param fieldName Field name for the condition.
      * @param val Value for the field to be compared.
-     * @param op Operator('=', '<', '>' etc...for the condition)
-     * @param concat Operator for the where field ('AND' or 'OR')
+     * @param op Operator('=', '<', '>' etc...for the condition).
+     * @param concat Operator for the where field ('AND' or 'OR').
+     * @returns SQLBuilder instance.
      */
-    public void addWhereField(String fieldName, String val, String op, String concat) {
-
-        if (StringUtilities.indexOfFirstContainedCharacter(fieldName, " /-") != -1) {
-            fieldName = "`" + fieldName + "`";
-        }
+    public SQLBuilder whereField(String fieldName, String val, String op, String concat) {
+        fieldName = checkValidQueryString(fieldName);
+        // Add field in the query
         QWhereField field = new QWhereField(fieldName, val, op, concat, false);
-
         QWhereFieldList.add(field);
+        return this;
     }
 
     /**
@@ -156,15 +157,14 @@ class SQLBuilder {
      *
      * @param fieldName Field name for the condition.
      * @param val Value for the field to be compared.
+     * @returns SQLBuilder instance.
      */
-    public void addWhereField(String fieldName, String val) {
-
-        if (StringUtilities.indexOfFirstContainedCharacter(fieldName, " /-") != -1) {
-            fieldName = "`" + fieldName + "`";
-        }
+    public SQLBuilder whereField(String fieldName, String val) {
+        fieldName = checkValidQueryString(fieldName);
+        // Add in the query
         QWhereField field = new QWhereField(fieldName, val, "=", "AND", false);
-
         QWhereFieldList.add(field);
+        return this;
     }
 
     /**
@@ -172,15 +172,14 @@ class SQLBuilder {
      *
      * @param fieldName Field name for the condition.
      * @param val Value for the field to be compared.
+     * @returns SQLBuilder instance.
      */
-    public void addWhereSubquery(String fieldName, String subQuery) {
-
-        if (StringUtilities.indexOfFirstContainedCharacter(fieldName, " /-") != -1) {
-            fieldName = "`" + fieldName + "`";
-        }
+    public SQLBuilder whereSubquery(String fieldName, String subQuery) {
+        fieldName = checkValidQueryString(fieldName);
+        // Add in the query
         QWhereField field = new QWhereField(fieldName, subQuery, "=", "AND", true);
-
         QWhereFieldList.add(field);
+        return this;
     }
 
     /**
@@ -188,37 +187,31 @@ class SQLBuilder {
      *
      * @param leftFielield Field on left.
      * @param rightField Field on right.
-     * @param op Operator('=', '<', '>' etc...for the condition)
+     * @param op Operator('=', '<', '>' etc...for the condition).
+     * @returns SQLBuilder instance.
      */
-    public void addJoinField(String leftFielield, String rightField, String op) {
-
-        if (StringUtilities.indexOfFirstContainedCharacter(leftFielield, " /-") != -1) {
-            leftFielield = "`" + leftFielield + "`";
-        }
-
-        if (StringUtilities.indexOfFirstContainedCharacter(rightField, " /-") != -1) {
-            leftFielield = "`" + rightField + "`";
-        }
-
+    public SQLBuilder joinField(String leftFielield, String rightField, String op) {
+        leftFielield = checkValidQueryString(leftFielield);
+        rightField = checkValidQueryString(rightField);
+        // Add in the query
         QWhereField field = new QWhereField(leftFielield, rightField, op, "AND", false);
-
         QJoinFieldList.add(field);
+        return this;
     }
 
     /**
      * Overloaded function To add to join query, here default operator is '='.
      *
-     * @param fieldName1 Left field
-     * @param fieldName2 Right field
+     * @param fieldName1 Left field.
+     * @param fieldName2 Right field.
+     * @returns SQLBuilder instance.
      */
-    public void addJoinField(String leftField, String rightField) {
-
-        if (StringUtilities.indexOfFirstContainedCharacter(leftField, " /-") != -1) {
-            leftField = "`" + leftField + "`";
-        }
+    public SQLBuilder joinField(String leftField, String rightField) {
+        leftField = checkValidQueryString(leftField);
+        // Add in the query
         QWhereField field = new QWhereField(leftField, rightField, "=", "AND", false);
-
         QJoinFieldList.add(field);
+        return this;
     }
 
     /**
@@ -395,9 +388,8 @@ class SQLBuilder {
     }
 
     /**
-     * To clear the query generator .
+     * To clear the query generator.
      *
-     * @returns
      */
     public void clear() {
         QTableList.clear();
@@ -423,6 +415,9 @@ class SQLBuilder {
         return (isWildChar ? "\"" : "'");
     }
 
+    /**
+     * QField class to represent a Query field.
+     */
     protected class QField {
 
         public String fieldName = new String();
@@ -443,6 +438,9 @@ class SQLBuilder {
         }
     };
 
+    /**
+     * QWhereField class to represent a Where field.
+     */
     protected class QWhereField {
 
         public String fieldName = new String();
@@ -468,6 +466,10 @@ class SQLBuilder {
         }
     };
 
+    
+    /**
+     * QSelectField class to represent a Select field.
+     */
     protected class QSelectField {
 
         public String fieldName = new String();

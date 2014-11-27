@@ -53,9 +53,7 @@ public class DataController {
             
             // Test
             SQLBuilder builder = new SQLBuilder();
-            builder.addTable("category");
-            builder.addSelectField("*");
-            builder.addWhereField("id_category", "3", ">=");
+            builder.addTable("category").selectField("*").whereField("id_category", "3", ">=");
             
             System.out.println("Query: "+builder.getSelectQuery());
             ResultSet rs = statement.executeQuery(builder.getSelectQuery());
