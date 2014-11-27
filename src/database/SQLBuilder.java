@@ -10,6 +10,11 @@ import java.util.Set;
  * SQL Query Builder.
  * This class creates SQL queries dynamically.
  * 
+ * To do:
+ *  - Inner join and left outer join
+ *  - Where clause with LIKE
+ *  - Where clause with num ou text
+ * 
  * @author PTXXI
  */
 class SQLBuilder {
@@ -46,6 +51,14 @@ class SQLBuilder {
     private List<QWhereField> qJoinFieldList = new ArrayList<>();
     
     /**
+     * Defining data type of field.
+     */    
+    public enum DataType {
+        asText,
+        asNum
+    }
+    
+    /**
      * To add a table to the query.
      *
      * @param tableName name o the table to be added.
@@ -64,8 +77,8 @@ class SQLBuilder {
      * @returns normalized string for query
      */    
     private String checkValidQueryString(String str) {
-        if (StringUtilities.indexOfFirstContainedCharacter(str, " /-") != -1) {
-            return "`" + str + "`";
+        if (StringUtilities.indexOfFirstContainedCharacter(str, " /-.,") != -1) {
+            return "'" + str + "'";
         }
         return str;
     }
@@ -77,16 +90,18 @@ class SQLBuilder {
      * @param value
      * @param dataType data type of the field (Specify it as "text" for string
      * types , "num" for numerical types).
+     * @returns SQLBuilder instance.
      */
-    private void addField(String fieldName, String value, String dataType) {
-
-        if (dataType.equals("text")) {
+    public SQLBuilder addField(String fieldName, String value, DataType dataType) {
+        // Check data type
+        if (dataType == DataType.asText) {
             boolean isWildchar = (StringUtilities.indexOfFirstContainedCharacter(value, "'") != -1);
             value = getInsertValueLeftChar(isWildchar) + value + getInsertValueRightChar(isWildchar);
         }
 
         QField field = new QField(fieldName, value, dataType);
         qFieldList.add(field);
+        return this;
     }
 
     /**
@@ -124,7 +139,7 @@ class SQLBuilder {
      *
      * @param fieldName Field name for the condition.
      * @param val Value for the field to be compared.
-     * @param op Operator('=', '<', '>' etc...for the condition).
+     * @param op Operator('=', '<', '>' etc... for the condition).
      * @returns SQLBuilder instance.
      */
     public SQLBuilder whereField(String fieldName, String val, String op) {
@@ -183,38 +198,6 @@ class SQLBuilder {
     }
 
     /**
-     * To add a join in a query.
-     *
-     * @param leftFielield Field on left.
-     * @param rightField Field on right.
-     * @param op Operator('=', '<', '>' etc...for the condition).
-     * @returns SQLBuilder instance.
-     */
-    public SQLBuilder joinField(String leftFielield, String rightField, String op) {
-        leftFielield = checkValidQueryString(leftFielield);
-        rightField = checkValidQueryString(rightField);
-        // Add in the query
-        QWhereField field = new QWhereField(leftFielield, rightField, op, "AND", false);
-        qJoinFieldList.add(field);
-        return this;
-    }
-
-    /**
-     * Overloaded function To add to join query, here default operator is '='.
-     *
-     * @param fieldName1 Left field.
-     * @param fieldName2 Right field.
-     * @returns SQLBuilder instance.
-     */
-    public SQLBuilder joinField(String leftField, String rightField) {
-        leftField = checkValidQueryString(leftField);
-        // Add in the query
-        QWhereField field = new QWhereField(leftField, rightField, "=", "AND", false);
-        qJoinFieldList.add(field);
-        return this;
-    }
-
-    /**
      * To get the insert query.
      *
      * @returns Insert query.
@@ -225,13 +208,12 @@ class SQLBuilder {
         
         String sQuery = "INSERT INTO ";
 
-        sQuery += qTableList.get(0) + " ( ";
+        sQuery += qTableList.get(0) + " (";
 
         boolean bFlag = false;
         String sField;
 
         Iterator<QField> qFieldListItr = qFieldList.iterator();
-
         while (qFieldListItr.hasNext()) {
             sField = "";
             QField field = qFieldListItr.next();
@@ -243,17 +225,17 @@ class SQLBuilder {
             bFlag = true;
         }
 
-        sQuery += ") VALUES(";
+        sQuery += ") VALUES (";
         bFlag = false;
 
         qFieldListItr = qFieldList.iterator();
-
         while (qFieldListItr.hasNext()) {
             sField = "";
             QField field = qFieldListItr.next();
             if (bFlag) {
                 sField += ",";
             }
+            
             sField += field.value;
             sQuery += sField;
             bFlag = true;
@@ -353,8 +335,7 @@ class SQLBuilder {
         if (qTableList.isEmpty())
             return "";
 
-        String sQuery = "DELETE ";
-        sQuery += " FROM ";
+        String sQuery = "DELETE FROM ";
         boolean bFlag = false;
         Iterator<String> qTableListItr = qTableList.iterator();
         while (qTableListItr.hasNext()) {
@@ -411,19 +392,19 @@ class SQLBuilder {
         qJoinFieldList.clear();
     }
 
-    protected String getWhereFieldLeftSeperatorChar(boolean isSubQuery) {
+    private String getWhereFieldLeftSeperatorChar(boolean isSubQuery) {
         return (isSubQuery ? "(" : "\"");
     }
 
-    protected String getWhereFieldRightSeperatorChar(boolean isSubQuery) {
+    private String getWhereFieldRightSeperatorChar(boolean isSubQuery) {
         return (isSubQuery ? ")" : "\"");
     }
 
-    protected String getInsertValueLeftChar(boolean isWildChar) {
+    private String getInsertValueLeftChar(boolean isWildChar) {
         return (isWildChar ? "\"" : "'");
     }
 
-    protected String getInsertValueRightChar(boolean isWildChar) {
+    private String getInsertValueRightChar(boolean isWildChar) {
         return (isWildChar ? "\"" : "'");
     }
 
@@ -431,23 +412,23 @@ class SQLBuilder {
      * QField class to represent a Query field.
      */
     protected class QField {
-
+        
         public String fieldName = new String();
         public String value = new String();
-        public String dataType = new String();
+        public DataType dataType;
 
         public QField() {
             fieldName = "";
             value = "";
-            dataType = "";
+            dataType = DataType.asText; //Default
         }
 
-        public QField(String fieldName, String value, String dataType) {
+        public QField(String fieldName, String value, DataType dataType) {
             this.fieldName = fieldName;
             this.value = value;
             this.dataType = dataType;
-
         }
+        
     };
 
     /**

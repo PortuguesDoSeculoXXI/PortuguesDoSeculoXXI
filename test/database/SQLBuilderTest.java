@@ -45,6 +45,7 @@ public class SQLBuilderTest {
         String expResult = "select * from test";
         SQLBuilder result = instance.addTable(tableName);
         assertTrue("Result: "+result.getSelectQuery(), expResult.equalsIgnoreCase(result.getSelectQuery()));
+        // Tested
     }
 
     /**
@@ -53,12 +54,14 @@ public class SQLBuilderTest {
     @Test
     public void testSelectField_String_String() {
         System.out.println("selectField");
-        String fieldName = "";
-        String aliasName = "";
+        String fieldName = "id_test";
+        String aliasName = "ident.";
         SQLBuilder instance = new SQLBuilder();
-        String expResult = "";
+        instance.addTable("Test");
+        String expResult = "select id_test as 'ident.' from test";
         SQLBuilder result = instance.selectField(fieldName, aliasName);
         assertTrue("Result: "+result.getSelectQuery(), expResult.equalsIgnoreCase(result.getSelectQuery()));
+        // Tested
     }
 
     /**
@@ -67,11 +70,12 @@ public class SQLBuilderTest {
     @Test
     public void testSelectField_String() {
         System.out.println("selectField");
-        String fieldName = "";
         SQLBuilder instance = new SQLBuilder();
-        String expResult = "";
-        SQLBuilder result = instance.selectField(fieldName);
+        instance.addTable("Test");
+        String expResult = "select id, name from test";
+        SQLBuilder result = instance.selectField("id").selectField("name");
         assertTrue("Result: "+result.getSelectQuery(), expResult.equalsIgnoreCase(result.getSelectQuery()));
+        // Tested
     }
 
     /**
@@ -80,13 +84,15 @@ public class SQLBuilderTest {
     @Test
     public void testWhereField_3args() {
         System.out.println("whereField");
-        String fieldName = "";
-        String val = "";
-        String op = "";
+        String fieldName = "id";
+        String val = "3";
+        String op = ">=";
         SQLBuilder instance = new SQLBuilder();
-        String expResult = "";
+        instance.addTable("Test");
+        String expResult = "select * from test where id >= \"3\"";
         SQLBuilder result = instance.whereField(fieldName, val, op);
         assertTrue("Result: "+result.getSelectQuery(), expResult.equalsIgnoreCase(result.getSelectQuery()));
+        // Tested
     }
 
     /**
@@ -95,14 +101,12 @@ public class SQLBuilderTest {
     @Test
     public void testWhereField_4args() {
         System.out.println("whereField");
-        String fieldName = "";
-        String val = "";
-        String op = "";
-        String concat = "";
         SQLBuilder instance = new SQLBuilder();
-        String expResult = "";
-        SQLBuilder result = instance.whereField(fieldName, val, op, concat);
+        instance.addTable("Test");
+        String expResult = "select * from test where id >= \"4\" and name = \"xpto\"";
+        SQLBuilder result = instance.whereField("id", "4", ">=", "and").whereField("name", "xpto");
         assertTrue("Result: "+result.getSelectQuery(), expResult.equalsIgnoreCase(result.getSelectQuery()));
+        // Tested
     }
 
     /**
@@ -111,12 +115,14 @@ public class SQLBuilderTest {
     @Test
     public void testWhereField_String_String() {
         System.out.println("whereField");
-        String fieldName = "";
-        String val = "";
+        String fieldName = "id";
+        String val = "4";
         SQLBuilder instance = new SQLBuilder();
-        String expResult = "";
+        instance.addTable("Test");
+        String expResult = "select * from test where id = \"4\"";
         SQLBuilder result = instance.whereField(fieldName, val);
         assertTrue("Result: "+result.getSelectQuery(), expResult.equalsIgnoreCase(result.getSelectQuery()));
+        // Tested
     }
 
     /**
@@ -125,41 +131,14 @@ public class SQLBuilderTest {
     @Test
     public void testWhereSubquery() {
         System.out.println("whereSubquery");
-        String fieldName = "";
-        String subQuery = "";
+        String fieldName = "id";
+        String subQuery = new SQLBuilder().addTable("test").selectField("id").whereField("name", "xpto", ">=").getSelectQuery();
         SQLBuilder instance = new SQLBuilder();
-        String expResult = "";
+        instance.addTable("Test");
+        String expResult = "select * from test where id = (select id from test where name >= \"xpto\")";
         SQLBuilder result = instance.whereSubquery(fieldName, subQuery);
         assertTrue("Result: "+result.getSelectQuery(), expResult.equalsIgnoreCase(result.getSelectQuery()));
-    }
-
-    /**
-     * Test of joinField method, of class SQLBuilder.
-     */
-    @Test
-    public void testJoinField_3args() {
-        System.out.println("joinField");
-        String leftFielield = "";
-        String rightField = "";
-        String op = "";
-        SQLBuilder instance = new SQLBuilder();
-        String expResult = "";
-        SQLBuilder result = instance.joinField(leftFielield, rightField, op);
-        assertTrue("Result: "+result.getSelectQuery(), expResult.equalsIgnoreCase(result.getSelectQuery()));
-    }
-
-    /**
-     * Test of joinField method, of class SQLBuilder.
-     */
-    @Test
-    public void testJoinField_String_String() {
-        System.out.println("joinField");
-        String leftField = "";
-        String rightField = "";
-        SQLBuilder instance = new SQLBuilder();
-        String expResult = "";
-        SQLBuilder result = instance.joinField(leftField, rightField);
-        assertTrue("Result: "+result.getSelectQuery(), expResult.equalsIgnoreCase(result.getSelectQuery()));
+        // Tested
     }
 
     /**
@@ -169,9 +148,11 @@ public class SQLBuilderTest {
     public void testGetInsertQuery() {
         System.out.println("getInsertQuery");
         SQLBuilder instance = new SQLBuilder();
-        String expResult = "";
+        instance.addTable("Test").addField("name", "Xpto", SQLBuilder.DataType.asText);
+        String expResult = "insert into test (name) values ('xpto')";
         String result = instance.getInsertQuery();
         assertTrue("Result: "+result, expResult.equalsIgnoreCase(result));
+        // Tested
     }
 
     /**
@@ -181,10 +162,11 @@ public class SQLBuilderTest {
     public void testGetSelectQuery() {
         System.out.println("getSelectQuery");
         SQLBuilder instance = new SQLBuilder();
-        instance.addTable("test").selectField("name").whereField("name", "lorem ipsum");
-        String expResult = "select name from test where name = `lorem upsum`";
+        instance.addTable("Test").selectField("name","Name of Test").whereField("name", "lorem ipsum");
+        String expResult = "select name as 'Name of Test' from test where name = \"lorem ipsum\"";
         String result = instance.getSelectQuery();
-        assertTrue("Result: "+result, expResult.equalsIgnoreCase(result));
+        assertTrue("Result: "+result, result.equalsIgnoreCase(expResult));
+        // Tested
     }
 
     /**
@@ -194,9 +176,11 @@ public class SQLBuilderTest {
     public void testGetDeleteQuery() {
         System.out.println("getDeleteQuery");
         SQLBuilder instance = new SQLBuilder();
-        String expResult = "";
+        instance.addTable("Test").whereField("name", "Xpto", ">=");
+        String expResult = "delete from Test where name >= 'Xpto'";
         String result = instance.getDeleteQuery();
-        assertTrue("Result: "+result, expResult.equalsIgnoreCase(result));
+        assertTrue("Result: "+result, result.equalsIgnoreCase(expResult));
+        // Tested
     }
 
     /**
@@ -210,66 +194,6 @@ public class SQLBuilderTest {
         instance.clear();
         assertTrue(instance.getSelectQuery() + " was the result and need to be empty.", 
                 instance.getSelectQuery().equals(""));
-    }
-
-    /**
-     * Test of getWhereFieldLeftSeperatorChar method, of class SQLBuilder.
-     */
-    @Test
-    public void testGetWhereFieldLeftSeperatorChar() {
-        System.out.println("getWhereFieldLeftSeperatorChar");
-        boolean isSubQuery = false;
-        SQLBuilder instance = new SQLBuilder();
-        String expResult = "";
-        String result = instance.getWhereFieldLeftSeperatorChar(isSubQuery);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getWhereFieldRightSeperatorChar method, of class SQLBuilder.
-     */
-    @Test
-    public void testGetWhereFieldRightSeperatorChar() {
-        System.out.println("getWhereFieldRightSeperatorChar");
-        boolean isSubQuery = false;
-        SQLBuilder instance = new SQLBuilder();
-        String expResult = "";
-        String result = instance.getWhereFieldRightSeperatorChar(isSubQuery);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getInsertValueLeftChar method, of class SQLBuilder.
-     */
-    @Test
-    public void testGetInsertValueLeftChar() {
-        System.out.println("getInsertValueLeftChar");
-        boolean isWildChar = false;
-        SQLBuilder instance = new SQLBuilder();
-        String expResult = "";
-        String result = instance.getInsertValueLeftChar(isWildChar);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getInsertValueRightChar method, of class SQLBuilder.
-     */
-    @Test
-    public void testGetInsertValueRightChar() {
-        System.out.println("getInsertValueRightChar");
-        boolean isWildChar = false;
-        SQLBuilder instance = new SQLBuilder();
-        String expResult = "";
-        String result = instance.getInsertValueRightChar(isWildChar);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-    
+        // Tested
+    }    
 }
