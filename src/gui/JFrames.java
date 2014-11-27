@@ -1,10 +1,14 @@
 package gui;
 
-
+/**
+ * 
+ * @author PTXXI
+ */
 public class JFrames {
     //Attributes
     private Controller controller = null;
     private FrameMain framemain   = null;
+    private JframeChoosingWindow ChoosingWindow = null;
     
     
     
@@ -17,6 +21,8 @@ public class JFrames {
     //############ Methods ###################
     public void createFrames(){
         this.framemain = new FrameMain(this.controller);
+        this.ChoosingWindow = new JframeChoosingWindow(this.controller);
+        
     }
     
     
