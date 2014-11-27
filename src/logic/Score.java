@@ -1,6 +1,9 @@
 package logic;
 
 /**
+ * Score.
+ * This class represents the final score
+ * of the played games.
  *
  * @author PTXXI
  */

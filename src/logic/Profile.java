@@ -1,7 +1,10 @@
 package logic;
 
 /**
- *
+ * Profile.
+ * This class represents the profile of user
+ * that will be add on the game.
+ * 
  * @author PTXXI
  */
 public class Profile {

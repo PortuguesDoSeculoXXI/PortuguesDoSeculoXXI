@@ -1,6 +1,9 @@
 package logic;
 
 /**
+ * Challenge Hard.
+ * Represent the game mode.
+ * 
  *
  * @author PTXXI
  */
