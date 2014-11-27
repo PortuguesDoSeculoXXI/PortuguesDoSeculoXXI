@@ -39,11 +39,11 @@ class SQLBuilder {
     /**
      * Lists for each SQL statement.
      */
-    private List<String> QTableList = new ArrayList<>();
-    private List<QField> QFieldList = new ArrayList<>();
-    private List<QSelectField> QSelectFieldList = new ArrayList<>();
-    private List<QWhereField> QWhereFieldList = new ArrayList<>();
-    private List<QWhereField> QJoinFieldList = new ArrayList<>();
+    private List<String> qTableList = new ArrayList<>();
+    private List<QField> qFieldList = new ArrayList<>();
+    private List<QSelectField> qSelectFieldList = new ArrayList<>();
+    private List<QWhereField> qWhereFieldList = new ArrayList<>();
+    private List<QWhereField> qJoinFieldList = new ArrayList<>();
     
     /**
      * To add a table to the query.
@@ -51,8 +51,8 @@ class SQLBuilder {
      * @param tableName name o the table to be added.
      */
     public SQLBuilder addTable(String tableName) {
-        if (!QTableList.contains(tableName)) {
-            QTableList.add(tableName);
+        if (!qTableList.contains(tableName)) {
+            qTableList.add(tableName);
         }
         return this;
     }
@@ -86,7 +86,7 @@ class SQLBuilder {
         }
 
         QField field = new QField(fieldName, value, dataType);
-        QFieldList.add(field);
+        qFieldList.add(field);
     }
 
     /**
@@ -101,7 +101,7 @@ class SQLBuilder {
         aliasName = checkValidQueryString(aliasName);
         // Add field in the query
         QSelectField field = new QSelectField(fieldName, aliasName);
-        QSelectFieldList.add(field);
+        qSelectFieldList.add(field);
         return this;
     }
 
@@ -115,7 +115,7 @@ class SQLBuilder {
         fieldName = checkValidQueryString(fieldName);
         // Add field in the query
         QSelectField field = new QSelectField(fieldName);
-        QSelectFieldList.add(field);
+        qSelectFieldList.add(field);
         return this;
     }
 
@@ -131,7 +131,7 @@ class SQLBuilder {
         fieldName = checkValidQueryString(fieldName);
         // Add field in the query
         QWhereField field = new QWhereField(fieldName, val, op, "AND", false);
-        QWhereFieldList.add(field);
+        qWhereFieldList.add(field);
         return this;
     }
 
@@ -148,7 +148,7 @@ class SQLBuilder {
         fieldName = checkValidQueryString(fieldName);
         // Add field in the query
         QWhereField field = new QWhereField(fieldName, val, op, concat, false);
-        QWhereFieldList.add(field);
+        qWhereFieldList.add(field);
         return this;
     }
 
@@ -163,7 +163,7 @@ class SQLBuilder {
         fieldName = checkValidQueryString(fieldName);
         // Add in the query
         QWhereField field = new QWhereField(fieldName, val, "=", "AND", false);
-        QWhereFieldList.add(field);
+        qWhereFieldList.add(field);
         return this;
     }
 
@@ -178,7 +178,7 @@ class SQLBuilder {
         fieldName = checkValidQueryString(fieldName);
         // Add in the query
         QWhereField field = new QWhereField(fieldName, subQuery, "=", "AND", true);
-        QWhereFieldList.add(field);
+        qWhereFieldList.add(field);
         return this;
     }
 
@@ -195,7 +195,7 @@ class SQLBuilder {
         rightField = checkValidQueryString(rightField);
         // Add in the query
         QWhereField field = new QWhereField(leftFielield, rightField, op, "AND", false);
-        QJoinFieldList.add(field);
+        qJoinFieldList.add(field);
         return this;
     }
 
@@ -210,7 +210,7 @@ class SQLBuilder {
         leftField = checkValidQueryString(leftField);
         // Add in the query
         QWhereField field = new QWhereField(leftField, rightField, "=", "AND", false);
-        QJoinFieldList.add(field);
+        qJoinFieldList.add(field);
         return this;
     }
 
@@ -220,14 +220,17 @@ class SQLBuilder {
      * @returns Insert query.
      */
     public String getInsertQuery() {
+        if (qTableList.isEmpty())
+            return "";
+        
         String sQuery = "INSERT INTO ";
 
-        sQuery += QTableList.get(0) + " ( ";
+        sQuery += qTableList.get(0) + " ( ";
 
         boolean bFlag = false;
         String sField;
 
-        Iterator<QField> qFieldListItr = QFieldList.iterator();
+        Iterator<QField> qFieldListItr = qFieldList.iterator();
 
         while (qFieldListItr.hasNext()) {
             sField = "";
@@ -243,7 +246,7 @@ class SQLBuilder {
         sQuery += ") VALUES(";
         bFlag = false;
 
-        qFieldListItr = QFieldList.iterator();
+        qFieldListItr = qFieldList.iterator();
 
         while (qFieldListItr.hasNext()) {
             sField = "";
@@ -266,30 +269,37 @@ class SQLBuilder {
      * @returns select query.
      */
     public String getSelectQuery() {
+        if (qTableList.isEmpty())
+            return "";
+        
         String sQuery = "SELECT ";
         String sField;
         boolean bFlag = false;
-        
-        Iterator<QSelectField> qSelectFieldListItr = QSelectFieldList.iterator();
-        while (qSelectFieldListItr.hasNext()) {
-            QSelectField selectField = qSelectFieldListItr.next();
-            sField = "";
-            if (bFlag) {
-                sField += ", ";
-            }
-            sField += selectField.fieldName;
-            if (!selectField.alias.equals("")) {
-                sField += " AS " + selectField.alias;
-            }
-
-            sQuery += sField;
-            bFlag = true;
-
+                
+        if (qSelectFieldList.isEmpty()) {
+            sQuery += "*";
         }
+        else {
+            Iterator<QSelectField> qSelectFieldListItr = qSelectFieldList.iterator();
+            while (qSelectFieldListItr.hasNext()) {
+                QSelectField selectField = qSelectFieldListItr.next();
+                sField = "";
+                if (bFlag) {
+                    sField += ", ";
+                }
+                sField += selectField.fieldName;
+                if (!selectField.alias.equals("")) {
+                    sField += " AS " + selectField.alias;
+                }
 
+                sQuery += sField;
+                bFlag = true;
+            }
+        }
+        
         sQuery += " FROM ";
         bFlag = false;
-        Iterator<String> qTableListItr = QTableList.iterator();
+        Iterator<String> qTableListItr = qTableList.iterator();
         while (qTableListItr.hasNext()) {
             String tableName = qTableListItr.next();
             if (bFlag) {
@@ -299,12 +309,12 @@ class SQLBuilder {
             bFlag = true;
         }
 
-        if (!QWhereFieldList.isEmpty() || (!QJoinFieldList.isEmpty())) {
+        if (!qWhereFieldList.isEmpty() || (!qJoinFieldList.isEmpty())) {
             sQuery += " WHERE ";
         }
 
         bFlag = false;
-        Iterator<QWhereField> qWhereFieldListItr = QWhereFieldList.iterator();
+        Iterator<QWhereField> qWhereFieldListItr = qWhereFieldList.iterator();
 
         while (qWhereFieldListItr.hasNext()) {
             QWhereField whereField = qWhereFieldListItr.next();
@@ -316,12 +326,12 @@ class SQLBuilder {
             bFlag = true;
         }
 
-        if (!QJoinFieldList.isEmpty() && !QWhereFieldList.isEmpty()) {
+        if (!qJoinFieldList.isEmpty() && !qWhereFieldList.isEmpty()) {
             sQuery += " AND ";
         }
 
         bFlag = false;
-        Iterator<QWhereField> qJoinFieldListItr = QJoinFieldList.iterator();
+        Iterator<QWhereField> qJoinFieldListItr = qJoinFieldList.iterator();
         while (qJoinFieldListItr.hasNext()) {
             QWhereField joinField = qJoinFieldListItr.next();
             if (bFlag) {
@@ -340,11 +350,13 @@ class SQLBuilder {
      * @returns Delete query as String.
      */
     public String getDeleteQuery() {
+        if (qTableList.isEmpty())
+            return "";
 
         String sQuery = "DELETE ";
         sQuery += " FROM ";
         boolean bFlag = false;
-        Iterator<String> qTableListItr = QTableList.iterator();
+        Iterator<String> qTableListItr = qTableList.iterator();
         while (qTableListItr.hasNext()) {
             String tableName = qTableListItr.next();
             if (bFlag) {
@@ -354,12 +366,12 @@ class SQLBuilder {
             bFlag = true;
         }
 
-        if (!QWhereFieldList.isEmpty()) {
+        if (!qWhereFieldList.isEmpty()) {
             sQuery += " WHERE ";
         }
 
         bFlag = false;
-        Iterator<QWhereField> qWhereFieldListItr = QWhereFieldList.iterator();
+        Iterator<QWhereField> qWhereFieldListItr = qWhereFieldList.iterator();
         while (qWhereFieldListItr.hasNext()) {
             QWhereField whereField = qWhereFieldListItr.next();
             if (bFlag) {
@@ -369,12 +381,12 @@ class SQLBuilder {
             bFlag = true;
         }
 
-        if (!QJoinFieldList.isEmpty()) {
+        if (!qJoinFieldList.isEmpty()) {
             sQuery += " WHERE ";
         }
 
         bFlag = false;
-        Iterator<QWhereField> qJoinFieldListItr = QJoinFieldList.iterator();
+        Iterator<QWhereField> qJoinFieldListItr = qJoinFieldList.iterator();
         while (qJoinFieldListItr.hasNext()) {
             QWhereField joinField = qJoinFieldListItr.next();
             if (bFlag) {
@@ -392,11 +404,11 @@ class SQLBuilder {
      *
      */
     public void clear() {
-        QTableList.clear();
-        QFieldList.clear();
-        QSelectFieldList.clear();
-        QWhereFieldList.clear();
-        QJoinFieldList.clear();
+        qTableList.clear();
+        qFieldList.clear();
+        qSelectFieldList.clear();
+        qWhereFieldList.clear();
+        qJoinFieldList.clear();
     }
 
     protected String getWhereFieldLeftSeperatorChar(boolean isSubQuery) {
@@ -465,7 +477,6 @@ class SQLBuilder {
             this.isSubQuery = isSubQuery;
         }
     };
-
     
     /**
      * QSelectField class to represent a Select field.
