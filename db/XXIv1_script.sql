@@ -6,17 +6,13 @@
 
 drop table if exists CATEGORY;
 
-drop table if exists CHALLENGE;
-
-drop table if exists CHALLENGEQUESTIONS;
+drop table if exists CHALLENGESCORES;
 
 drop table if exists PLAYER;
 
 drop table if exists QUESTION;
 
 drop table if exists RULE;
-
-drop table if exists SCORE;
 
 /*==============================================================*/
 /* Table: CATEGORY                                              */
@@ -31,7 +27,7 @@ create table CATEGORY
 /*==============================================================*/
 /* Table: CHALLENGE                                             */
 /*==============================================================*/
-create table CHALLENGE
+create table CHALLENGESCORES
 (
    ID_CHALLENGE         int not null,
    ID_PLAYER            int,
@@ -39,17 +35,10 @@ create table CHALLENGE
    DATE                 datetime not null,
    DURATION             time,
    LEVEL                int not null,
+   GOLD                 int,
+   SILVER               int,
+   IRON                 int,
    primary key (ID_CHALLENGE)
-);
-
-/*==============================================================*/
-/* Table: CHALLENGEQUESTIONS                                    */
-/*==============================================================*/
-create table CHALLENGEQUESTIONS
-(
-   ID_CHALLENGE         int not null,
-   ID_QUESTION          int not null,
-   primary key (ID_CHALLENGE, ID_QUESTION)
 );
 
 /*==============================================================*/
@@ -85,16 +74,4 @@ create table RULE
    ID_RULE              int not null,
    CLARIFICATION        varchar(100) not null,
    primary key (ID_RULE)
-);
-
-/*==============================================================*/
-/* Table: SCORE                                                 */
-/*==============================================================*/
-create table SCORE
-(
-   ID_SCORE             int not null,
-   GOLD                 int,
-   SILVER               int,
-   IRON                 int,
-   primary key (ID_SCORE)
 );

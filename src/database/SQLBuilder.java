@@ -11,9 +11,12 @@ import java.util.Set;
  * This class creates SQL queries dynamically.
  * 
  * To do:
- *  - Inner join and left outer join
- *  - Where clause with LIKE
- *  - Where clause with num ou text
+ *  - INNER JOIN and LEFT OUTER JOIN
+ *  - WHERE clause with LIKE
+ *  - WHERE clause with num ou text
+ *  - UPDATE clause
+ *  - LIMIT clause
+ *  - ORDER BY clause
  * 
  * @author PTXXI
  */
@@ -61,7 +64,8 @@ class SQLBuilder {
     /**
      * To add a table to the query.
      *
-     * @param tableName name o the table to be added.
+     * @param tableName name of table to be added.
+     * @returns SQLBuilder instance.
      */
     public SQLBuilder addTable(String tableName) {
         if (!qTableList.contains(tableName)) {
@@ -95,6 +99,7 @@ class SQLBuilder {
     public SQLBuilder addField(String fieldName, String value, DataType dataType) {
         // Check data type
         if (dataType == DataType.asText) {
+            // Check Wildchar for ex.: That's
             boolean isWildchar = (StringUtilities.indexOfFirstContainedCharacter(value, "'") != -1);
             value = getInsertValueLeftChar(isWildchar) + value + getInsertValueRightChar(isWildchar);
         }
@@ -332,7 +337,7 @@ class SQLBuilder {
      * @returns Delete query as String.
      */
     public String getDeleteQuery() {
-        if (qTableList.isEmpty())
+        if (qTableList.isEmpty() || qWhereFieldList.isEmpty())
             return "";
 
         String sQuery = "DELETE FROM ";
