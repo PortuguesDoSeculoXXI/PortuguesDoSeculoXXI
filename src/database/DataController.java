@@ -8,6 +8,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import logic.Category;
+import logic.Player;
+import logic.Question;
 
 /**
  * Data Controller.
@@ -83,8 +85,8 @@ public class DataController {
             
             // Test
             SQLBuilder builder = new SQLBuilder();
-            builder.addTable("category").selectField("*");
-
+            builder.addTable("category").selectField("*");            
+            
             System.out.println("Query: "+builder.getSelectQuery());
             ResultSet rs = st.executeQuery(builder.getSelectQuery());
             while (rs.next()) {
@@ -100,8 +102,66 @@ public class DataController {
         }finally{
             disconnect();
         }
-        
         return categories;
     }
+    
+    public List<Player> getAllPlayers(){
+        List<Player> players = new ArrayList<>();
+        connect();
+        
+        try{
+            Statement st = connection.createStatement();
+            st.setQueryTimeout(30);  // set timeout to 30 sec.
+            
+            // Test
+            SQLBuilder builder = new SQLBuilder();
+            builder.addTable("player").selectField("*");           
+            
+            System.out.println("Query: "+builder.getSelectQuery());
+            ResultSet rs = st.executeQuery(builder.getSelectQuery());
+            while (rs.next()) {
+                // Read the result set
+                players.add(new Player(rs.getInt("ID_PLAYER"), rs.getString("NAME")));
+            }
+        }catch(SQLException e) {
+            // if the error message is "out of memory", 
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }finally{
+            disconnect();
+        }        
+        return players;
+    }
+    
+    public List<Integer> getScoreByPlayer(int idPlayer){
+        // Esta errado, so estou a ir buscar o ID_SCORE, e retorno um array com os ids_scores de cada palyer
+        List<Integer> scoresPlayer= new ArrayList<>();
+        connect();
+        
+        try{
+            Statement st = connection.createStatement();
+            st.setQueryTimeout(30);  // set timeout to 30 sec.
+            
+            // Test
+            SQLBuilder builder = new SQLBuilder();
+            builder.addTable("challenge").selectField("ID_SCORE").whereField("ID_PLAYER", Integer.toString(idPlayer));           
+            
+            System.out.println("Query: "+builder.getSelectQuery());
+            ResultSet rs = st.executeQuery(builder.getSelectQuery());
+            
+            while (rs.next()) {
+                scoresPlayer.add(rs.getInt("ID_SCORES"));
+            }
+        }catch(SQLException e) {
+            // if the error message is "out of memory", 
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        }finally{
+            disconnect();
+        }        
+        return scoresPlayer;
+    }
+    
+    
     
 }

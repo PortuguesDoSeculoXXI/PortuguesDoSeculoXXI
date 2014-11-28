@@ -51,7 +51,7 @@ public class Challenge extends Observable implements ChallengeInterface {
     /**
      * Current profile selected to play the challenge.
      */
-    private Profile currentProfile;
+    private Player currentProfile;
     /**
      * The score of this challenge.
      */
@@ -66,7 +66,7 @@ public class Challenge extends Observable implements ChallengeInterface {
      * Challenge Constructor.
      * @param currentProfile Sets current profile for this challenge.
      */
-    public Challenge(Profile currentProfile) {
+    public Challenge(Player currentProfile) {
         this.currentProfile = currentProfile;
     }
 
@@ -104,11 +104,11 @@ public class Challenge extends Observable implements ChallengeInterface {
         return currentQuestionNumber;
     }
 
-    public Profile getCurrentProfile() {
+    public Player getCurrentProfile() {
         return currentProfile;
     }
 
-    public void setCurrentProfile(Profile currentProfile) {
+    public void setCurrentProfile(Player currentProfile) {
         this.currentProfile = currentProfile;
     }
 

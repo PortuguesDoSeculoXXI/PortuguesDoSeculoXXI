@@ -8,7 +8,7 @@ package logic;
  */
 public class ChallengeEasy extends Challenge {
 
-    public ChallengeEasy(Profile currentProfile) {
+    public ChallengeEasy(Player currentProfile) {
         super(currentProfile);
     }
     

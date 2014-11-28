@@ -18,6 +18,13 @@ public class Question {
         return answer;
     }
 
+    public Question(int answer, String question, String optionA, String optionB) {
+        this.answer = answer;
+        this.question = question;
+        this.optionA = optionA;
+        this.optionB = optionB;
+    }
+
     public String getQuestion() {
         return question;
     }
