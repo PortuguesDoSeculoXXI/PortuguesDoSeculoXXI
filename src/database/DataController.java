@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import logic.Category;
+import logic.Player;
 import logic.Question;
 
 /**
@@ -27,7 +28,9 @@ public class DataController {
      * Database address to establish connection with the binary file.
      */
     private static String DATABASE_URI = "jdbc:sqlite:db/XXIv1.db";
-    
+    /**
+     * Database connection instance.
+     */
     private Connection connection = null;
     
     /**
@@ -42,26 +45,27 @@ public class DataController {
             System.out.println("Driver don't exist.");
             return;
         }
-        sampleData();
     }
     
-    
-
+    /**
+     * Connect to database.
+     */
     public void connect() {
-        
         try {
-            if(connection == null){
+            if (connection == null) {
                 // Create a database connection
                 connection = DriverManager.getConnection(DATABASE_URI);
             }
-            
         } catch (SQLException e) {
-            // if the error message is "out of memory", 
-            // it probably means no database file is found
+            // If the error message is "out of memory", 
+            // It probably means no database file is found
             System.err.println(e.getMessage());
         }
     }
     
+    /**
+     * Disconnect from database.
+     */
     public void disconnect() {
         try {
             if (connection != null) {
@@ -69,23 +73,92 @@ public class DataController {
                 connection = null;
             }
         } catch (SQLException e) {
-            // connection close failed.
+            // Connection close failed.
             System.err.println(e);
         }
     }
     
-    public List<Category> getAllCategories(){
+    /**
+     * Get all players from database.
+     *
+     * @returns List of Players.
+     */
+    public List<Player> getAllPlayers(){
+        List<Player> players = new ArrayList<>();
+        connect();
+        try {
+            Statement st = connection.createStatement();
+            st.setQueryTimeout(30);  //set timeout to 30 sec.
+            
+            SQLBuilder builder = new SQLBuilder();
+            builder.addTable("player");           
+            
+            System.out.println("Query: "+builder.getSelectQuery());
+            ResultSet rs = st.executeQuery(builder.getSelectQuery());
+            while (rs.next()) {
+                // Read the result set
+                players.add(new Player(rs.getInt("ID_PLAYER"), rs.getString("NAME")));
+            }
+        } catch(SQLException e) {
+            System.err.println(e.getMessage());
+        } finally {
+            disconnect();
+        }        
+        return players;
+    }
+    
+    /**
+     * Get challenge score by player.
+     *
+     * @returns List of Scores.
+     */
+    public List<Integer> getScoreByPlayer(int idPlayer) {
+        // ToDo - Esta errado, so estou a ir buscar o ID_SCORE, e 
+        //retorno um array com os ids_scores de cada palyer
+        List<Integer> scoresPlayer= new ArrayList<>();
+        
+        connect();
+        try {
+            Statement st = connection.createStatement();
+            st.setQueryTimeout(30);  // set timeout to 30 sec.
+            
+            // Test
+            SQLBuilder builder = new SQLBuilder();
+            builder.addTable("challenge").selectField("ID_SCORE").whereField("ID_PLAYER", Integer.toString(idPlayer));           
+            
+            System.out.println("Query: "+builder.getSelectQuery());
+            ResultSet rs = st.executeQuery(builder.getSelectQuery());
+            
+            while (rs.next()) {
+                scoresPlayer.add(rs.getInt("ID_SCORES"));
+            }
+        } catch(SQLException e) {
+            // if the error message is "out of memory", 
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        } finally {
+            disconnect();
+        }        
+        return scoresPlayer;
+    }
+    
+    /**
+     * Get all the categories from database.
+     *
+     * @returns List of Categories.
+     */
+    public List<Category> getAllCategories() {
         List<Category> categories = new ArrayList<>();
         connect();
-        try{
+        try {
             
             Statement st = connection.createStatement();
             st.setQueryTimeout(30);  // set timeout to 30 sec.
             
             // Test
             SQLBuilder builder = new SQLBuilder();
-            builder.addTable("category").selectField("*");
-
+            builder.addTable("category").selectField("*");            
+            
             System.out.println("Query: "+builder.getSelectQuery());
             ResultSet rs = st.executeQuery(builder.getSelectQuery());
             while (rs.next()) {
@@ -94,14 +167,13 @@ public class DataController {
                 //System.out.println("name = " + rs.getString("CATEGORY_NAME"));
                 categories.add(new Category(rs.getInt("ID_CATEGORY"), rs.getString("CATEGORY_NAME")));
             }  
-        }catch(SQLException e) {
+        } catch(SQLException e) {
             // if the error message is "out of memory", 
             // it probably means no database file is found
             System.err.println(e.getMessage());
-        }finally{
+        } finally {
             disconnect();
         }
-        
         return categories;
     }
     
@@ -289,7 +361,7 @@ public class DataController {
      *
      * @param numberOfQuestions Number of questions to retrieve.
      */
-    public ArrayList<Question> getQuestionsByCategory(int idCategory, int numberOfQuestions) {
+    public List<Question> getQuestionsByCategory(int idCategory, int numberOfQuestions) {
         ArrayList<Question> questions = new ArrayList<>();
         connect();
         try {
@@ -300,8 +372,10 @@ public class DataController {
             builder.addTable("question").whereField("ID_CATEGORY", Integer.toString(idCategory));
             ResultSet rs = st.executeQuery(builder.getSelectQuery()+" ORDER BY RANDOM() LIMIT "+numberOfQuestions);
             while (rs.next()) {
-                questions.add(new Question());
-                //result = rs.getString("clarification");
+                questions.add(new Question(rs.getInt("RIGHT_ANSWER"), 
+                        rs.getString("ENUNCIATION"), 
+                        rs.getString("ANSWER_A"),
+                        rs.getString("ANSWER_B")));
             }
         } catch(SQLException e) {
             System.err.println(e.getMessage());
@@ -316,7 +390,7 @@ public class DataController {
      *
      * @param numberOfQuestions Number of questions to retrieve.
      */
-    public ArrayList<Question> getRandomQuestions(int numberOfQuestions) {
+    public List<Question> getRandomQuestions(int numberOfQuestions) {
         ArrayList<Question> questions = new ArrayList<>();
         connect();
         try {
@@ -327,8 +401,10 @@ public class DataController {
             builder.addTable("question");
             ResultSet rs = st.executeQuery(builder.getSelectQuery()+" ORDER BY RANDOM() LIMIT "+numberOfQuestions);
             while (rs.next()) {
-                questions.add(new Question());
-                //result = rs.getString("clarification");
+                questions.add(new Question(rs.getInt("RIGHT_ANSWER"), 
+                        rs.getString("ENUNCIATION"), 
+                        rs.getString("ANSWER_A"),
+                        rs.getString("ANSWER_B")));
             }
         } catch(SQLException e) {
             System.err.println(e.getMessage());
@@ -338,6 +414,9 @@ public class DataController {
         return questions;
     }
     
+    /**
+     * Generate sample data for demo porpuse.
+     */
     public void sampleData() {
         insertPlayer("Ricardo Pereira");
         insertPlayer("Filipe Santos");
