@@ -4,10 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.FlowLayout;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Observable;
@@ -34,9 +35,11 @@ public class FrameMain extends JFrame implements Observer {
     private JButton change = null;
     private JButton score = null;
     private JButton exit = null;
-    private String Simbolos [] = {"Novo","User1","User2","User3","User4"}; 
+    private String Simbolos [] = {"Novo","User1","User2","User3","Novo Utilizador"}; 
     private JComboBox jc = null;
     private JLabel click = null;
+    private String novo = null;
+    private boolean flag = true; 
    // private JDesktopPane desk = null;
       
     
@@ -63,8 +66,7 @@ public class FrameMain extends JFrame implements Observer {
         // READY
         controller.notifyObservers();
     }
-    
-
+   
     //############ Methods ###################
     protected void init() {
         // Init components/panels
@@ -85,14 +87,16 @@ public class FrameMain extends JFrame implements Observer {
     //JPanelNort
     private void jPanelNorth(){
         this.jpanel = new JPanel(new FlowLayout());
-        JPanel jp = new JPanel(new GridLayout(2,1));
-        JLabel jb = new JLabel("Português\n ");
+        JPanel jp = new JPanel(new GridLayout(3,1));
+        jp.add(new JLabel(" "));
+        JLabel jb = new JLabel("   Português");
         jb.setFont(jb.getFont().deriveFont(64f));
+        
         jp.add(jb);
         //
-        this.jpanel.add(jb);
+        //this.jpanel.add(jb);
         
-        JLabel jb2 = new JLabel("do Século XXI\n ");
+        JLabel jb2 = new JLabel("do Século XXI");
         jb2.setFont(jb2.getFont().deriveFont(64f));
         jp.add(jb2);
         //
@@ -104,7 +108,7 @@ public class FrameMain extends JFrame implements Observer {
     
     //JPanelCenter
     private void jPanelCenter(){
-        this.jpanelcenter = new JPanel(new GridLayout(15,1));
+        this.jpanelcenter = new JPanel(new GridLayout(10,1));
         //this.jpanelcenter.setBorder(BorderFactory.createLineBorder(Color.RED, WIDTH));
         // this.textname = new JTextField("Perfil do utilizador");
         
@@ -114,7 +118,9 @@ public class FrameMain extends JFrame implements Observer {
         jp.add(new JLabel("Perfil do utilizador"));
         jp.add(this.jc);
         
-        this.click = new JLabel("Alterar");
+       
+        
+        this.click = new JLabel("Editar");
         this.click.setBackground(Color.RED);
         this.click.addMouseListener(new MouseListener() {
 
@@ -231,36 +237,72 @@ public class FrameMain extends JFrame implements Observer {
             }
         });
        
-        
-    }
+//        this.jc.addActListener(new ActionListener() {
+//
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                if(e.getActionCommand()== ActionEvent. ){
+//                if(jc.getSelectedIndex()== jc.getItemCount()-1){
+//                    ddddd();
+//                }
+//            }
+//        });
+
+        //TODO - Ricardo esta a duplicar duas vezes esta acc
+        this.jc.addItemListener(new ItemListener() {
+
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == 1 && ( (( String )e.getItem()).equals("Novo Utilizador"))){
+                     if(jc.getSelectedIndex()== jc.getItemCount()-1){
+                        ddddd();
+                     }
+                }
+            }
+        });
+}
     
+    private void ddddd(){
+     
+        JPanel jp = new JPanel(new GridLayout(2,2));
+        System.out.println(novo);
+                  
+
+        jp.add(new JLabel("Nome"));
+
+        JTextField tx = new JTextField();
+        jp.add(tx); 
+        String options[] = {"Cancelar","Gravar"};
+        int value = JOptionPane.showOptionDialog(null, jp, "Novo Perfil de Utilizador", JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options , options[0]);  
+
+        if(value == 0){// ok
+            //System.exit(0);
+        }
+        else{//cancel
+
+        }
+            
+    }
   
     //Create Profile
     private void dialogProfile(){
         JPanel jp = new JPanel(new GridLayout(2,6));
         // jp.add(new JLabel(" "));
-        jp.add(new JLabel("           Nome"));
         
         
-       JTextField tx = new JTextField();
-       jp.add(tx); 
-       jp.add(new JLabel(" "));
-       String options[] = {"Cancelar","Gravar"};
-       int value = JOptionPane.showOptionDialog(null, jp, "Novo Perfil de Utilizador", JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options , options[0]);
-       
-        System.out.println(""+value);
-       if(value == 0){// ok
-           System.exit(0);
-       }
-       else{//cancel
-       }
-       
+        JTextField tx = new JTextField();
+        jp.add(tx); 
+        jp.add(new JLabel(" "));
+        String options[] = {"Cancelar","Apagar","Alterar"};
+        int value = JOptionPane.showOptionDialog(null, jp, "Alteracao de Perfil", JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options , options[0]);  
+
     }
-    
     
     @Override
     public void update(Observable t, Object o) {
        
     }
+    
+   
    //############ Methods ###################
 }

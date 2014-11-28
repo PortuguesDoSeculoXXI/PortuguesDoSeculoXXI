@@ -7,15 +7,14 @@
 package gui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Observable;
 import java.util.Observer;
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -43,11 +42,10 @@ public class JframeChoosingWindow extends JFrame implements Observer {
     private JButton hyphen  = null;
     private JButton Casesensitive  = null;
     private JButton random = null;
-    
-    
+   
     //temp
     private String symbols [] = {"Dificuldade"," 1","2"," 3"," 4"};
-    private String symbols2 [] = {"Nome"," 1","2"," 3"," 4"}; 
+    private String symbols2 [] = {"Nome","1","2","3","4"}; 
     //temp
     private JComboBox jc = null;
     private JComboBox jc2 = null;
@@ -97,14 +95,15 @@ public class JframeChoosingWindow extends JFrame implements Observer {
     
     //JPanelNort
     private void jPanelNorth(){
-        this.jpanel = new JPanel(new GridLayout(3,1));
+        this.jpanel = new JPanel(new GridLayout(1,2));
        // this.jpanel.setBorder(BorderFactory.createLineBorder(Color.ORANGE, WIDTH));
-        JPanel jp = new JPanel(new GridLayout(1,1));
+       //this.jpanel.setPreferredSize(new Dimension(250,100));
+        JPanel jp = new JPanel(new GridLayout(3,1));
         
-        jp.add(new JLabel("Perfil atual"));  
+        //jp.add(new JLabel("Perfil atual"));  
         //jp.add(new JLabel("Nome"));//name player
         
-        this.click = new JLabel("Alterar");
+        this.click = new JLabel("Perfil atual User1 alterar");
        // this.click.setBackground(Color.RED);
         this.click.addMouseListener(new MouseListener(){
             @Override
@@ -135,25 +134,25 @@ public class JframeChoosingWindow extends JFrame implements Observer {
         });
         jp.add(this.click);
         
-        jp.add(new JLabel(" "));
-        JLabel jb = new JLabel("        Português");
+       
+        JLabel jb = new JLabel("         Português");
         jb.setFont(jb.getFont().deriveFont(64f));
  
-        this.jpanel.add(jp);
         this.jpanel.add(jb);
-        //this.jpanel.add(new JLabel(" ")); 
-        JLabel jb2 = new JLabel("     do Século XXI");
+ 
+        JLabel jb2 = new JLabel("      do Século XXI");
         jb2.setFont(jb2.getFont().deriveFont(64f));
      
-        this.jpanel.add(jb2);
-     
+        jp.add(jb);
+        jp.add(jb2);
+        this.jpanel.add(jp);
         this.mainContainer.add(this.jpanel,BorderLayout.NORTH);
     } 
     
     //JPanelCenter
     private void jPanelCenter(){
         this.jpanelcenter = new JPanel(new GridLayout(10,1));
-   
+       
         this.jc = new JComboBox(this.symbols);
         JPanel jp = new JPanel(new GridLayout(1,6));
         jp.add(new JLabel(" "));
@@ -280,21 +279,15 @@ public class JframeChoosingWindow extends JFrame implements Observer {
     private void dialogProfile(){
         JPanel jp = new JPanel(new GridLayout(2,6));
         // jp.add(new JLabel(" "));
-        jp.add(new JLabel("Nome"));
+        jp.add(new JLabel("EScolha de perfil"));
         
       
        this.jc2 = new JComboBox(this.symbols2);
        jp.add(this.jc2);
        String options[] = {"Alterar","Cancelar"};
-       int value = JOptionPane.showOptionDialog(null, jp, "Novo Perfil de Utilizador", JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options , options[0]);
-       
-        System.out.println(""+value);
-       if(value == 0){// ok
-           System.exit(0);
-       }
-       else{//cancel
-       }
-       
+       int value = JOptionPane.showOptionDialog(null, jp, "ALteracao de Perfil", JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options , options[0]);
+      
+      
     }
     
     @Override
