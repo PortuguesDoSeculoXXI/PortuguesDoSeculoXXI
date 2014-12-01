@@ -36,6 +36,4 @@ public class Question {
     public String getOptionB() {
         return optionB;
     }
-    
-    
 }

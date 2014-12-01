@@ -45,6 +45,9 @@ public class DataController {
             System.out.println("Driver don't exist.");
             return;
         }
+        
+        // Teste
+        sampleData();
     }
     
     /**
@@ -112,8 +115,6 @@ public class DataController {
      * @returns List of Scores.
      */
     public List<Integer> getScoreByPlayer(int idPlayer) {
-        // ToDo - Esta errado, so estou a ir buscar o ID_SCORE, e 
-        //retorno um array com os ids_scores de cada palyer
         List<Integer> scoresPlayer= new ArrayList<>();
         
         connect();
@@ -121,9 +122,8 @@ public class DataController {
             Statement st = connection.createStatement();
             st.setQueryTimeout(30);  // set timeout to 30 sec.
             
-            // Test
             SQLBuilder builder = new SQLBuilder();
-            builder.addTable("challenge").selectField("ID_SCORE").whereField("ID_PLAYER", Integer.toString(idPlayer));           
+            builder.addTable("CHALLENGESCORES").whereField("ID_PLAYER", Integer.toString(idPlayer));           
             
             ResultSet rs = st.executeQuery(builder.getSelectQuery());
             
@@ -362,15 +362,32 @@ public class DataController {
      *
      * @param numberOfQuestions Number of questions to retrieve.
      */
-    public List<Question> getQuestionsByCategory(int idCategory, int numberOfQuestions) {
+    public List<Question> getQuestionsByCategory(ArrayList<Integer> categories, int numberOfQuestions) {        
         ArrayList<Question> questions = new ArrayList<>();
+        if (categories == null || categories.isEmpty())
+            return questions;
+        
         connect();
         try {
             Statement st = connection.createStatement();
             st.setQueryTimeout(30); //set timeout to 30 sec.
             
             SQLBuilder builder = new SQLBuilder();
-            builder.addTable("question").whereField("ID_CATEGORY", Integer.toString(idCategory));
+            
+            if (categories.size() == 1) {
+                // Apenas uma categoria
+                builder.addTable("question").whereField("ID_CATEGORY", Integer.toString(categories.get(0)));
+            }
+            else {
+                builder.addTable("question");
+                for (int i=0; i<categories.size(); i++) {
+                    builder.whereField("ID_CATEGORY", Integer.toString(categories.get(i)), "OR");
+                    // Ultimo
+                    if (i == categories.size()-1)
+                        builder.whereField("ID_CATEGORY", Integer.toString(categories.get(i)));
+                }
+            }
+
             ResultSet rs = st.executeQuery(builder.getSelectQuery()+" ORDER BY RANDOM() LIMIT "+numberOfQuestions);
             while (rs.next()) {
                 questions.add(new Question(rs.getInt("RIGHT_ANSWER"), 
@@ -419,12 +436,20 @@ public class DataController {
      * Generate sample data for demo porpuse.
      */
     public void sampleData() {
-        insertPlayer("Ricardo Pereira");
-        insertPlayer("Filipe Santos");
-        deletePlayer(7);
-        deletePlayer(2);
         System.out.println(getRuleClarification(2));
-        System.out.println(getQuestionsByCategory(3,15).size());
+        
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        list.add(2);
+        list.add(3);
+        System.out.println(getQuestionsByCategory(list,15).size());
+        
+        list = new ArrayList<Integer>();
+        list.add(2);
+        System.out.println(getQuestionsByCategory(list,10).size());
+        
+        list = new ArrayList<Integer>();
+        System.out.println(getQuestionsByCategory(list,15).size());
+        
         System.out.println(getRandomQuestions(15).size());
     }
 }

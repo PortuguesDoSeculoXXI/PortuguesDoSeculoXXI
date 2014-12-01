@@ -1,5 +1,6 @@
 package states;
 
+import java.util.Date;
 import logic.Challenge;
 import logic.Score;
 
@@ -60,13 +61,31 @@ public class WaitAnswer extends StateAdapter {
      * @return Score with the respective result.
      */
     private Score calculateScore(int numberOfQuestionsRight) {
-        if (numberOfQuestionsRight == 15)
-            return new Score(1, 1, 1); // Gold, Silver, Bronze
-        else if (numberOfQuestionsRight <= 14 && numberOfQuestionsRight >= 11)
-            return new Score(0, 1, 1); // Silver, Bronze
-        else if (numberOfQuestionsRight <= 10 && numberOfQuestionsRight >= 8)
-            return new Score(0, 0, 1); // Bronze
-        else
-            return new Score(0, 0, 0); // No medals
+        Score challengeScore;
+        if (numberOfQuestionsRight == 15) {
+            challengeScore = new Score(0, 0); // Gold, Silver, Bronze
+            challengeScore.setGold(1);
+            challengeScore.setSilver(1);
+            challengeScore.setBronze(1);
+            return challengeScore;
+        }
+        else if (numberOfQuestionsRight <= 14 && numberOfQuestionsRight >= 11) {
+            challengeScore = new Score(0, 0); // Silver, Bronze
+            challengeScore.setGold(0);
+            challengeScore.setSilver(1);
+            challengeScore.setBronze(1);
+            return challengeScore;
+        }
+        else if (numberOfQuestionsRight <= 10 && numberOfQuestionsRight >= 8) {
+            challengeScore = new Score(0, 0); // Bronze
+            challengeScore.setGold(0);
+            challengeScore.setSilver(0);
+            challengeScore.setBronze(1);
+            return challengeScore;
+        }
+        else {
+            challengeScore = new Score(0, 0); // No medals
+            return challengeScore;
+        }
     }
 }
