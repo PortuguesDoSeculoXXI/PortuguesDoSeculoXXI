@@ -3,16 +3,17 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.Observable;
-import java.util.Observer;
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -20,214 +21,161 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import logic.Challenge;
+import logic.ChallengeModel;
+import logic.database.Controller;
 
-public class FrameMain extends JFrame implements Observer {
-    //Atributos
-    private Controller controller;
+/**
+ * Frame Main Class.
+ *
+ * This class represents the Entrance Window described on FR-1 Quote: "This is
+ * the entrance window, that every user will see when opening the application."
+ *
+ * @author PTXXI
+ */
+public final class FrameMain extends JFrame {
+    private final Controller controller;
+    private final ChallengeModel challengeModel;
     private Container mainContainer;
-    private JTextField textname;
     private JPanel jpanel;
     private JPanel jpanelcenter;
-    private JPanel jpanelWest;
-    private JPanel jpaneleast;
-    private JPanel jpanelsouth ;
-    private JButton play = null;
-    private JButton change = null;
-    private JButton score = null;
-    private JButton exit = null;
-    private String Simbolos [] = {"Novo","User1","User2","User3","Novo Utilizador"}; 
+    private final JButton play = new JButton("Jogar");
+    private final JButton score = new JButton("Pontuacoes");
+    private final JButton exit = new JButton("Sair");
+    private final String[] simbolos = {"Novo perfil..."};
     private JComboBox jc = null;
-    private JLabel click = null;
-    private String novo = null;
-    private boolean flag = true; 
-   // private JDesktopPane desk = null;
-      
-    
-    public FrameMain(Controller controller) {
-        this(controller, 350, 75, 600, 500);
+    private JLabel click = null;   
+
+    public FrameMain(Controller controller, ChallengeModel challengeModel) {
+        this(controller, challengeModel, 350, 75, 600, 500);
     }
-    
-    public FrameMain(Controller controller, int x, int y, int width, int height) {
-        // Cabeçalho
+
+    private FrameMain(Controller controller, ChallengeModel challengeModel, int x, int y, int width, int height) {
         super("Português do Século XXI");
         this.controller = controller;
-      
+        this.challengeModel = challengeModel;
+
         init();
-        this.registerListeners();
-        validate();
-        
-        
-        setLocation(x,y);
+
+        setLocation(x, y);
         setSize(width, height);
         setVisible(true);
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        // READY
-        controller.notifyObservers();
+
+        // Verify if there's profiles created
+        verifyProfiles();
     }
-   
-    //############ Methods ###################
+
+    /**
+     * Instantiates content panes and register component listeners
+     */
     protected void init() {
         // Init components/panels
         this.mainContainer = getContentPane();
         this.mainContainer.setLayout(new BorderLayout());
         this.mainContainer.validate();
-        
+
         // Layout
         createLayout();
 
-        // Observers
-        this.controller.addObserver(this);// adicionar esta vista ao  controler
-       
         // Listeners
         registerListeners();
+        addJComboBoxListenner();
     }
-    
-    //JPanelNort
-    private void jPanelNorth(){
+
+    protected void createLayout() {
+        this.jPanelNorth();
+        this.jPanelCenter();
+    }
+
+    /**
+     * Method instantiates <b>North</b> components and its characteristics.
+     */
+    private void jPanelNorth() {
         this.jpanel = new JPanel(new FlowLayout());
-        JPanel jp = new JPanel(new GridLayout(3,1));
+        JPanel jp = new JPanel(new GridLayout(3, 1));
         jp.add(new JLabel(" "));
         JLabel jb = new JLabel("   Português");
         jb.setFont(jb.getFont().deriveFont(64f));
-        
+
         jp.add(jb);
-        //
-        //this.jpanel.add(jb);
-        
+
         JLabel jb2 = new JLabel("do Século XXI");
         jb2.setFont(jb2.getFont().deriveFont(64f));
         jp.add(jb2);
-        //
+
         this.jpanel.add(jp);
-        //this.jpanel.setBorder(BorderFactory.createLineBorder(Color.ORANGE, WIDTH));
-        //add Atributos
-        this.mainContainer.add(this.jpanel,BorderLayout.NORTH);
-    } 
-    
-    //JPanelCenter
-    private void jPanelCenter(){
-        this.jpanelcenter = new JPanel(new GridLayout(10,1));
-        //this.jpanelcenter.setBorder(BorderFactory.createLineBorder(Color.RED, WIDTH));
-        // this.textname = new JTextField("Perfil do utilizador");
-        
-        this.jc = new JComboBox(this.Simbolos);
-        JPanel jp = new JPanel(new GridLayout(1,6));
+        this.mainContainer.add(this.jpanel, BorderLayout.NORTH);
+    }
+
+    /**
+     * Method instantiates <b>Center</b> components and its characteristics.
+     */
+    private void jPanelCenter() {
+        //this.jpanelcenter = new JPanel(new GridLayout(10, 1));
+        jpanelcenter = new JPanel(new FlowLayout());
+        this.jpanelcenter.setAlignmentX(CENTER_ALIGNMENT);
+
+        this.jc = new JComboBox(this.simbolos);
+
+        JPanel jp = new JPanel(new GridLayout(1, 6));
         jp.add(new JLabel(" "));
-        jp.add(new JLabel("Perfil do utilizador"));
+        jp.add(new JLabel("Perfil do utilizador:"));
         jp.add(this.jc);
-        
-       
-        
-        this.click = new JLabel("Editar");
-        this.click.setBackground(Color.RED);
-        this.click.addMouseListener(new MouseListener() {
+
+        this.click = new JLabel("<HTML><U>Editar</U></HTML>");
+        this.click.setForeground(Color.BLUE);
+        this.click.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        this.click.addMouseListener(new MouseAdapter() {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                dialogProfile();
+                dialogEditProfile();
             }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-               // dialogProfile();
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-            
-            
-            
-            
         });
-        
+
         jp.add(this.click);
         this.jpanelcenter.add(jp);
-       
+
         this.jpanelcenter.add(new JLabel(" "));
-        JPanel jp1 = new JPanel(new GridLayout(1,6));
-        jp1.add(new JLabel(" "));
-        jp1.add(new JLabel(" "));
-        this.play  = new JButton("Jogar");
-        jp1.add(this.play,BorderLayout.CENTER);
-        jp1.add(new JLabel(" "));
-        jp1.add(new JLabel(" "));
+
+        Box buttonsBox = Box.createVerticalBox();
+        buttonsBox.setMinimumSize(new Dimension(400, 0));
+        buttonsBox.add(Box.createVerticalStrut(30));
         
-        this.jpanelcenter.add(jp1);
+        play.setMaximumSize(new Dimension(400, Integer.MAX_VALUE));
+        buttonsBox.add(play);
+        buttonsBox.add(Box.createVerticalStrut(10));
         
-        JPanel jp2 = new JPanel(new GridLayout(1,6));
-        jp2.add(new JLabel(" "));
-        jp2.add(new JLabel(" "));
-        this.score  = new JButton("Pontuacoes");
-        jp2.add(this.score,BorderLayout.CENTER);
-        jp2.add(new JLabel(" "));
-        jp2.add(new JLabel(" "));
+        score.setMaximumSize(new Dimension(400, Integer.MAX_VALUE));
+        buttonsBox.add(score);
+        buttonsBox.add(Box.createVerticalStrut(10));
         
-        this.jpanelcenter.add(new JLabel(" "));
-        this.jpanelcenter.add(jp2);
-        
-        JPanel jp3 = new JPanel(new GridLayout(1,6));
-        jp3.add(new JLabel(" "));
-        jp3.add(new JLabel(" "));
-        this.exit  = new JButton("Sair");
-        jp3.add(this.exit,BorderLayout.CENTER);
-        jp3.add(new JLabel(" "));
-        jp3.add(new JLabel(" "));
-        
-        this.jpanelcenter.add(new JLabel(" "));
-        this.jpanelcenter.add(jp3);
-       
-        //centro
-        this.mainContainer.add(this.jpanelcenter,BorderLayout.CENTER);
-    } 
-    
-    protected void createLayout(){
-        //
-        this.jPanelNorth();
-        this.jPanelCenter();
-        this.jPanelSouth();
-        this.jPanelWest();
-        this.jPanelEast();
-    }
-    
-    //JPanelSouth
-    private void jPanelSouth(){
-        //south
-        this.jpanelsouth = new JPanel(new FlowLayout());
-         this.mainContainer.add(this.jpanelsouth,BorderLayout.SOUTH);
-    }
-    
-    //JPanelWest
-    private void jPanelWest(){
-        //weast 
-        this.jpanelWest = new JPanel(new FlowLayout());
-        this.mainContainer.add(this.jpanelWest,BorderLayout.WEST);
+        exit.setMaximumSize(new Dimension(400, Integer.MAX_VALUE));
+        buttonsBox.add(exit);
+
+        jpanelcenter.add(buttonsBox);
+
+        this.mainContainer.add(this.jpanelcenter, BorderLayout.CENTER);
     }
 
-    //JPanelEast
-    private void jPanelEast(){
-         //East
-        this.jpaneleast = new JPanel(new FlowLayout());
-        this.mainContainer.add(this.jpaneleast,BorderLayout.EAST);
-    }
-    
-    
+    /**
+     * Static listeners.
+     */
     private void registerListeners() {
-        //Exit
+        play.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                challengeModel.setChallenge(new Challenge(controller.getProfileOf((String)jc.getSelectedItem())));
+                challengeModel.newGame();
+            }
+        });
+        
+        
+
+        //Exit Button
         this.exit.addActionListener(new ActionListener() {
 
             @Override
@@ -236,73 +184,147 @@ public class FrameMain extends JFrame implements Observer {
                 System.exit(0);
             }
         });
-       
-//        this.jc.addActListener(new ActionListener() {
-//
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                if(e.getActionCommand()== ActionEvent. ){
-//                if(jc.getSelectedIndex()== jc.getItemCount()-1){
-//                    ddddd();
-//                }
-//            }
-//        });
+    }
 
-        //TODO - Ricardo esta a duplicar duas vezes esta acc
+    /**
+     * Dynamic listener. Dynamic because the list used on the combo box may
+     * change, and the listener has to be updated accordingly.
+     */
+    private void addJComboBoxListenner() {
         this.jc.addItemListener(new ItemListener() {
 
             @Override
             public void itemStateChanged(ItemEvent e) {
-                if (e.getStateChange() == 1 && ( (( String )e.getItem()).equals("Novo Utilizador"))){
-                     if(jc.getSelectedIndex()== jc.getItemCount()-1){
-                        ddddd();
-                     }
+                // Ignore ItemEvent.DESELECTED event
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    if (((String) e.getItem()).equals("Novo perfil...")) {
+                        // Create new profile option.
+                        if (jc.getSelectedIndex() == jc.getItemCount() - 1) {
+                            createProfileDialog();
+                        }
+                    }
                 }
             }
         });
-}
-    
-    private void ddddd(){
-     
-        JPanel jp = new JPanel(new GridLayout(2,2));
-        System.out.println(novo);
-                  
+    }
+
+    /**
+     * Verifies if there are any profile on database. If not then show
+     * dialogProfile(). Also populates profile combo box. So it can be used to
+     * update combo box and its listener.
+     */
+    private void verifyProfiles() {
+        if (controller.getPlayers().size() > 0) {
+            jc.removeAllItems();
+            for (String aux : controller.getPlayersAsStrings()) {
+                jc.addItem(aux);
+            }
+            jc.addItem(simbolos[0]);
+            addJComboBoxListenner();
+        } else {
+            createProfileDialog();
+        }
+    }
+
+    /**
+     * Launches Edit Profile Dialog, according to FR-3 (SRS Document)
+     */
+    private void createProfileDialog() {
+        JPanel jp = new JPanel(new GridLayout(2, 2));
 
         jp.add(new JLabel("Nome"));
 
-        JTextField tx = new JTextField();
-        jp.add(tx); 
-        String options[] = {"Cancelar","Gravar"};
-        int value = JOptionPane.showOptionDialog(null, jp, "Novo Perfil de Utilizador", JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options , options[0]);  
+        final JTextField tx = new JTextField();
+        tx.addMouseListener(new MouseAdapter() {
 
-        if(value == 0){// ok
-            //System.exit(0);
-        }
-        else{//cancel
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                tx.setText("");
+                tx.setForeground(Color.BLACK);
+            }
+        });
+        tx.setText("Insira aqui o nome...");
+        tx.setForeground(Color.LIGHT_GRAY);
 
+        jp.add(tx);
+
+        String options[] = {"Cancelar", "Gravar"};
+
+        while (true) {
+            int value = JOptionPane.showOptionDialog(null, jp, "Novo Perfil de Utilizador", JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+
+            // If user presses ok = 1; cancel != 1
+            if (value == 1) {
+                if (tx.getText().equals("")) {
+                    tx.setText("Insira aqui o nome...");
+                    tx.setForeground(Color.RED);
+                    continue;
+                }
+                if (controller.isValidName(tx.getText())) {
+                    controller.insertPlayer(tx.getText());
+                    break;
+                } else {
+                    tx.setForeground(Color.RED);
+                    tx.setText("Nome já existente");
+                }
+            } else {
+                // Cancel
+                break;
+            }
         }
-            
+
+        // Update JComboBox
+        verifyProfiles();
+        // Set selected value to the last inserted profile
+        jc.setSelectedIndex(jc.getItemCount() - 2);
     }
-  
-    //Create Profile
-    private void dialogProfile(){
-        JPanel jp = new JPanel(new GridLayout(2,6));
-        // jp.add(new JLabel(" "));
-        
-        
-        JTextField tx = new JTextField();
-        jp.add(tx); 
+
+    /**
+     * Launches Edit Profile Dialog, according to FR-3 (SRS Document)
+     */
+    private void dialogEditProfile() {
+        // If selected item is simbolos[0] return
+        if (((String) jc.getSelectedItem()).equals(simbolos[0])) {
+            return;
+        }
+
+        JPanel jp = new JPanel(new GridLayout(2, 6));
+
+        // Create textfield with selected profile
+        final JTextField tx = new JTextField((String) jc.getSelectedItem());
+        tx.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                tx.setText("");
+                tx.setForeground(Color.BLACK);
+            }
+        });
+
+        jp.add(tx);
         jp.add(new JLabel(" "));
-        String options[] = {"Cancelar","Apagar","Alterar"};
-        int value = JOptionPane.showOptionDialog(null, jp, "Alteracao de Perfil", JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options , options[0]);  
+        String options[] = {"Cancelar", "Apagar", "Alterar"};
 
+        while (true) {
+            int value = JOptionPane.showOptionDialog(null, jp, "Alteração de Perfil", JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+
+            if (value == 0) { // Cancel
+                return;
+            } else if (value == 1) { // Erase
+                controller.deletePlayer(controller.getProfileOf((String) jc.getSelectedItem()));
+                break;
+            } else if (value == 2) { // Edit
+                if (controller.isValidName(tx.getText())) {
+                    controller.updatePlayer(controller.getProfileOf((String) jc.getSelectedItem()), tx.getText());
+                    break;
+                } else {
+                    tx.setForeground(Color.RED);
+                    tx.setText("Nome já existente");
+                }
+            }
+        }
+
+        // Update JComboBox
+        verifyProfiles();
     }
-    
-    @Override
-    public void update(Observable t, Object o) {
-       
-    }
-    
-   
-   //############ Methods ###################
 }

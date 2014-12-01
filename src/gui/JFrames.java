@@ -1,32 +1,56 @@
 package gui;
 
+import java.util.Observable;
+import java.util.Observer;
+import logic.Challenge;
+import logic.ChallengeModel;
+import logic.database.Controller;
+import states.WaitConfiguration;
+
 /**
+ * JFrames class.
+ * Is intended that all JFrames are initiated, but only the desired ones are
+ * shown.
+ * 
+ * Default visible JFrame is FrameMain.
  * 
  * @author PTXXI
  */
-public class JFrames {
-    //Attributes
-    private Controller controller = null;
-    private FrameMain framemain   = null;
-    private JframeChoosingWindow ChoosingWindow = null;
+public class JFrames implements Observer {
+    private final Controller controller;
+    private final ChallengeModel challengeModel;
+    private final FrameMain frameMain;
+    private final JFrameChoosingWindow choosingWindow;
+    private final JFrameScoreWindow scoreWindow;
     
-    
-    
-    // ########### Builder ###################
+    /**
+     * Constructor.
+     * Creates the only Controller and ChalengeModel instance.
+     * Also creates every JFrame.
+     */
     public JFrames(){
         this.controller = new Controller();
-    }
-    // ########### Builder ###################
-    
-    //############ Methods ###################
-    public void createFrames(){
-        this.framemain = new FrameMain(this.controller);
-        this.ChoosingWindow = new JframeChoosingWindow(this.controller);
         
+        this.challengeModel = new ChallengeModel(new Challenge(null));
+        this.challengeModel.addObserver(this);
+        
+        this.frameMain = new FrameMain(this.controller, this.challengeModel);
+        
+        this.choosingWindow = new JFrameChoosingWindow(this.controller, this.challengeModel);
+        this.choosingWindow.setVisible(false);
+        
+        this.scoreWindow = new JFrameScoreWindow(this.controller, this.challengeModel);
+        this.scoreWindow.setVisible(false);
     }
-    
-    
-    
-    
-    //############ Methods ###################
+
+    @Override
+    public void update(Observable o, Object o1) {
+        if (challengeModel.getChallenge() == null) {
+            frameMain.setVisible(true);
+            choosingWindow.setVisible(false);
+        } else if (challengeModel.getChallenge().getCurrentState() instanceof WaitConfiguration) {
+            frameMain.setVisible(false);
+            choosingWindow.setVisible(true);
+        }
+    }
 }

@@ -8,7 +8,6 @@ public class main {
     public static void main(String[] args) {
         // Entrance window
         JFrames main = new JFrames();
-        main.createFrames();
     }
     
 }

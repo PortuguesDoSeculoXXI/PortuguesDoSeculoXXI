@@ -4,6 +4,7 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Observable;
 import states.IState;
+import states.WaitConfiguration;
 
 /**
  * Challenge.
@@ -41,7 +42,7 @@ public class Challenge extends Observable implements ChallengeInterface {
     /**
      * All possible categories and the random mode.
      */
-    public enum Categories { 
+    public static enum Categories { 
         CONSOANTS, 
         GRAPHIC_ACCENTS, 
         HYPHEN, 
@@ -68,6 +69,7 @@ public class Challenge extends Observable implements ChallengeInterface {
      */
     public Challenge(Player currentProfile) {
         this.currentProfile = currentProfile;
+        this.currentState = new WaitConfiguration(this);
     }
 
     
@@ -145,26 +147,26 @@ public class Challenge extends Observable implements ChallengeInterface {
     
     @Override
     public void newGame() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        currentState = currentState.newGame();
     }
 
     @Override
-    public void startGame() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void startGame(Challenge.Categories category, Challenge challengeMode) {
+        currentState = currentState.startGame(Categories.HYPHEN, this);
     }
 
     @Override
     public void nextAnswer(int answer) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        currentState = currentState.nextAnswer(answer);
     }
 
     @Override
     public void quitGame() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        currentState = currentState.quitGame();
     }
 
     @Override
     public void end() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        currentState = currentState.end();
     }
 }

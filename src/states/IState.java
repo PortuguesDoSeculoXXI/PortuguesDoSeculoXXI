@@ -12,9 +12,38 @@ import logic.Challenge;
  * @author danilo
  */
 public interface IState {
+    /**
+     * Start a new challenge.
+     * @return WaitConfiguration
+     */
     public IState newGame();
+    
+    /**
+     * After challenge configurations are set, to start game use this method.
+     * @param category Enumeration with selected category.
+     * @param challengeMode this may be ChallengeEasy or ChallengeHard.
+     * @return WaitAnswer if configurations are correct. Returns <b>this</b> if there's invalid configurations.
+     */
     public IState startGame(Challenge.Categories category, Challenge challengeMode);
+    
+    /**
+     * If user wants to quit challenge this method should be called.
+     * No data is saved if this method is called.
+     * @return WaitConfiguration
+     */
     public IState quitGame();
+    
+    /**
+     * Move to next answer.
+     * @param answer Represents the answer chosen by the user.
+     * @return <b>this</b> if challenge isn't over. WaitScore if challenge is over.
+     */
     public IState nextAnswer(int answer);
+    
+    /**
+     * This action represents the end of a challenge by answering all questions.
+     * Challenge data is stored.
+     * @return WaitScore
+     */
     public IState end();
 }

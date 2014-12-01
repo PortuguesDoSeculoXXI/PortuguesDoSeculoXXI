@@ -8,7 +8,7 @@ package logic;
  */
 public interface ChallengeInterface {
     public void newGame();
-    public void startGame();
+    public void startGame(Challenge.Categories category, Challenge challengeMode);
     public void nextAnswer(int answer);
     public void quitGame();
     public void end();
