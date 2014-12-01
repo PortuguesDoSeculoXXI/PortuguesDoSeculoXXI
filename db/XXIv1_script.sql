@@ -31,15 +31,21 @@ create table CHALLENGESCORES
 (
    ID_CHALLENGE         int not null,
    ID_PLAYER            int,
-   ID_SCORE             int not null,
    DATE                 datetime not null,
    DURATION             time,
    LEVEL                int not null,
    GOLD                 int,
    SILVER               int,
    IRON                 int,
-   primary key (ID_CHALLENGE)
+   primary key (ID_CHALLENGE),
+   CONSTRAINT `fk_ChallengeScore_Player`
+    FOREIGN KEY (`ID_PLAYER`)
+    REFERENCES `PLAYER` (`ID_PLAYER`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
 );
+
+CREATE INDEX IF NOT EXISTS `fk_ChallengeScore_Player_idx` ON `CHALLENGESCORES` (`ID_PLAYER`);
 
 /*==============================================================*/
 /* Table: PLAYER                                                */
@@ -63,8 +69,21 @@ create table QUESTION
    ANSWER_A             varchar(50) not null,
    ANSWER_B             varchar(50) not null,
    RIGHT_ANSWER         int not null,
-   primary key (ID_QUESTION)
+   primary key (ID_QUESTION),
+   CONSTRAINT `fk_Question_Rule`
+    FOREIGN KEY (`ID_RULE`)
+    REFERENCES `RULE` (`ID_RULE`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+   CONSTRAINT `fk_Question_Category`
+    FOREIGN KEY (`ID_CATEGORY`)
+    REFERENCES `CATEGORY` (`ID_CATEGORY`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
 );
+
+CREATE INDEX IF NOT EXISTS `fk_Question_Rule_idx` ON `QUESTION` (`ID_RULE`);
+CREATE INDEX IF NOT EXISTS `fk_Question_Category_idx` ON `QUESTION` (`ID_CATEGORY`);
 
 /*==============================================================*/
 /* Table: RULE                                                  */

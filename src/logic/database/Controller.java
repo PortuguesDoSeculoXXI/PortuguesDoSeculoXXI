@@ -118,8 +118,10 @@ public class Controller extends Observable {
      * @param player
      * @param newName 
      */
-    public void updatePlayer(Player player, String newName) {
-        dataController.updatePlayer(player.getId(), newName);
+    public boolean updatePlayer(Player player, String newName) {
+        boolean result = dataController.updatePlayer(player.getId(), newName);
+        players = dataController.getAllPlayers();
+        return result;
     }
     
     /**

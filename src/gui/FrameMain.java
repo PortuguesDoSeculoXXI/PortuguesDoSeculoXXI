@@ -255,7 +255,7 @@ public final class FrameMain extends JFrame {
 
             // If user presses ok = 1; cancel != 1
             if (value == 1) {
-                if (tx.getText().equals("")) {
+                if (tx.getText().equals("") || tx.getText().equals("Insira aqui o nome...")) {
                     tx.setText("Insira aqui o nome...");
                     tx.setForeground(Color.RED);
                     continue;

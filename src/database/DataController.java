@@ -93,7 +93,6 @@ public class DataController {
             SQLBuilder builder = new SQLBuilder();
             builder.addTable("player");           
             
-            System.out.println("Query: "+builder.getSelectQuery());
             ResultSet rs = st.executeQuery(builder.getSelectQuery());
             while (rs.next()) {
                 // Read the result set
@@ -126,7 +125,6 @@ public class DataController {
             SQLBuilder builder = new SQLBuilder();
             builder.addTable("challenge").selectField("ID_SCORE").whereField("ID_PLAYER", Integer.toString(idPlayer));           
             
-            System.out.println("Query: "+builder.getSelectQuery());
             ResultSet rs = st.executeQuery(builder.getSelectQuery());
             
             while (rs.next()) {
@@ -155,16 +153,12 @@ public class DataController {
             Statement st = connection.createStatement();
             st.setQueryTimeout(30);  // set timeout to 30 sec.
             
-            // Test
             SQLBuilder builder = new SQLBuilder();
             builder.addTable("category").selectField("*");            
             
-            System.out.println("Query: "+builder.getSelectQuery());
             ResultSet rs = st.executeQuery(builder.getSelectQuery());
             while (rs.next()) {
                 // Read the result set
-                //System.out.println("id = " + rs.getInt("ID_CATEGORY"));
-                //System.out.println("name = " + rs.getString("CATEGORY_NAME"));
                 categories.add(new Category(rs.getInt("ID_CATEGORY"), rs.getString("CATEGORY_NAME")));
             }  
         } catch(SQLException e) {
@@ -253,7 +247,6 @@ public class DataController {
                 .addField("name", name, SQLBuilder.DataType.asText)
                 .addField("id_player", Integer.toString(nextId), SQLBuilder.DataType.asNum);
             
-            System.out.println("Query: "+builder.getInsertQuery());
             st.execute(builder.getInsertQuery());
         } catch(SQLException e) {
             System.err.println(e.getMessage());
@@ -268,19 +261,27 @@ public class DataController {
      *
      * @param idPlayer Player identification.
      * @param newName New name.
+     * @return true-successfully inserted, false-already exists.
      */
-    public void updatePlayer(int idPlayer, String newName) {
+    public Boolean updatePlayer(int idPlayer, String newName) {
         connect();
         try {
             Statement st = connection.createStatement();
             st.setQueryTimeout(30); //set timeout to 30 sec.
 
-
+            // Se não existir, sai fora
+            if (!existRecord("player", "id_player", Integer.toString(idPlayer))) {
+                return false;
+            }
+            
+            st.execute("update player set name='"+newName+"' where id_player="+idPlayer);
         } catch(SQLException e) {
             System.err.println(e.getMessage());
+            return false;
         } finally {
             disconnect();
         }
+        return true;
     }
     
     /**
