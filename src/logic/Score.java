@@ -72,4 +72,12 @@ public class Score {
     public void setBronze(int bronze) {
         this.bronze = bronze;
     }
+
+    public int getIdPlayer() {
+        return idPlayer;
+    }
+
+    public int getScore() {
+        return score;
+    }
 }
