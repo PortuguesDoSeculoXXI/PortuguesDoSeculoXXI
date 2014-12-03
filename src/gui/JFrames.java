@@ -30,7 +30,7 @@ public class JFrames implements Observer {
      * Creates the only Controller and ChalengeModel instance.
      * Also creates every JFrame.
      */
-    
+     
     public JFrames(){
         this.controller = new Controller();
         
@@ -65,6 +65,7 @@ public class JFrames implements Observer {
             frameMain.setVisible(false);
             choosingWindow.setVisible(false);
             gameMode.setVisible(true);
+          
         } 
     }
 }

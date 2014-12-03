@@ -24,6 +24,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import logic.Challenge;
 import logic.ChallengeModel;
 import logic.database.Controller;
 import states.WaitConfiguration;
@@ -31,7 +32,7 @@ import states.WaitConfiguration;
 /**
  *
  * @author PTXXI
- */
+ */ 
 
 public final class JFrameChoosingWindow extends JFrame implements Observer {
 
@@ -60,6 +61,7 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
     public JFrameChoosingWindow(Controller controller, ChallengeModel challengeModel) {
         this(controller, challengeModel, 350, 75, 600, 550);
     }
+    
 
     public JFrameChoosingWindow(Controller controller, ChallengeModel challengeModel, int x, int y, int width, int height) {
         super("Português do Século XXI");
@@ -214,7 +216,7 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
         //this.mainContainer.add(this.jpanelWest, BorderLayout.EAST);
     }
 
-    private void registerListeners() {
+    private void registerListeners(){
         changeCurrentProfile.addMouseListener(new MouseAdapter() {
 
             @Override
@@ -222,6 +224,17 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
                 dialogProfile();
             }
         });
+        
+        this.jogar.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                challengeModel.setChallenge(new Challenge(controller.getProfileOf((String)jc.getSelectedItem())));
+                challengeModel.newGame();
+            }
+        });
+        
+        
     }
 
     //Create Profile
@@ -256,5 +269,5 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
                 currentProfile.setText("<HTML><B>" + challengeModel.getCurrentPlayer().getName() + "</B></HTML>");
             }
         }
-    }
+    }    
 }
