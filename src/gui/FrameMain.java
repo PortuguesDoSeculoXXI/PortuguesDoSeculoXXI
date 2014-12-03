@@ -39,6 +39,7 @@ public final class FrameMain extends JFrame {
     private Container mainContainer;
     private JPanel jpanel;
     private JPanel jpanelcenter;
+     private JPanel jpanelsout;
     private final JButton play = new JButton("Jogar");
     private final JButton score = new JButton("Pontuacoes");
     private final JButton exit = new JButton("Sair");
@@ -114,7 +115,7 @@ public final class FrameMain extends JFrame {
      */
     private void jPanelCenter() {
         //this.jpanelcenter = new JPanel(new GridLayout(10, 1));
-        jpanelcenter = new JPanel(new FlowLayout());
+        jpanelcenter = new JPanel(new BorderLayout());
         this.jpanelcenter.setAlignmentX(CENTER_ALIGNMENT);
 
         this.jc = new JComboBox(this.simbolos);
@@ -136,27 +137,31 @@ public final class FrameMain extends JFrame {
         });
 
         jp.add(this.click);
-        this.jpanelcenter.add(jp);
+        this.jpanelcenter.add(jp,BorderLayout.NORTH);
 
         this.jpanelcenter.add(new JLabel(" "));
 
         Box buttonsBox = Box.createVerticalBox();
-        buttonsBox.setMinimumSize(new Dimension(100, 0));
-        buttonsBox.add(Box.createVerticalStrut(30));
+        //buttonsBox.setMinimumSize(new Dimension(50, 0));
+        buttonsBox.add(Box.createVerticalStrut(25));
         
-        play.setMaximumSize(new Dimension(200, Integer.MAX_VALUE));
+        play.setMaximumSize(new Dimension(140, Integer.MAX_VALUE));
+        play.setAlignmentX(CENTER_ALIGNMENT);
         buttonsBox.add(play);
-        buttonsBox.add(Box.createVerticalStrut(10));
+        buttonsBox.add(Box.createVerticalStrut(25));
         
-        score.setMaximumSize(new Dimension(200, Integer.MAX_VALUE));
+        score.setMaximumSize(new Dimension(140, Integer.MAX_VALUE));
+        score.setAlignmentX(CENTER_ALIGNMENT);
         buttonsBox.add(score);
-        buttonsBox.add(Box.createVerticalStrut(10));
+        buttonsBox.add(Box.createVerticalStrut(25));
         
-        exit.setMaximumSize(new Dimension(200, Integer.MAX_VALUE));
+        exit.setMaximumSize(new Dimension(140, Integer.MAX_VALUE));
+        exit.setAlignmentX(CENTER_ALIGNMENT);
         buttonsBox.add(exit);
 
         jpanelcenter.add(buttonsBox);
-
+        this.jpanelsout = new JPanel(new FlowLayout());
+        this.mainContainer.add(this.jpanelsout, BorderLayout.SOUTH);
         this.mainContainer.add(this.jpanelcenter, BorderLayout.CENTER);
     }
 
@@ -170,6 +175,7 @@ public final class FrameMain extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 challengeModel.setChallenge(new Challenge(controller.getProfileOf((String)jc.getSelectedItem())));
                 challengeModel.newGame();
+                
             }
         });
         
