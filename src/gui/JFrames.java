@@ -5,6 +5,7 @@ import java.util.Observer;
 import logic.Challenge;
 import logic.ChallengeModel;
 import logic.database.Controller;
+import states.WaitAnswer;
 import states.WaitConfiguration;
 
 /**
@@ -22,12 +23,14 @@ public class JFrames implements Observer {
     private final FrameMain frameMain;
     private final JFrameChoosingWindow choosingWindow;
     private final JFrameScoreWindow scoreWindow;
+    private final JFrameGameMode gameMode;
     
     /**
      * Constructor.
      * Creates the only Controller and ChalengeModel instance.
      * Also creates every JFrame.
      */
+    
     public JFrames(){
         this.controller = new Controller();
         
@@ -39,6 +42,11 @@ public class JFrames implements Observer {
         this.choosingWindow = new JFrameChoosingWindow(this.controller, this.challengeModel);
         this.choosingWindow.setVisible(false);
         
+        this.gameMode = new JFrameGameMode(this.controller, this.challengeModel);
+        this.gameMode.setVisible(true);
+        
+        
+        
         this.scoreWindow = new JFrameScoreWindow(this.controller, this.challengeModel);
         this.scoreWindow.setVisible(false);
     }
@@ -48,9 +56,14 @@ public class JFrames implements Observer {
         if (challengeModel.getChallenge() == null) {
             frameMain.setVisible(true);
             choosingWindow.setVisible(false);
-        } else if (challengeModel.getChallenge().getCurrentState() instanceof WaitConfiguration) {
+        }
+        else if (challengeModel.getChallenge().getCurrentState() instanceof WaitConfiguration) {
             frameMain.setVisible(false);
             choosingWindow.setVisible(true);
         }
+        else if(challengeModel.getChallenge().getCurrentState() instanceof WaitAnswer){
+            choosingWindow.setVisible(false);
+            this.gameMode.setVisible(true);
+        } 
     }
 }
