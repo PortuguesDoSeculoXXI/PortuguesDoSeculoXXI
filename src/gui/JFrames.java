@@ -43,9 +43,7 @@ public class JFrames implements Observer {
         this.choosingWindow.setVisible(false);
         
         this.gameMode = new JFrameGameMode(this.controller, this.challengeModel);
-        this.gameMode.setVisible(true);
-        
-        
+        this.gameMode.setVisible(false);
         
         this.scoreWindow = new JFrameScoreWindow(this.controller, this.challengeModel);
         this.scoreWindow.setVisible(false);
@@ -56,12 +54,15 @@ public class JFrames implements Observer {
         if (challengeModel.getChallenge() == null) {
             frameMain.setVisible(true);
             choosingWindow.setVisible(false);
+            gameMode.setVisible(false);
         }
         else if (challengeModel.getChallenge().getCurrentState() instanceof WaitConfiguration) {
             frameMain.setVisible(false);
             choosingWindow.setVisible(true);
+            gameMode.setVisible(false);
         }
         else if(challengeModel.getChallenge().getCurrentState() instanceof WaitAnswer){
+            frameMain.setVisible(false);
             choosingWindow.setVisible(false);
             this.gameMode.setVisible(true);
         } 
