@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.Checkbox;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Cursor;
@@ -21,6 +22,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import logic.ChallengeModel;
 import logic.database.Controller;
@@ -40,18 +42,22 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
     private JPanel jpanelNorth;
     private JPanel jpanelsouth;
     private JPanel jpanelWest;
-    private final JButton consoants = new JButton("Consoantes");
-    private final JButton accents = new JButton("Acentos");
-    private final JButton hyphen = new JButton("Hífen");
-    private final JButton caseSensitive = new JButton("Maiúsculas e Minúsculas");
-    private final JButton random = new JButton("Aleatório");
+    private JPanel jpaneleast;
+    private final Checkbox consoants = new Checkbox("Consoantes");
+    private final Checkbox accents = new Checkbox("Acentos");
+    private final Checkbox hyphen = new Checkbox("Hífen");
+    private final Checkbox caseSensitive = new Checkbox("Maiúsculas e Minúsculas");
+    private final Checkbox random = new Checkbox("Aleatório");
     private final JLabel currentProfile = new JLabel("");
     private final JLabel changeCurrentProfile = new JLabel("Mudar");
     private final String symbols[] = {"Fácil (Sem tempo)", " Difícil (Com tempo)"};
+    private final JButton jogar = new JButton("Jogar");
+    private final JRadioButton radiofacil = new JRadioButton("Fácil (Sem tempo)");
+    private final JRadioButton radiodificil = new JRadioButton(" Difícil (Com tempo)");
     private JComboBox jc;
 
     public JFrameChoosingWindow(Controller controller, ChallengeModel challengeModel) {
-        this(controller, challengeModel, 350, 75, 600, 500);
+        this(controller, challengeModel, 350, 75, 600, 550);
     }
 
     public JFrameChoosingWindow(Controller controller, ChallengeModel challengeModel, int x, int y, int width, int height) {
@@ -137,51 +143,42 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
         //horizontalBox.setPreferredSize(new Dimension(600, 400));
         
         horizontalBox.add(new JLabel("Dificuldade: "));
-        horizontalBox.add(jc);
-        
+        horizontalBox.add(this.radiofacil);
+        horizontalBox.add(this.radiodificil);
         verticalBox.add(horizontalBox);
         
         horizontalBox = Box.createHorizontalBox();
         
-        verticalBox.add(Box.createVerticalStrut(30));
+        verticalBox.add(Box.createVerticalStrut(10));
+      
+        consoants.setMaximumSize(new Dimension(160, Integer.MAX_VALUE));
+        verticalBox.add(this.consoants);
+        accents.setMaximumSize(new Dimension(160, Integer.MAX_VALUE));
+        verticalBox.add(this.accents);
         
-        consoants.setMaximumSize(new Dimension(250, Integer.MAX_VALUE));
-        horizontalBox.add(consoants);
-        horizontalBox.add(Box.createHorizontalStrut(50));
-        accents.setMaximumSize(new Dimension(250, Integer.MAX_VALUE));
-        horizontalBox.add(accents);
-        
-        verticalBox.add(horizontalBox);
-        
-        verticalBox.add(Box.createVerticalStrut(30));
-        
-        horizontalBox = Box.createHorizontalBox();
-        
-        hyphen.setMaximumSize(new Dimension(280, Integer.MAX_VALUE));
-        horizontalBox.add(hyphen);
-        horizontalBox.add(Box.createHorizontalStrut(50));
-        caseSensitive.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 9));
-        caseSensitive.setMaximumSize(new Dimension(248, Integer.MAX_VALUE));
-        horizontalBox.add(caseSensitive);
-        
-        verticalBox.add(horizontalBox);
-        
-        verticalBox.add(Box.createVerticalStrut(30));
-        
-        random.setMaximumSize(new Dimension(250, Integer.MAX_VALUE));
-        random.setAlignmentX(CENTER_ALIGNMENT);
+        hyphen.setMaximumSize(new Dimension(160, Integer.MAX_VALUE));
+        verticalBox.add(this.hyphen);
+        caseSensitive.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+        caseSensitive.setMaximumSize(new Dimension(160, Integer.MAX_VALUE));
+
+        verticalBox.add(this.caseSensitive);
+
+        random.setMaximumSize(new Dimension(160, Integer.MAX_VALUE));
+        //random.setAlignmentX(CENTER_ALIGNMENT);
         verticalBox.add(random);
-        
+
         jpanelcenter.add(verticalBox);
-        
+       
         this.mainContainer.add(this.jpanelcenter, BorderLayout.CENTER);
     }
 
     //JPanelSouth
     private void jPanelSouth() {
-        this.jpanelsouth = new JPanel(new FlowLayout(FlowLayout.LEFT));
+      
 
         JLabel backLabel = new JLabel("<HTML><U>Voltar</U><HTML>");
+        JLabel playlabel = new JLabel("<HTML><U>Jogar</U><HTML>");
+        
         backLabel.setForeground(Color.BLUE);
         backLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
@@ -193,8 +190,24 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
             }
         });
 
+        playlabel.setForeground(Color.BLUE);
+        playlabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        
+        playlabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                //play game
+            }
+        
+        });
+        jpanelsouth = new JPanel(new FlowLayout (FlowLayout.LEFT));
         jpanelsouth.add(backLabel);
-        this.mainContainer.add(this.jpanelsouth, BorderLayout.SOUTH);
+        jpanelWest = new JPanel(new BorderLayout());
+        jpanelWest.add(playlabel,BorderLayout.SOUTH);
+        this.jpaneleast = new JPanel(new BorderLayout());
+        jpaneleast.add(backLabel,BorderLayout.SOUTH);
+        this.mainContainer.add(this.jpaneleast, BorderLayout.WEST);
+        this.mainContainer.add(this.jpanelWest, BorderLayout.EAST);
     }
 
     private void registerListeners() {

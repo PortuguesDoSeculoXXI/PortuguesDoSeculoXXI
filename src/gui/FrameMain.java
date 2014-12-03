@@ -47,7 +47,7 @@ public final class FrameMain extends JFrame {
     private JLabel click = null;   
 
     public FrameMain(Controller controller, ChallengeModel challengeModel) {
-        this(controller, challengeModel, 350, 75, 600, 500);
+        this(controller, challengeModel, 350, 75, 700, 500);
     }
 
     private FrameMain(Controller controller, ChallengeModel challengeModel, int x, int y, int width, int height) {
@@ -141,7 +141,7 @@ public final class FrameMain extends JFrame {
         this.jpanelcenter.add(new JLabel(" "));
 
         Box buttonsBox = Box.createVerticalBox();
-        buttonsBox.setMinimumSize(new Dimension(400, 0));
+        buttonsBox.setMinimumSize(new Dimension(100, 0));
         buttonsBox.add(Box.createVerticalStrut(30));
         
         play.setMaximumSize(new Dimension(400, Integer.MAX_VALUE));
