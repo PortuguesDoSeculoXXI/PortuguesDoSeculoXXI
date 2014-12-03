@@ -47,7 +47,7 @@ public final class FrameMain extends JFrame {
     private JLabel click = null;   
 
     public FrameMain(Controller controller, ChallengeModel challengeModel) {
-        this(controller, challengeModel, 350, 75, 700, 500);
+        this(controller, challengeModel, 350, 75, 600, 500);
     }
 
     private FrameMain(Controller controller, ChallengeModel challengeModel, int x, int y, int width, int height) {

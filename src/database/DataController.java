@@ -9,8 +9,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import logic.Category;
+import logic.Level;
 import logic.Player;
 import logic.Question;
+import logic.Score;
 
 /**
  * Data Controller.
@@ -45,9 +47,6 @@ public class DataController {
             System.out.println("Driver don't exist.");
             return;
         }
-        
-        // Teste
-        sampleData();
     }
     
     /**
@@ -86,7 +85,7 @@ public class DataController {
      *
      * @returns List of Players.
      */
-    public List<Player> getAllPlayers(){
+    public List<Player> getAllPlayers() {
         List<Player> players = new ArrayList<>();
         connect();
         try {
@@ -114,8 +113,8 @@ public class DataController {
      *
      * @returns List of Scores.
      */
-    public List<Integer> getScoreByPlayer(int idPlayer) {
-        List<Integer> scoresPlayer= new ArrayList<>();
+    public List<Score> getScoreByPlayer(int idPlayer) {
+        List<Score> scoresPlayer= new ArrayList<>();
         
         connect();
         try {
@@ -123,12 +122,56 @@ public class DataController {
             st.setQueryTimeout(30);  // set timeout to 30 sec.
             
             SQLBuilder builder = new SQLBuilder();
-            builder.addTable("CHALLENGESCORES").whereField("ID_PLAYER", Integer.toString(idPlayer));           
+            builder.addTable("ChallengeScores").whereField("id_player", Integer.toString(idPlayer));
             
             ResultSet rs = st.executeQuery(builder.getSelectQuery());
             
+            Score item;
             while (rs.next()) {
-                scoresPlayer.add(rs.getInt("ID_SCORES"));
+                item = new Score(rs.getInt("id_player"),rs.getInt("score"));
+                item.setDateTime(rs.getTimestamp("date"));
+                item.setDuration(rs.getInt("duration"));
+                item.setLevel(Level.values()[rs.getInt("level")]);
+                item.setGold(rs.getInt("gold"));
+                item.setSilver(rs.getInt("silver"));
+                item.setBronze(rs.getInt("bronze"));
+                scoresPlayer.add(item);
+            }
+        } catch(SQLException e) {
+            // if the error message is "out of memory", 
+            // it probably means no database file is found
+            System.err.println(e.getMessage());
+        } finally {
+            disconnect();
+        }        
+        return scoresPlayer;
+    }
+    
+    /**
+     * Get challenge score by player.
+     *
+     * @returns List of Scores.
+     */
+    public List<Score> getAvgScoreByPlayer(int idPlayer) {
+        List<Score> scoresPlayer= new ArrayList<>();
+        
+        connect();
+        try {
+            Statement st = connection.createStatement();
+            st.setQueryTimeout(30);  // set timeout to 30 sec.
+            
+            ResultSet rs = st.executeQuery("select ID_PLAYER, avg(score) as `score_avg`, date, DURATION, LEVEL, SCORE, GOLD, SILVER, BRONZE from challengescores where id_player = "+Integer.toString(idPlayer));
+            
+            Score item;
+            while (rs.next()) {
+                item = new Score(rs.getInt("id_player"),rs.getInt("score_avg"));
+                item.setDateTime(rs.getTimestamp("date"));
+                item.setDuration(rs.getInt("duration"));
+                item.setLevel(Level.values()[rs.getInt("level")]);
+                item.setGold(rs.getInt("gold"));
+                item.setSilver(rs.getInt("silver"));
+                item.setBronze(rs.getInt("bronze"));
+                scoresPlayer.add(item);
             }
         } catch(SQLException e) {
             // if the error message is "out of memory", 
@@ -308,6 +351,33 @@ public class DataController {
             disconnect();
         }
     }
+    
+    /**
+     * Get the player name.
+     *
+     * @param idPlayer Player identification.
+     * @return Player name
+     */
+    public String getPlayerName(int idPlayer) {
+        String result = "";
+        connect();
+        try {
+            Statement st = connection.createStatement();
+            st.setQueryTimeout(30); //set timeout to 30 sec.
+            
+            SQLBuilder builder = new SQLBuilder();
+            builder.addTable("player").whereField("id_player", Integer.toString(idPlayer));
+            ResultSet rs = st.executeQuery("SELECT * FROM player WHERE id_player = "+Integer.toString(idPlayer));
+            while (rs.next()) {
+                result = rs.getString("name");
+            }
+        } catch(SQLException e) {
+            System.err.println(e.getMessage());
+        } finally {
+            disconnect();
+            return result;
+        }
+    }
             
     /**
      * Get the question clarification.
@@ -340,16 +410,35 @@ public class DataController {
      * Insert the score challenge of a player.
      *
      * @param idPlayer Player identification.
-     * @param idPlayer Score date and time.
-     * @param idPlayer Total duration of challenge.
+     * @param dateTime Score date and time.
+     * @param duration Total duration of challenge.
+     * @param level Game mode.
+     * @param score Score points.
+     * @param gold Gold medal.
+     * @param silver Silver medal.
+     * @param bronze Bronze medal.
+     * @return true-successfully inserted, false-already exists.
      */
     public void insertChallengeScore(int idPlayer, Date dateTime, int duration, 
-            int level, int medals) {
+            Level level, int score, int gold, int silver, int bronze) {
         connect();
         try {
             Statement st = connection.createStatement();
             st.setQueryTimeout(30); //set timeout to 30 sec.
+                        
+            SQLBuilder builder = new SQLBuilder();
+            builder.addTable("ChallengeScores")
+                .addField("id_player", Integer.toString(idPlayer), SQLBuilder.DataType.asNum)
+                .addField("date", Double.toString(dateTime.getTime()), SQLBuilder.DataType.asNum)
+                .addField("duration", Integer.toString(duration), SQLBuilder.DataType.asNum)
+                .addField("level", Integer.toString(level.ordinal()), SQLBuilder.DataType.asNum)
+                .addField("score", Integer.toString(score), SQLBuilder.DataType.asNum)
+                .addField("gold", Integer.toString(gold), SQLBuilder.DataType.asNum)
+                .addField("silver", Integer.toString(silver), SQLBuilder.DataType.asNum)
+                .addField("bronze", Integer.toString(bronze), SQLBuilder.DataType.asNum);
             
+            System.out.println(builder.getInsertQuery());
+            st.execute(builder.getInsertQuery());
         } catch(SQLException e) {
             System.err.println(e.getMessage());
         } finally {
@@ -361,6 +450,7 @@ public class DataController {
      * Get random questions from a category.
      *
      * @param numberOfQuestions Number of questions to retrieve.
+     * @return List of Questions
      */
     public List<Question> getQuestionsByCategory(ArrayList<Integer> categories, int numberOfQuestions) {        
         ArrayList<Question> questions = new ArrayList<>();
@@ -407,6 +497,7 @@ public class DataController {
      * Get random questions from random categories.
      *
      * @param numberOfQuestions Number of questions to retrieve.
+     * @return List of Questions
      */
     public List<Question> getRandomQuestions(int numberOfQuestions) {
         ArrayList<Question> questions = new ArrayList<>();
@@ -437,11 +528,15 @@ public class DataController {
      */
     public void sampleData() {
         System.out.println(getRuleClarification(2));
+                
+        System.out.println(getPlayerName(10));
         
         ArrayList<Integer> list = new ArrayList<Integer>();
         list.add(2);
         list.add(3);
-        System.out.println(getQuestionsByCategory(list,15).size());
+        List<Question> questions = getQuestionsByCategory(list,15);
+        System.out.println(questions.size());
+        System.out.println(questions.get(2).getQuestion());
         
         list = new ArrayList<Integer>();
         list.add(2);
@@ -451,5 +546,16 @@ public class DataController {
         System.out.println(getQuestionsByCategory(list,15).size());
         
         System.out.println(getRandomQuestions(15).size());
+        
+        //insertChallengeScore(2,new Date(),63,Level.MODE_HARD,1292,1,1,0);
+        
+        System.out.println(getScoreByPlayer(1).size());
+        
+        List<Score> scores = getScoreByPlayer(2);
+        System.out.println(scores.get(0).getDateTime());
+                
+        scores = getAvgScoreByPlayer(2);
+        System.out.println(scores.size());
+        System.out.println(scores.get(0).getScore());
     }
 }
