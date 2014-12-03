@@ -144,15 +144,15 @@ public final class FrameMain extends JFrame {
         buttonsBox.setMinimumSize(new Dimension(100, 0));
         buttonsBox.add(Box.createVerticalStrut(30));
         
-        play.setMaximumSize(new Dimension(400, Integer.MAX_VALUE));
+        play.setMaximumSize(new Dimension(200, Integer.MAX_VALUE));
         buttonsBox.add(play);
         buttonsBox.add(Box.createVerticalStrut(10));
         
-        score.setMaximumSize(new Dimension(400, Integer.MAX_VALUE));
+        score.setMaximumSize(new Dimension(200, Integer.MAX_VALUE));
         buttonsBox.add(score);
         buttonsBox.add(Box.createVerticalStrut(10));
         
-        exit.setMaximumSize(new Dimension(400, Integer.MAX_VALUE));
+        exit.setMaximumSize(new Dimension(200, Integer.MAX_VALUE));
         buttonsBox.add(exit);
 
         jpanelcenter.add(buttonsBox);

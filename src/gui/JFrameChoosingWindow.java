@@ -32,6 +32,7 @@ import states.WaitConfiguration;
  *
  * @author PTXXI
  */
+
 public final class JFrameChoosingWindow extends JFrame implements Observer {
 
     private final Controller controller;
@@ -45,7 +46,7 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
     private JPanel jpaneleast;
     private final Checkbox consoants = new Checkbox("Consoantes");
     private final Checkbox accents = new Checkbox("Acentos");
-    private final Checkbox hyphen = new Checkbox("Hífen");
+    private final Checkbox hyphen = new Checkbox("Hífen"); 
     private final Checkbox caseSensitive = new Checkbox("Maiúsculas e Minúsculas");
     private final Checkbox random = new Checkbox("Aleatório");
     private final JLabel currentProfile = new JLabel("");
@@ -55,7 +56,7 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
     private final JRadioButton radiofacil = new JRadioButton("Fácil (Sem tempo)");
     private final JRadioButton radiodificil = new JRadioButton(" Difícil (Com tempo)");
     private JComboBox jc;
-
+ 
     public JFrameChoosingWindow(Controller controller, ChallengeModel challengeModel) {
         this(controller, challengeModel, 350, 75, 600, 550);
     }
@@ -96,7 +97,7 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
         this.jPanelSouth();
     }
 
-    //JPanelNort
+    //JPanelNort 
     private void jPanelNorth() {
         jpanelNorth = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
@@ -166,7 +167,10 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
         random.setMaximumSize(new Dimension(160, Integer.MAX_VALUE));
         //random.setAlignmentX(CENTER_ALIGNMENT);
         verticalBox.add(random);
-
+        verticalBox.add(this.jogar);
+        jogar.setMaximumSize(new Dimension(160, Integer.MAX_VALUE));
+        jogar.setAlignmentX(CENTER_ALIGNMENT);
+        
         jpanelcenter.add(verticalBox);
        
         this.mainContainer.add(this.jpanelcenter, BorderLayout.CENTER);
@@ -207,7 +211,7 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
         this.jpaneleast = new JPanel(new BorderLayout());
         jpaneleast.add(backLabel,BorderLayout.SOUTH);
         this.mainContainer.add(this.jpaneleast, BorderLayout.WEST);
-        this.mainContainer.add(this.jpanelWest, BorderLayout.EAST);
+        //this.mainContainer.add(this.jpanelWest, BorderLayout.EAST);
     }
 
     private void registerListeners() {
