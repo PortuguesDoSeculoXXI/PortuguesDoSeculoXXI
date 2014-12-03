@@ -64,7 +64,7 @@ public class JFrames implements Observer {
         else if(challengeModel.getChallenge().getCurrentState() instanceof WaitAnswer){
             frameMain.setVisible(false);
             choosingWindow.setVisible(false);
-            this.gameMode.setVisible(true);
+            gameMode.setVisible(true);
         } 
     }
 }
