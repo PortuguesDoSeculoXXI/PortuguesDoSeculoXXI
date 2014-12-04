@@ -2,6 +2,7 @@ package logic;
 
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import states.IState;
 import states.WaitConfiguration;
@@ -151,8 +152,8 @@ public class Challenge extends Observable implements ChallengeInterface {
     }
 
     @Override
-    public void startGame(Challenge.Categories category, Challenge challengeMode) {
-        currentState = currentState.startGame(Categories.HYPHEN, this);
+    public void startGame(List<Challenge.Categories> categoryList, Challenge challengeMode) {
+        currentState = currentState.startGame(categoryList, challengeMode);
     }
 
     @Override

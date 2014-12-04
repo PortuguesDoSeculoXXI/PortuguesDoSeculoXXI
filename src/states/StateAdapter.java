@@ -1,5 +1,6 @@
 package states;
 
+import java.util.List;
 import logic.Challenge;
 
 /**
@@ -36,12 +37,12 @@ public abstract class StateAdapter implements IState {
 
     /**
      * After challenge configurations are set, to start game use this method.
-     * @param category Enumeration with selected category.
+     * @param categoryList List of categories.
      * @param challengeMode this may be ChallengeEasy or ChallengeHard.
      * @return WaitAnswer if configurations are correct. Returns <b>this</b> if there's invalid configurations.
      */
     @Override
-    public IState startGame(Challenge.Categories category, Challenge challengeMode) {
+    public IState startGame(List<Challenge.Categories> categoryList, Challenge challengeMode) {
         return this;
     }
 

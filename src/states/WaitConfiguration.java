@@ -1,5 +1,6 @@
 package states;
 
+import java.util.List;
 import logic.Challenge;
 
 /**
@@ -19,9 +20,10 @@ public class WaitConfiguration extends StateAdapter {
     }
 
     @Override
-    public IState startGame(Challenge.Categories category, Challenge challengeMode) {
+    public IState startGame(List<Challenge.Categories> categoryList, Challenge challengeMode) {
+        // RP: rever este ponto!
         // Set challenge mode using polimorphism
-        challenge = challengeMode;
+        //challenge = challengeMode; 
 
         // When game starts set current time in milliseconds
         challenge.setTimer(System.currentTimeMillis());

@@ -1,5 +1,6 @@
 package logic;
 
+import java.util.List;
 import java.util.Observable;
 
 /**
@@ -36,8 +37,8 @@ public class ChallengeModel extends Observable implements ChallengeInterface {
     }
 
     @Override
-    public void startGame(Challenge.Categories category, Challenge challengeMode) {
-        challenge.startGame(category, challengeMode);
+    public void startGame(List<Challenge.Categories> categoryList, Challenge challengeMode) {
+        challenge.startGame(categoryList, challengeMode);
         sendNotification();
     }
 

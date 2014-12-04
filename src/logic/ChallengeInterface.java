@@ -1,5 +1,7 @@
 package logic;
 
+import java.util.List;
+
 /**
  * Challenge Interface.
  * Describes the interface for model classes.
@@ -8,7 +10,7 @@ package logic;
  */
 public interface ChallengeInterface {
     public void newGame();
-    public void startGame(Challenge.Categories category, Challenge challengeMode);
+    public void startGame(List<Challenge.Categories> categoryList, Challenge challengeMode);
     public void nextAnswer(int answer);
     public void quitGame();
     public void end();

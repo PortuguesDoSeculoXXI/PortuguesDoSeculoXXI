@@ -34,12 +34,13 @@ import logic.database.Controller;
  * @author PTXXI
  */
 public final class FrameMain extends JFrame {
+    
     private final Controller controller;
     private final ChallengeModel challengeModel;
     private Container mainContainer;
     private JPanel jpanel;
     private JPanel jpanelcenter;
-     private JPanel jpanelsout;
+    private JPanel jpanelsout;
     private final JButton play = new JButton("Jogar");
     private final JButton score = new JButton("Pontuacoes");
     private final JButton exit = new JButton("Sair");
@@ -47,10 +48,16 @@ public final class FrameMain extends JFrame {
     private JComboBox jc = null;
     private JLabel click = null;   
 
+    /**
+     * Constructor.
+     */
     public FrameMain(Controller controller, ChallengeModel challengeModel) {
         this(controller, challengeModel, 350, 75, 600, 500);
     }
 
+    /**
+     * Constructor.
+     */
     private FrameMain(Controller controller, ChallengeModel challengeModel, int x, int y, int width, int height) {
         super("Português do Século XXI");
         this.controller = controller;
@@ -85,13 +92,16 @@ public final class FrameMain extends JFrame {
         addJComboBoxListenner();
     }
 
+    /**
+     * Create the main layout
+     */
     protected void createLayout() {
         this.jPanelNorth();
         this.jPanelCenter();
     }
 
     /**
-     * Method instantiates <b>North</b> components and its characteristics.
+     * Method instantiates <b>North</b> components and its characteristics
      */
     private void jPanelNorth() {
         this.jpanel = new JPanel(new FlowLayout());
@@ -111,7 +121,7 @@ public final class FrameMain extends JFrame {
     }
 
     /**
-     * Method instantiates <b>Center</b> components and its characteristics.
+     * Method instantiates <b>Center</b> components and its characteristics
      */
     private void jPanelCenter() {
         //this.jpanelcenter = new JPanel(new GridLayout(10, 1));
@@ -166,22 +176,20 @@ public final class FrameMain extends JFrame {
     }
 
     /**
-     * Static listeners.
+     * Static listeners
      */
     private void registerListeners() {
+        // Play button
         play.addMouseListener(new MouseAdapter() {
 
             @Override
             public void mouseClicked(MouseEvent e) {
                 challengeModel.setChallenge(new Challenge(controller.getProfileOf((String)jc.getSelectedItem())));
                 challengeModel.newGame();
-                
             }
         });
         
-        
-
-        //Exit Button
+        // Exit Button
         this.exit.addActionListener(new ActionListener() {
 
             @Override
@@ -193,7 +201,8 @@ public final class FrameMain extends JFrame {
     }
 
     /**
-     * Dynamic listener. Dynamic because the list used on the combo box may
+     * Dynamic listener.
+     * Dynamic because the list used on the combo box may
      * change, and the listener has to be updated accordingly.
      */
     private void addJComboBoxListenner() {
@@ -215,9 +224,9 @@ public final class FrameMain extends JFrame {
     }
 
     /**
-     * Verifies if there are any profile on database. If not then show
-     * dialogProfile(). Also populates profile combo box. So it can be used to
-     * update combo box and its listener.
+     * Verifies if there are any profile on database.
+     * If not then show dialogProfile(). Also populates profile combo box. 
+     * So it can be used to update combo box and its listener.
      */
     private void verifyProfiles() {
         if (controller.getPlayers().size() > 0) {

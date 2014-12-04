@@ -30,7 +30,6 @@ public class JFrames implements Observer {
      * Creates the only Controller and ChalengeModel instance.
      * Also creates every JFrame.
      */
-     
     public JFrames(){
         this.controller = new Controller();
         
@@ -49,6 +48,9 @@ public class JFrames implements Observer {
         this.scoreWindow.setVisible(false);
     }
 
+    /**
+     * Updates interface when a notification occurs.
+     */
     @Override
     public void update(Observable o, Object o1) {
         if (challengeModel.getChallenge() == null) {

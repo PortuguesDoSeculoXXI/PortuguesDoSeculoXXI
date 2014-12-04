@@ -11,7 +11,9 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.Box;
@@ -24,6 +26,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import logic.Challenge;
 import logic.ChallengeModel;
 import logic.database.Controller;
 import states.WaitConfiguration;
@@ -37,8 +40,11 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
 
     private final Controller controller;
     private final ChallengeModel challengeModel;
+    
+    /**
+     * UI Components
+     */
     private Container mainContainer;
-    private JTextField textname;
     private JPanel jpanelcenter;
     private JPanel jpanelNorth;
     private JPanel jpanelsouth;
@@ -51,18 +57,21 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
     private final Checkbox random = new Checkbox("Aleatório");
     private final JLabel currentProfile = new JLabel("");
     private final JLabel changeCurrentProfile = new JLabel("Mudar");
-    private final String symbols[] = {"Fácil (Sem tempo)", " Difícil (Com tempo)"};
-    private final JButton play = new JButton("Jogar");
+    private final JButton buttonPlay = new JButton("Jogar");
     private final JRadioButton easy  = new JRadioButton("Fácil (Sem tempo)");
     private final JRadioButton hard = new JRadioButton(" Difícil (Com tempo)");
-    private JComboBox jc;
-    private HashMap<Integer,String> listcategories;
+    private JLabel backLabel;
  
+    /**
+     * Constructor.
+     */
     public JFrameChoosingWindow(Controller controller, ChallengeModel challengeModel) {
         this(controller, challengeModel, 350, 75, 600, 550);
     }
     
-
+    /**
+     * Constructor.
+     */
     public JFrameChoosingWindow(Controller controller, ChallengeModel challengeModel, int x, int y, int width, int height) {
         super("Português do Século XXI");
         this.controller = controller;
@@ -76,6 +85,9 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
+    /**
+     * Initialize the window
+     */
     protected void init() {
         // Init components/panels
         this.mainContainer = getContentPane();
@@ -93,13 +105,18 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
         registerListeners();
     }
 
+    /**
+     * Create the main layout
+     */
     protected void createLayout() {
         this.jPanelNorth();
         this.jPanelCenter();
         this.jPanelSouth();
     }
 
-    //JPanelNort 
+    /**
+     * Panel north configuration
+     */
     private void jPanelNorth() {
         jpanelNorth = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
@@ -132,26 +149,22 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
         this.mainContainer.add(jpanelNorth, BorderLayout.NORTH);
     }
 
-    //JPanelCenter
+    /**
+     * Panel center configuration
+     */
     private void jPanelCenter() {
         jpanelcenter = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        
-        jc = new JComboBox(symbols);
-        jc.setMaximumSize(new Dimension(170, Integer.MAX_VALUE));
-        
+                
         Box verticalBox = Box.createVerticalBox();
         Box horizontalBox = Box.createHorizontalBox();
         
         verticalBox.setPreferredSize(new Dimension(500, 200));
-        //horizontalBox.setPreferredSize(new Dimension(600, 400));
         
         horizontalBox.add(new JLabel("Dificuldade: "));
         horizontalBox.add(this.easy);
         horizontalBox.add(this.hard);
+        
         verticalBox.add(horizontalBox);
-        
-        horizontalBox = Box.createHorizontalBox();
-        
         verticalBox.add(Box.createVerticalStrut(10));
       
         consoants.setMaximumSize(new Dimension(160, Integer.MAX_VALUE));
@@ -167,27 +180,41 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
         verticalBox.add(this.caseSensitive);
 
         random.setMaximumSize(new Dimension(160, Integer.MAX_VALUE));
-        //random.setAlignmentX(CENTER_ALIGNMENT);
+
         verticalBox.add(random);
-        verticalBox.add(this.play);
-        play.setMaximumSize(new Dimension(160, Integer.MAX_VALUE));
-        play.setAlignmentX(CENTER_ALIGNMENT);
+        verticalBox.add(this.buttonPlay);
+        buttonPlay.setMaximumSize(new Dimension(160, Integer.MAX_VALUE));
+        buttonPlay.setAlignmentX(CENTER_ALIGNMENT);
         
         jpanelcenter.add(verticalBox);
        
         this.mainContainer.add(this.jpanelcenter, BorderLayout.CENTER);
     }
 
-    //JPanelSouth
+    /**
+     * Panel south configuration
+     */
     private void jPanelSouth() {
-      
-
-        JLabel backLabel = new JLabel("<HTML><U>Voltar</U><HTML>");
-        JLabel playlabel = new JLabel("<HTML><U>Jogar</U><HTML>");
-        
+        backLabel = new JLabel("<HTML><U>Voltar</U><HTML>");
         backLabel.setForeground(Color.BLUE);
         backLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
+        jpanelsouth = new JPanel(new FlowLayout (FlowLayout.LEFT));
+        jpanelsouth.add(backLabel);
+        
+        jpanelWest = new JPanel(new BorderLayout());
+        
+        this.jpaneleast = new JPanel(new BorderLayout());
+        jpaneleast.add(backLabel,BorderLayout.SOUTH);
+        
+        this.mainContainer.add(this.jpaneleast, BorderLayout.WEST);
+    }
+
+    /**
+     * Register listeners for each component
+     */
+    private void registerListeners() {
+        
         backLabel.addMouseListener(new MouseAdapter() {
 
             @Override
@@ -195,28 +222,7 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
                 challengeModel.backPressed();
             }
         });
-
-        playlabel.setForeground(Color.BLUE);
-        playlabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
         
-        playlabel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                //play game
-            }
-        
-        });
-        jpanelsouth = new JPanel(new FlowLayout (FlowLayout.LEFT));
-        jpanelsouth.add(backLabel);
-        jpanelWest = new JPanel(new BorderLayout());
-        jpanelWest.add(playlabel,BorderLayout.SOUTH);
-        this.jpaneleast = new JPanel(new BorderLayout());
-        jpaneleast.add(backLabel,BorderLayout.SOUTH);
-        this.mainContainer.add(this.jpaneleast, BorderLayout.WEST);
-        //this.mainContainer.add(this.jpanelWest, BorderLayout.EAST);
-    }
-
-    private void registerListeners(){
         changeCurrentProfile.addMouseListener(new MouseAdapter() {
 
             @Override
@@ -225,103 +231,139 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
             }
         });
         
-        this.play.addMouseListener(new MouseAdapter() {
+        buttonPlay.addMouseListener(new MouseAdapter() {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                 if(checkMode()== true){
-                     checkCategories();
-                 }
-                 else{
-                     dialogGameMode();
-                 }
-//                challengeModel.setChallenge(new Challenge(controller.getProfileOf((String)jc.getSelectedItem())));
-//                challengeModel.newGame();
+                // Verifica se algum nível foi seleccionado
+                if (!checkMode()) {
+                    dialogGameMode();
+                    return;
+                }
+                // Verifica se existe pelo menos uma categoria seleccionada
+                if (!checkCategories()) {
+                    dialogGameMode();
+                    return;
+                }
+                
+                List<Challenge.Categories> listCategories = getSelectedCategories();
+                if (listCategories.isEmpty())
+                    return;
+                                
+                challengeModel.setChallenge(new Challenge(challengeModel.getCurrentPlayer()));
+                challengeModel.startGame(listCategories, null /*??!*/);
             }
         });
-        
-        
     }
 
     /**
+     * Verify that you have choosen a game mode
      * 
-     * check categories 
+     * @return true: user selected a mode, false: nothing selected.
      */
-    private void checkCategories(){
-        this.listcategories = new HashMap<Integer,String>();
-
-        if(this.consoants.getState()== true){
-            this.listcategories.put(1,"consoants");
-        }
-        else if(this.accents.getState()== true){
-            this.listcategories.put(2,"accents");
-        }
-        else if(this.hyphen.getState()== true){
-            this.listcategories.put(3,"hyphen");
-        }
-        else if(this.caseSensitive.getState()== true){
-            this.listcategories.put(4,"caseSensitive");
-        }
-        else if(this.random.getState()== true){
-            this.listcategories.put(5,"random");
-        }
-        
-        //Depois aqui pode fazer start game 
-        
-    } 
-    /*
-        verify that you have chosen a game mode
-    */
-    private boolean checkMode(){
-        if(this.easy.isSelected()== true){
-            return true;//easy mode
-        }
-        else if (this.hard.isSelected()== true){
+    private boolean checkMode() {
+        if (this.easy.isSelected() || this.hard.isSelected()) {
             return true;
         }
-        else{
+        else {
             return false;
         }
     } 
     
     /**
-     * choose a game mode
+     * Check categories
+     * 
+     * @return true: user selected at least one category, 
+     *  false: nothing selected.
      */
-    private void dialogGameMode(){
+    private boolean checkCategories() {
+        if (this.consoants.getState()) {
+            return true;
+        } 
+        else if (this.accents.getState()) {
+            return true;
+        } 
+        else if (this.hyphen.getState()) {
+            return true;
+        } 
+        else if (this.caseSensitive.getState()) {
+            return true;
+        } 
+        else if (this.random.getState()) {
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Retrieve selected categories.
+     * 
+     * @return list with categories.
+     */
+    private List<Challenge.Categories> getSelectedCategories() {
+        ArrayList<Challenge.Categories> list = new ArrayList<>();
+        if (this.consoants.getState()) {
+            list.add(Challenge.Categories.CONSOANTS);
+        } 
+        if (this.accents.getState()) {
+            list.add(Challenge.Categories.GRAPHIC_ACCENTS);
+        } 
+        if (this.hyphen.getState()) {
+            list.add(Challenge.Categories.HYPHEN);
+        } 
+        if (this.caseSensitive.getState()) {
+            list.add(Challenge.Categories.UPPERCASE_AND_LOWERCASE);
+        } 
+        if (this.random.getState()) {
+            list.add(Challenge.Categories.CONSOANTS);
+            list.add(Challenge.Categories.GRAPHIC_ACCENTS);
+            list.add(Challenge.Categories.HYPHEN);
+            list.add(Challenge.Categories.UPPERCASE_AND_LOWERCASE);
+        }
+        return list;
+    }
+    
+    /**
+     * Choose a game mode
+     */
+    private void dialogGameMode() {
         JPanel jp = new JPanel(new GridLayout(2, 6));
-        // jp.add(new JLabel(" "));
-        jp.add(new JLabel("Atencao tem que escolher um modo de jogo"));
+        jp.add(new JLabel("Por favor, escolha um modo de jogo."));
 
         String options[] = {"Continuar"};
         int value = JOptionPane.showOptionDialog(null, jp, "", JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-
     }
    
-    //Create Profile
+    /**
+     * Shows profiles
+     */
     private void dialogProfile() {
         JPanel jp = new JPanel(new GridLayout(2, 6));
-        // jp.add(new JLabel(" "));
         jp.add(new JLabel("Escolha de perfil:"));
 
-        JComboBox jc2 = new JComboBox();
+        JComboBox profilesList = new JComboBox();
         
-        jc2.removeAllItems();
+        profilesList.removeAllItems();
         for (String aux : controller.getPlayersAsStrings()) {
-            jc2.addItem(aux);
+            profilesList.addItem(aux);
         }
         
-        jc2.setSelectedItem(challengeModel.getCurrentPlayer().getName());
+        profilesList.setSelectedItem(challengeModel.getCurrentPlayer().getName());
         
-        jp.add(jc2);
+        jp.add(profilesList);
         
         String options[] = {"Cancelar", "Alterar"};
-        int value = JOptionPane.showOptionDialog(null, jp, "ALteracao de Perfil", JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+        int value = JOptionPane.showOptionDialog(null, jp, "Alteração de Perfil", JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 
-        if (value == 1) { // Change Current Profile
-            challengeModel.setCurrentProfile(controller.getProfileOf((String)jc2.getSelectedItem()));
+        // Change Current Profile
+        if (value == 1) {
+            challengeModel.setCurrentProfile(controller.getProfileOf((String) profilesList.getSelectedItem()));
         }
     }
 
+    /**
+     * Update state machine when a notification occurs
+     */
     @Override
     public void update(Observable t, Object o) {
         if (challengeModel.getChallenge() != null) {
