@@ -154,40 +154,45 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
      */
     private void jPanelCenter() {
         jpanelcenter = new JPanel(new FlowLayout(FlowLayout.CENTER));
-                
+
         Box verticalBox = Box.createVerticalBox();
         Box horizontalBox = Box.createHorizontalBox();
-        
+
         verticalBox.setPreferredSize(new Dimension(500, 200));
-        
+
         horizontalBox.add(new JLabel("Dificuldade: "));
         horizontalBox.add(this.easy);
         horizontalBox.add(this.hard);
-        
+
         verticalBox.add(horizontalBox);
         verticalBox.add(Box.createVerticalStrut(10));
-      
+
         consoants.setMaximumSize(new Dimension(160, Integer.MAX_VALUE));
+        consoants.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
         verticalBox.add(this.consoants);
+
         accents.setMaximumSize(new Dimension(160, Integer.MAX_VALUE));
+        accents.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
         verticalBox.add(this.accents);
-        
+
         hyphen.setMaximumSize(new Dimension(160, Integer.MAX_VALUE));
+        hyphen.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
         verticalBox.add(this.hyphen);
+        
         caseSensitive.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
         caseSensitive.setMaximumSize(new Dimension(160, Integer.MAX_VALUE));
 
         verticalBox.add(this.caseSensitive);
 
         random.setMaximumSize(new Dimension(160, Integer.MAX_VALUE));
-
+        random.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
         verticalBox.add(random);
         verticalBox.add(this.buttonPlay);
         buttonPlay.setMaximumSize(new Dimension(160, Integer.MAX_VALUE));
         buttonPlay.setAlignmentX(CENTER_ALIGNMENT);
-        
+
         jpanelcenter.add(verticalBox);
-       
+
         this.mainContainer.add(this.jpanelcenter, BorderLayout.CENTER);
     }
 
@@ -222,7 +227,7 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
                 challengeModel.backPressed();
             }
         });
-        
+
         changeCurrentProfile.addMouseListener(new MouseAdapter() {
 
             @Override
@@ -230,7 +235,7 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
                 dialogProfile();
             }
         });
-        
+
         buttonPlay.addMouseListener(new MouseAdapter() {
 
             @Override
@@ -245,17 +250,148 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
                     dialogGameMode();
                     return;
                 }
-                
+
                 List<Challenge.Categories> listCategories = getSelectedCategories();
-                if (listCategories.isEmpty())
+                if (listCategories.isEmpty()) {
                     return;
-                                
+                }
+
                 challengeModel.setChallenge(new Challenge(challengeModel.getCurrentPlayer()));
                 challengeModel.startGame(listCategories, null /*??!*/);
             }
         });
+
+        this.easy.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                deselectMode(1);
+            }
+            @Override
+            public void mousePressed(MouseEvent e) {
+                deselectMode(1);
+            }
+        });
+
+        this.hard.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                deselectMode(2);
+            }
+           
+            @Override
+            public void mousePressed(MouseEvent e) {
+                deselectMode(2);
+            }
+            
+        });
+
+        this.random.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                changeCategories();
+            }
+            
+            @Override
+            public void mousePressed(MouseEvent e) {
+                changeCategories();
+            }
+
+        });
+
+        this.accents.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                removeRandom();
+            }
+            
+            @Override
+            public void mousePressed(MouseEvent e) {
+                removeRandom();
+            }
+
+        });
+
+        this.consoants.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                removeRandom();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                removeRandom();
+            }
+        });
+
+        this.hyphen.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                removeRandom();
+            }
+            
+            @Override
+            public void mousePressed(MouseEvent e) {
+                removeRandom();
+            }
+
+        });
+
+        this.caseSensitive.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                removeRandom();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                removeRandom();
+            }
+            
+            
+        });
+ 
     }
 
+    
+    /**
+     * verifies that chose a game mode
+     * 
+     * @return void: and deselect the other way
+     */
+    private void deselectMode(int gameMode) {
+        if (gameMode == 1) {
+            this.hard.setSelected(false);
+        }
+        else if( gameMode == 2){
+            this.easy.setSelected(false);
+        }
+    }
+    
+    /**
+     * remove categories
+     * 
+     * return void : to choose random
+     */
+    private void changeCategories() {
+     
+        this.consoants.setState(false);
+
+        this.accents.setState(false);
+
+        this.hyphen.setState(false);
+
+        this.caseSensitive.setState(false);
+     
+    }
+    
+    
     /**
      * Verify that you have choosen a game mode
      * 
@@ -269,6 +405,17 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
             return false;
         }
     } 
+    
+    
+    /**
+     * remove categories
+     * 
+     * return void : to choose != random
+     */
+    
+    private void removeRandom(){
+        this.random.setState(false);
+    }
     
     /**
      * Check categories

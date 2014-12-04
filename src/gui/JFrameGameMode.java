@@ -7,22 +7,22 @@ import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.Box;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import logic.Challenge;
 import logic.ChallengeModel;
 import logic.database.Controller;
-import states.WaitConfiguration;
 
 /**
  *
@@ -131,20 +131,16 @@ public class JFrameGameMode extends JFrame implements Observer{
     
     private void jPanelSouth(){
         this.jpanelsouth = new JPanel(new BorderLayout());
-        
+
         this.giveUp.setText("<HTML><U>Desistir</U></HTML>");
         this.giveUp.setForeground(Color.BLUE);
         this.giveUp.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        
-        this.next.setText("<HTML><U>Proxima pergunta</U></HTML>");
-        this.next.setForeground(Color.BLUE);
-        this.next.setCursor(new Cursor(Cursor.HAND_CURSOR));
-      
-        this.jpanelsouth.add(this.giveUp,BorderLayout.WEST);
-        this.jpanelsouth.add(this.next,BorderLayout.EAST);
+
+        this.jpanelsouth.add(this.giveUp, BorderLayout.WEST);
+
         this.jpanelsouth.setPreferredSize(new Dimension(400, 50));
-        
-       this.mainContainer.add(this.jpanelsouth, BorderLayout.SOUTH);
+
+        this.mainContainer.add(this.jpanelsouth, BorderLayout.SOUTH);
     }
     
     private void registerListeners(){
@@ -155,29 +151,75 @@ public class JFrameGameMode extends JFrame implements Observer{
                 dialogExit();
             }
         });
-        
-        this.next.addMouseListener(new MouseAdapter() {
+
+        this.option1.addMouseListener(new MouseAdapter() {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                dialogNext();
-                scoreResultDialog();
+                verifyQuestion();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                verifyQuestion();
             }
         });
-        
+
+        this.option2.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                verifyQuestion();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                verifyQuestion();
+            }
+        });
+
+        this.option3.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                verifyQuestion();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                verifyQuestion();
+            }
+        });
     }
+    
+    
+    
+    /**
+     * verify that hit the question
+     * 
+     * return void
+     */
+    private void  verifyQuestion(){
+        dialogNext();
+        scoreResultDialog();
+    }
+    
     
     //Create Profile
     private void dialogExit(){
         JPanel jp = new JPanel(new GridLayout(2, 6));
         // jp.add(new JLabel(" "));
         jp.add(new JLabel("Deseja desistir ?"));
-  
+
         String options[] = {"Cancelar", "Confirmar"};
         int value = JOptionPane.showOptionDialog(null, jp, "Desistir", JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 
+        //is ready to give up
+        if (value == 1) {
+
+        }
+        
     }
-    
     
     //Create Profile
     private void dialogNext(){
@@ -191,12 +233,12 @@ public class JFrameGameMode extends JFrame implements Observer{
     
     //Create Profile
     private void scoreResultDialog(){
-         JPanel jp = new JPanel(new GridLayout(2, 6));
+        JPanel jp = new JPanel(new GridLayout(2, 6));
         JLabel jb = new JLabel("Parabens");
         jb.setFont(jb.getFont().deriveFont(42f));
         jp.add(jb);
-  
-        String options[] = {"Sair","Novo Desafio"};
+
+        String options[] = {"Sair", "Novo Desafio"};
         int value = JOptionPane.showOptionDialog(null, jp, "Fim do desafio", JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
     }
  
