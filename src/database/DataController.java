@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import logic.Category;
+import logic.Challenge;
 import logic.Level;
 import logic.Player;
 import logic.Question;
@@ -449,10 +450,11 @@ public class DataController {
     /**
      * Get random questions from a category.
      *
+     * @param categories list of categories.
      * @param numberOfQuestions Number of questions to retrieve.
      * @return List of Questions
      */
-    public List<Question> getQuestionsByCategory(ArrayList<Integer> categories, int numberOfQuestions) {        
+    public List<Question> getQuestionsByCategory(List<Challenge.Categories> categories, int numberOfQuestions) {        
         ArrayList<Question> questions = new ArrayList<>();
         if (categories == null || categories.isEmpty())
             return questions;
@@ -466,15 +468,15 @@ public class DataController {
             
             if (categories.size() == 1) {
                 // Apenas uma categoria
-                builder.addTable("question").whereField("ID_CATEGORY", Integer.toString(categories.get(0)));
+                builder.addTable("question").whereField("ID_CATEGORY", Integer.toString(categories.get(0).ordinal()));
             }
             else {
                 builder.addTable("question");
                 for (int i=0; i<categories.size(); i++) {
-                    builder.whereField("ID_CATEGORY", Integer.toString(categories.get(i)), "OR");
+                    builder.whereField("ID_CATEGORY", Integer.toString(categories.get(i).ordinal()), "OR");
                     // Ultimo
                     if (i == categories.size()-1)
-                        builder.whereField("ID_CATEGORY", Integer.toString(categories.get(i)));
+                        builder.whereField("ID_CATEGORY", Integer.toString(categories.get(i).ordinal()));
                 }
             }
 
@@ -531,18 +533,18 @@ public class DataController {
                 
         System.out.println(getPlayerName(10));
         
-        ArrayList<Integer> list = new ArrayList<Integer>();
-        list.add(2);
-        list.add(3);
+        ArrayList<Challenge.Categories> list = new ArrayList<>();
+        list.add(Challenge.Categories.GRAPHIC_ACCENTS);
+        list.add(Challenge.Categories.HYPHEN);
         List<Question> questions = getQuestionsByCategory(list,15);
         System.out.println(questions.size());
         System.out.println(questions.get(2).getQuestion());
         
-        list = new ArrayList<Integer>();
-        list.add(2);
+        list = new ArrayList<>();
+        list.add(Challenge.Categories.HYPHEN);
         System.out.println(getQuestionsByCategory(list,10).size());
         
-        list = new ArrayList<Integer>();
+        list = new ArrayList<>();
         System.out.println(getQuestionsByCategory(list,15).size());
         
         System.out.println(getRandomQuestions(15).size());

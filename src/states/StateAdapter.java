@@ -2,6 +2,7 @@ package states;
 
 import java.util.List;
 import logic.Challenge;
+import logic.database.Controller;
 
 /**
  * State Adapter.
@@ -20,7 +21,7 @@ public abstract class StateAdapter implements IState {
      * StateAdapter Constructor.
      * StateAdapter should only be created in the context of a state that
      * extends from this class, therefor its constructor being protected.
-     * @param challenge 
+     * @param challenge
      */
     protected StateAdapter(Challenge challenge) {
         this.challenge = challenge;
@@ -38,11 +39,10 @@ public abstract class StateAdapter implements IState {
     /**
      * After challenge configurations are set, to start game use this method.
      * @param categoryList List of categories.
-     * @param challengeMode this may be ChallengeEasy or ChallengeHard.
      * @return WaitAnswer if configurations are correct. Returns <b>this</b> if there's invalid configurations.
      */
     @Override
-    public IState startGame(List<Challenge.Categories> categoryList, Challenge challengeMode) {
+    public IState startGame(List<Challenge.Categories> categoryList) {
         return this;
     }
 

@@ -34,7 +34,7 @@ import org.jfree.data.xy.XYSeriesCollection;
  * 
  * @author PTXXI
  */
-public final class JFrameScoreWindow extends JFrame implements Observer {
+public final class ScoresWindow extends JFrame implements Observer {
     private final Controller controller;
     private final ChallengeModel challengeModel;
     private Container mainContainer;
@@ -52,11 +52,11 @@ public final class JFrameScoreWindow extends JFrame implements Observer {
      * @param controller
      * @param challengeModel 
      */
-    public JFrameScoreWindow(Controller controller, ChallengeModel challengeModel) {
+    public ScoresWindow(Controller controller, ChallengeModel challengeModel) {
         this(controller, challengeModel, 350, 75, 600, 550);
     }
     
-    public JFrameScoreWindow(Controller controller, ChallengeModel challengeModel, int x, int y, int width, int height) {
+    public ScoresWindow(Controller controller, ChallengeModel challengeModel, int x, int y, int width, int height) {
         super("Português do Século XXI");
         this.controller = controller;
         this.challengeModel = challengeModel;

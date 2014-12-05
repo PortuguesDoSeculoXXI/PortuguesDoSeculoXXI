@@ -33,7 +33,7 @@ import logic.database.Controller;
  *
  * @author PTXXI
  */
-public final class FrameMain extends JFrame {
+public final class EntranceWindow extends JFrame {
     
     private final Controller controller;
     private final ChallengeModel challengeModel;
@@ -51,14 +51,14 @@ public final class FrameMain extends JFrame {
     /**
      * Constructor.
      */
-    public FrameMain(Controller controller, ChallengeModel challengeModel) {
+    public EntranceWindow(Controller controller, ChallengeModel challengeModel) {
         this(controller, challengeModel, 350, 75, 600, 500);
     }
 
     /**
      * Constructor.
      */
-    private FrameMain(Controller controller, ChallengeModel challengeModel, int x, int y, int width, int height) {
+    private EntranceWindow(Controller controller, ChallengeModel challengeModel, int x, int y, int width, int height) {
         super("Português do Século XXI");
         this.controller = controller;
         this.challengeModel = challengeModel;
@@ -184,9 +184,11 @@ public final class FrameMain extends JFrame {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                challengeModel.setChallenge(new Challenge(controller.getProfileOf((String)jc.getSelectedItem())));
+                Challenge currentChallenge = new Challenge(controller, controller.getProfileOf((String)jc.getSelectedItem()));
+                challengeModel.setChallenge(currentChallenge);
                 challengeModel.newGame();
             }
+            
         });
         
         score.addMouseListener(new MouseAdapter() {
@@ -203,6 +205,7 @@ public final class FrameMain extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 System.exit(0);
             }
+            
         });
     }
 

@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface ChallengeInterface {
     public void newGame();
-    public void startGame(List<Challenge.Categories> categoryList, Challenge challengeMode);
+    public void startGame(List<Challenge.Categories> categoryList);
     public void nextAnswer(int answer);
     public void quitGame();
     public void end();

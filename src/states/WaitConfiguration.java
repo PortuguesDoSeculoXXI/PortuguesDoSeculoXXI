@@ -2,6 +2,7 @@ package states;
 
 import java.util.List;
 import logic.Challenge;
+import logic.Question;
 
 /**
  * Wait Configurations.
@@ -20,16 +21,13 @@ public class WaitConfiguration extends StateAdapter {
     }
 
     @Override
-    public IState startGame(List<Challenge.Categories> categoryList, Challenge challengeMode) {
-        // RP: rever este ponto!
-        // Set challenge mode using polimorphism
-        //challenge = challengeMode; 
-
+    public IState startGame(List<Challenge.Categories> categoryList) {
         // When game starts set current time in milliseconds
         challenge.setTimer(System.currentTimeMillis());
         
-        // TO DO - fetch questions from database and fill questionsList in Challenge
-        // challenge.
+        List<Question> list = challenge.getController().getDataController().getQuestionsByCategory(categoryList, 15);
+        
+        challenge.setQuestionsList(list);
         
         return new WaitAnswer(challenge);
     }

@@ -1,6 +1,7 @@
 package states;
 
 import logic.Challenge;
+import logic.database.Controller;
 
 /**
  * Wait Score.

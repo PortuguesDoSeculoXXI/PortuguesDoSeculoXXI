@@ -25,10 +25,12 @@ import logic.ChallengeModel;
 import logic.database.Controller;
 
 /**
- *
+ * Game Window.
+ * Game mode.
+ * 
  * @author PTXXI
  */
-public class JFrameGameMode extends JFrame implements Observer{
+public class GameModeWindow extends JFrame implements Observer{
     
     private final Controller controller;
     private final ChallengeModel challengeModel;
@@ -38,31 +40,28 @@ public class JFrameGameMode extends JFrame implements Observer{
     private JPanel jpanelsouth;
     private JLabel profile;
     private JLabel time;
-    private JLabel text;
+    private JLabel lblQuestion;
     private JButton option1 = new JButton("Option1");
     private JButton option2 = new JButton("Option2");
     private JButton option3 = new JButton("Option3");
     private JLabel giveUp   = new JLabel("Give Up");
-    private JLabel next     = new JLabel("next");
     
-    public JFrameGameMode(Controller controller, ChallengeModel challengeModel) {
+    public GameModeWindow(Controller controller, ChallengeModel challengeModel) {
         this(controller, challengeModel, 350, 75, 600, 450);
-     }
+    }
 
-    public JFrameGameMode(Controller controller, ChallengeModel challengeModel, int x, int y, int width, int height) {
+    public GameModeWindow(Controller controller, ChallengeModel challengeModel, int x, int y, int width, int height) {
         super("Português do Século XXI");
         this.controller = controller;
         this.challengeModel = challengeModel;
 
-        
         this.init();
-        this.registerListeners();
+        
         setLocation(x, y);
         setSize(width, height);
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
-    
     
     protected void init() {
         // Init components/panels
@@ -77,16 +76,19 @@ public class JFrameGameMode extends JFrame implements Observer{
         this.controller.addObserver(this);
         this.challengeModel.addObserver(this);
         // Listeners
-        //registerListeners();
+        registerListeners();
+        
+        // First time
+        refreshGame();
     }
      
-    private void createLayout(){
+    private void createLayout() {
          this.jPanelNorth();
          this.jPanelCenter();
          this.jPanelSouth();
      }   
         
-    private void jPanelNorth(){
+    private void jPanelNorth() {
         jpanelNorth = new JPanel(new BorderLayout());
         this.jpanelNorth.setPreferredSize(new Dimension(400, 50));
         this.profile = new JLabel("Perfil atual: ");
@@ -97,13 +99,13 @@ public class JFrameGameMode extends JFrame implements Observer{
         this.mainContainer.add(this.jpanelNorth, BorderLayout.NORTH);
      }
      
-    private void jPanelCenter(){
+    private void jPanelCenter() {
         this.jpanelcenter = new JPanel(new FlowLayout(FlowLayout.CENTER)); 
         
         JPanel jp = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JLabel jb = new JLabel("Pergunta");
-        jb.setFont(jb.getFont().deriveFont(42f));
-        jp.add(jb);
+        lblQuestion = new JLabel("Pergunta");
+        lblQuestion.setFont(lblQuestion.getFont().deriveFont(42f));
+        jp.add(lblQuestion);
         
         jpanelcenter.add(jp);
         //Questions
@@ -125,11 +127,9 @@ public class JFrameGameMode extends JFrame implements Observer{
         this.jpanelcenter.add(verticalBox);
         
         this.mainContainer.add(this.jpanelcenter, BorderLayout.CENTER);
-        
-
-     }
+    }
     
-    private void jPanelSouth(){
+    private void jPanelSouth() {
         this.jpanelsouth = new JPanel(new BorderLayout());
 
         this.giveUp.setText("<HTML><U>Desistir</U></HTML>");
@@ -143,7 +143,8 @@ public class JFrameGameMode extends JFrame implements Observer{
         this.mainContainer.add(this.jpanelsouth, BorderLayout.SOUTH);
     }
     
-    private void registerListeners(){
+    private void registerListeners() {
+        
         this.giveUp.addMouseListener(new MouseAdapter() {
 
             @Override
@@ -190,39 +191,37 @@ public class JFrameGameMode extends JFrame implements Observer{
                 verifyQuestion();
             }
         });
+        
     }
     
-    
-    
     /**
-     * verify that hit the question
-     * 
-     * return void
+     * Verify that hit the question.
      */
-    private void  verifyQuestion(){
+    private void  verifyQuestion() {
         dialogNext();
         scoreResultDialog();
     }
     
-    
-    //Create Profile
-    private void dialogExit(){
+    /**
+     * Quit game confimation.
+     */
+    private void dialogExit() {
         JPanel jp = new JPanel(new GridLayout(2, 6));
-        // jp.add(new JLabel(" "));
-        jp.add(new JLabel("Deseja desistir ?"));
+        jp.add(new JLabel("Deseja desistir?"));
 
         String options[] = {"Cancelar", "Confirmar"};
         int value = JOptionPane.showOptionDialog(null, jp, "Desistir", JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 
-        //is ready to give up
+        //Is ready to give up
         if (value == 1) {
 
         }
-        
     }
     
-    //Create Profile
-    private void dialogNext(){
+    /**
+     * Show clarification.
+     */
+    private void dialogNext() {
         JPanel jp = new JPanel(new GridLayout(2, 2));
         // jp.add(new JLabel(" "));
         jp.add(new JLabel("Esclarecimento......"));
@@ -231,8 +230,10 @@ public class JFrameGameMode extends JFrame implements Observer{
         int value = JOptionPane.showOptionDialog(null, jp, "Resposta errada", JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
     }
     
-    //Create Profile
-    private void scoreResultDialog(){
+    /**
+     * Show Score result.
+     */
+    private void scoreResultDialog() {
         JPanel jp = new JPanel(new GridLayout(2, 6));
         JLabel jb = new JLabel("Parabens");
         jb.setFont(jb.getFont().deriveFont(42f));
@@ -244,6 +245,13 @@ public class JFrameGameMode extends JFrame implements Observer{
  
     @Override
     public void update(Observable t, Object o) {
-           
+        refreshGame();
+    }
+    
+    public void refreshGame() {
+        if (challengeModel.getChallenge().getQuestionsList().isEmpty())
+            return;
+        
+        lblQuestion.setText(challengeModel.getChallenge().getQuestionsList().get(0).getQuestion());
     }
 }
