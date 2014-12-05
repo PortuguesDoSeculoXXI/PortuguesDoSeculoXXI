@@ -12,30 +12,30 @@ import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.Box;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JTextField;
 import logic.Challenge;
+import logic.ChallengeEasy;
+import logic.ChallengeHard;
 import logic.ChallengeModel;
 import logic.database.Controller;
 import states.WaitConfiguration;
 
 /**
- *
+ * Choosing Window.
+ * Configure game.
+ * 
  * @author PTXXI
- */ 
-
+ */
 public final class JFrameChoosingWindow extends JFrame implements Observer {
 
     private final Controller controller;
@@ -64,6 +64,8 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
  
     /**
      * Constructor.
+     * @param controller
+     * @param challengeModel
      */
     public JFrameChoosingWindow(Controller controller, ChallengeModel challengeModel) {
         this(controller, challengeModel, 350, 75, 600, 550);
@@ -71,6 +73,12 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
     
     /**
      * Constructor.
+     * @param controller
+     * @param challengeModel
+     * @param x
+     * @param y
+     * @param width
+     * @param height
      */
     public JFrameChoosingWindow(Controller controller, ChallengeModel challengeModel, int x, int y, int width, int height) {
         super("Português do Século XXI");
@@ -86,7 +94,7 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
     }
 
     /**
-     * Initialize the window
+     * Initialize the window.
      */
     protected void init() {
         // Init components/panels
@@ -106,7 +114,7 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
     }
 
     /**
-     * Create the main layout
+     * Create the main layout.
      */
     protected void createLayout() {
         this.jPanelNorth();
@@ -115,7 +123,7 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
     }
 
     /**
-     * Panel north configuration
+     * Panel north configuration.
      */
     private void jPanelNorth() {
         jpanelNorth = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -150,7 +158,7 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
     }
 
     /**
-     * Panel center configuration
+     * Panel center configuration.
      */
     private void jPanelCenter() {
         jpanelcenter = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -197,7 +205,7 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
     }
 
     /**
-     * Panel south configuration
+     * Panel south configuration.
      */
     private void jPanelSouth() {
         backLabel = new JLabel("<HTML><U>Voltar</U><HTML>");
@@ -216,7 +224,7 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
     }
 
     /**
-     * Register listeners for each component
+     * Register listeners for each component.
      */
     private void registerListeners() {
         
@@ -251,13 +259,7 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
                     return;
                 }
 
-                List<Challenge.Categories> listCategories = getSelectedCategories();
-                if (listCategories.isEmpty()) {
-                    return;
-                }
-
-                challengeModel.setChallenge(new Challenge(challengeModel.getCurrentPlayer()));
-                challengeModel.startGame(listCategories, null /*??!*/);
+                startGame();
             }
         });
 
@@ -353,17 +355,11 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
             public void mousePressed(MouseEvent e) {
                 removeRandom();
             }
-            
-            
-        });
- 
+        }); 
     }
 
-    
     /**
-     * verifies that chose a game mode
-     * 
-     * @return void: and deselect the other way
+     * Select/Unselect game mode.
      */
     private void deselectMode(int gameMode) {
         if (gameMode == 1) {
@@ -375,50 +371,33 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
     }
     
     /**
-     * remove categories
-     * 
-     * return void : to choose random
+     * Remove categories.
      */
     private void changeCategories() {
-     
         this.consoants.setState(false);
-
         this.accents.setState(false);
-
         this.hyphen.setState(false);
-
         this.caseSensitive.setState(false);
-     
     }
-    
-    
+
     /**
-     * Verify that you have choosen a game mode
+     * Verify that you have choosen a game mode.
      * 
      * @return true: user selected a mode, false: nothing selected.
      */
     private boolean checkMode() {
-        if (this.easy.isSelected() || this.hard.isSelected()) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return this.easy.isSelected() || this.hard.isSelected();
     } 
-    
-    
+
     /**
-     * remove categories
-     * 
-     * return void : to choose != random
+     * Remove categories.
      */
-    
     private void removeRandom(){
         this.random.setState(false);
     }
     
     /**
-     * Check categories
+     * Check categories.
      * 
      * @return true: user selected at least one category, 
      *  false: nothing selected.
@@ -449,6 +428,7 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
      */
     private List<Challenge.Categories> getSelectedCategories() {
         ArrayList<Challenge.Categories> list = new ArrayList<>();
+        
         if (this.consoants.getState()) {
             list.add(Challenge.Categories.CONSOANTS);
         } 
@@ -471,7 +451,7 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
     }
     
     /**
-     * Choose a game mode
+     * Choose a game mode.
      */
     private void dialogGameMode() {
         JPanel jp = new JPanel(new GridLayout(2, 6));
@@ -482,7 +462,7 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
     }
    
     /**
-     * Shows profiles
+     * Shows profiles.
      */
     private void dialogProfile() {
         JPanel jp = new JPanel(new GridLayout(2, 6));
@@ -509,7 +489,7 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
     }
 
     /**
-     * Update state machine when a notification occurs
+     * Update state machine when a notification occurs.
      */
     @Override
     public void update(Observable t, Object o) {
@@ -518,5 +498,24 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
                 currentProfile.setText("<HTML><B>" + challengeModel.getCurrentPlayer().getName() + "</B></HTML>");
             }
         }
-    }    
+    }
+    
+    /**
+     * Start a new game with the current options.
+     */
+    public void startGame() {
+        List<Challenge.Categories> listCategories = getSelectedCategories();
+        if (listCategories.isEmpty()) {
+            return;
+        }
+
+        Challenge currentChallenge;
+        if (this.easy.isSelected())
+            currentChallenge = new ChallengeEasy(controller, challengeModel.getCurrentPlayer());
+        else
+            currentChallenge = new ChallengeHard(controller, challengeModel.getCurrentPlayer());
+        
+        challengeModel.setChallenge(currentChallenge);
+        challengeModel.startGame(listCategories);
+    }
 }

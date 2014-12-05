@@ -184,9 +184,11 @@ public final class FrameMain extends JFrame {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                challengeModel.setChallenge(new Challenge(controller.getProfileOf((String)jc.getSelectedItem())));
+                Challenge currentChallenge = new Challenge(controller, controller.getProfileOf((String)jc.getSelectedItem()));
+                challengeModel.setChallenge(currentChallenge);
                 challengeModel.newGame();
             }
+            
         });
         
         // Exit Button
@@ -197,6 +199,7 @@ public final class FrameMain extends JFrame {
                 //System.gc();
                 System.exit(0);
             }
+            
         });
     }
 

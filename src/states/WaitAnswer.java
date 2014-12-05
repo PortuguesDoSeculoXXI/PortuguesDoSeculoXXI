@@ -3,6 +3,7 @@ package states;
 import java.util.Date;
 import logic.Challenge;
 import logic.Score;
+import logic.database.Controller;
 
 /**
  * Wait Answer.
@@ -52,7 +53,7 @@ public class WaitAnswer extends StateAdapter {
     @Override
     public IState quitGame() {
         // Returns to state WaitConfiguration with a new challenge without saving any data.
-        return new WaitConfiguration(new Challenge(challenge.getCurrentProfile()));
+        return new WaitConfiguration(challenge);
     }
 
     /**

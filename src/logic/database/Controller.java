@@ -37,10 +37,7 @@ public class Controller extends Observable {
         categories = dataController.getAllCategories();
         players = dataController.getAllPlayers();
         
-        for(int i = 0; i < categories.size(); i++){
-            System.out.println("ID: " + categories.get(i).getId() + " " + categories.get(i).getName());
-        }
-        for(int i = 0; i < players.size(); i++){
+        for (int i = 0; i < players.size(); i++) {
             System.out.println("Player: " + players.get(i).getId() + " " + players.get(i).getName());
         }
     }
@@ -52,11 +49,27 @@ public class Controller extends Observable {
         setChanged();
         notifyObservers();
     }
+    
+    /**
+     * Getter of DataController.
+     * @return DataController instance.
+     */
+    public DataController getDataController() {
+        return dataController;
+    }
 
+    /**
+     * Getter of categories.
+     * @return list of categories.
+     */
     public List<Category> getCategories() {
         return categories;
     }
 
+    /**
+     * Getter of players.
+     * @return list of players.
+     */
     public List<Player> getPlayers() {
         return players;
     }

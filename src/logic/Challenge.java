@@ -1,9 +1,9 @@
 package logic;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
+import logic.database.Controller;
 import states.IState;
 import states.WaitConfiguration;
 
@@ -24,7 +24,7 @@ public class Challenge extends Observable implements ChallengeInterface {
      * List of all questions associated with this challenge.
      * This array list is filled when the challenge is created, with 15 Question objects.
      */
-    protected ArrayList<Question> questionsList = new ArrayList<>(15);
+    protected List<Question> questionsList = new ArrayList<>(15);
     /**
      * Current question being asked to the user.
      */
@@ -62,13 +62,19 @@ public class Challenge extends Observable implements ChallengeInterface {
      * This variable has the time that took to complete the challenge.
      * this should be instantiated when the challenge starts.
      */
-    long timer;
+    private long timer;
+    /**
+     * Controller for data access/store.
+     */
+    private final Controller controller;
 
     /**
      * Challenge Constructor.
+     * @param controller Sets controller
      * @param currentProfile Sets current profile for this challenge.
      */
-    public Challenge(Player currentProfile) {
+    public Challenge(Controller controller, Player currentProfile) {
+        this.controller = controller;
         this.currentProfile = currentProfile;
         this.currentState = new WaitConfiguration(this);
     }
@@ -79,6 +85,10 @@ public class Challenge extends Observable implements ChallengeInterface {
     // |                        Getters and Setters                           |
     // |______________________________________________________________________|
     //
+    public Controller getController() {
+        return controller;
+    }
+    
     public IState getCurrentState() {
         return currentState;
     }
@@ -87,11 +97,11 @@ public class Challenge extends Observable implements ChallengeInterface {
         this.currentState = currentState;
     }
 
-    public ArrayList<Question> getQuestionsList() {
+    public List<Question> getQuestionsList() {
         return questionsList;
     }
 
-    public void setQuestionsList(ArrayList<Question> questionsList) {
+    public void setQuestionsList(List<Question> questionsList) {
         this.questionsList = questionsList;
     }
 
@@ -152,8 +162,8 @@ public class Challenge extends Observable implements ChallengeInterface {
     }
 
     @Override
-    public void startGame(List<Challenge.Categories> categoryList, Challenge challengeMode) {
-        currentState = currentState.startGame(categoryList, challengeMode);
+    public void startGame(List<Challenge.Categories> categoryList) {
+        currentState = currentState.startGame(categoryList);
     }
 
     @Override

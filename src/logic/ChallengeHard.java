@@ -1,5 +1,7 @@
 package logic;
 
+import logic.database.Controller;
+
 /**
  * Challenge Hard.
  * Represent the game mode.
@@ -8,8 +10,8 @@ package logic;
  */
 public class ChallengeHard extends Challenge {
 
-    public ChallengeHard(Player currentProfile) {
-        super(currentProfile);
+    public ChallengeHard(Controller controller, Player currentProfile) {
+        super(controller, currentProfile);
     }
     
 }

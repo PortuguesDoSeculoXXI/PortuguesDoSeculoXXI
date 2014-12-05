@@ -2,6 +2,7 @@ package logic;
 
 import java.util.List;
 import java.util.Observable;
+import logic.database.Controller;
 
 /**
  * Model class.
@@ -11,6 +12,7 @@ import java.util.Observable;
  * @author PTXXI
  */
 public class ChallengeModel extends Observable implements ChallengeInterface {
+    
     Challenge challenge;
 
     public ChallengeModel(Challenge challenge) {
@@ -37,8 +39,8 @@ public class ChallengeModel extends Observable implements ChallengeInterface {
     }
 
     @Override
-    public void startGame(List<Challenge.Categories> categoryList, Challenge challengeMode) {
-        challenge.startGame(categoryList, challengeMode);
+    public void startGame(List<Challenge.Categories> categoryList) {
+        challenge.startGame(categoryList);
         sendNotification();
     }
 

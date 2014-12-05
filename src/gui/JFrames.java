@@ -7,6 +7,7 @@ import logic.ChallengeModel;
 import logic.database.Controller;
 import states.WaitAnswer;
 import states.WaitConfiguration;
+import states.WaitScore;
 
 /**
  * JFrames class.
@@ -18,34 +19,42 @@ import states.WaitConfiguration;
  * @author PTXXI
  */
 public class JFrames implements Observer {
+    
+    /**
+     * Models/Logic
+     */
     private final Controller controller;
     private final ChallengeModel challengeModel;
-    private final FrameMain frameMain;
-    private final JFrameChoosingWindow choosingWindow;
-    private final JFrameScoreWindow scoreWindow;
-    private final JFrameGameMode gameMode;
+    
+    /**
+     * Windows
+     */
+    private final FrameMain entranceWindow;
+    private final JFrameChoosingWindow configurationWindow;
+    private final JFrameGameMode gameModeWindow;
+    private final JFrameScoreWindow gameScoreWindow;
     
     /**
      * Constructor.
      * Creates the only Controller and ChalengeModel instance.
      * Also creates every JFrame.
      */
-    public JFrames(){
+    public JFrames() {
         this.controller = new Controller();
         
-        this.challengeModel = new ChallengeModel(new Challenge(null));
+        this.challengeModel = new ChallengeModel(new Challenge(controller, null));
         this.challengeModel.addObserver(this);
         
-        this.frameMain = new FrameMain(this.controller, this.challengeModel);
+        this.entranceWindow = new FrameMain(this.controller, this.challengeModel);
         
-        this.choosingWindow = new JFrameChoosingWindow(this.controller, this.challengeModel);
-        this.choosingWindow.setVisible(false);
+        this.configurationWindow = new JFrameChoosingWindow(this.controller, this.challengeModel);
+        this.configurationWindow.setVisible(false);
         
-        this.gameMode = new JFrameGameMode(this.controller, this.challengeModel);
-        this.gameMode.setVisible(false);
+        this.gameModeWindow = new JFrameGameMode(this.controller, this.challengeModel);
+        this.gameModeWindow.setVisible(false);
         
-        this.scoreWindow = new JFrameScoreWindow(this.controller, this.challengeModel);
-        this.scoreWindow.setVisible(false);
+        this.gameScoreWindow = new JFrameScoreWindow(this.controller, this.challengeModel);
+        this.gameScoreWindow.setVisible(false);
     }
 
     /**
@@ -54,20 +63,39 @@ public class JFrames implements Observer {
     @Override
     public void update(Observable o, Object o1) {
         if (challengeModel.getChallenge() == null) {
-            frameMain.setVisible(true);
-            choosingWindow.setVisible(false);
-            gameMode.setVisible(false);
+            // Entrance
+            entranceWindow.setVisible(true);
+            configurationWindow.setVisible(false);
+            gameModeWindow.setVisible(false);
+            gameScoreWindow.setVisible(false);
         }
         else if (challengeModel.getChallenge().getCurrentState() instanceof WaitConfiguration) {
-            frameMain.setVisible(false);
-            choosingWindow.setVisible(true);
-            gameMode.setVisible(false);
+            // Configuration
+            entranceWindow.setVisible(false);
+            configurationWindow.setVisible(true);
+            gameModeWindow.setVisible(false);
+            gameScoreWindow.setVisible(false);
         }
-        else if(challengeModel.getChallenge().getCurrentState() instanceof WaitAnswer){
-            frameMain.setVisible(false);
-            choosingWindow.setVisible(false);
-            gameMode.setVisible(true);
-          
-        } 
+        else if (challengeModel.getChallenge().getCurrentState() instanceof WaitAnswer) {
+            // Verify if the game has already started
+            if (gameModeWindow.isVisible()) {
+                // Refresh
+                gameModeWindow.update(o, o1);
+            }
+            else {
+                // Start the game!
+                entranceWindow.setVisible(false);
+                configurationWindow.setVisible(false);
+                gameModeWindow.setVisible(true);
+                gameScoreWindow.setVisible(false);
+            }
+        }
+        else if (challengeModel.getChallenge().getCurrentState() instanceof WaitScore) {
+            // Show final score
+            entranceWindow.setVisible(false);
+            configurationWindow.setVisible(false);
+            gameModeWindow.setVisible(false);
+            gameScoreWindow.setVisible(true);
+        }
     }
 }
