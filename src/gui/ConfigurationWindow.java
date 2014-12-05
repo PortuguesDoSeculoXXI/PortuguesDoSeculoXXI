@@ -36,7 +36,7 @@ import states.WaitConfiguration;
  * 
  * @author PTXXI
  */
-public final class JFrameChoosingWindow extends JFrame implements Observer {
+public final class ConfigurationWindow extends JFrame implements Observer {
 
     private final Controller controller;
     private final ChallengeModel challengeModel;
@@ -67,7 +67,7 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
      * @param controller
      * @param challengeModel
      */
-    public JFrameChoosingWindow(Controller controller, ChallengeModel challengeModel) {
+    public ConfigurationWindow(Controller controller, ChallengeModel challengeModel) {
         this(controller, challengeModel, 350, 75, 600, 550);
     }
     
@@ -80,7 +80,7 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
      * @param width
      * @param height
      */
-    public JFrameChoosingWindow(Controller controller, ChallengeModel challengeModel, int x, int y, int width, int height) {
+    public ConfigurationWindow(Controller controller, ChallengeModel challengeModel, int x, int y, int width, int height) {
         super("Português do Século XXI");
         this.controller = controller;
         this.challengeModel = challengeModel;
@@ -493,7 +493,7 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
      */
     @Override
     public void update(Observable t, Object o) {
-        if (challengeModel.getChallenge() != null) {
+        if (challengeModel.getChallenge() != null && !challengeModel.isScoreWindow()) {
             if (challengeModel.getChallenge().getCurrentState() instanceof WaitConfiguration) {
                 currentProfile.setText("<HTML><B>" + challengeModel.getCurrentPlayer().getName() + "</B></HTML>");
             }

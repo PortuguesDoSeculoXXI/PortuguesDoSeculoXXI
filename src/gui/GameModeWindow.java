@@ -30,7 +30,7 @@ import logic.database.Controller;
  * 
  * @author PTXXI
  */
-public class JFrameGameMode extends JFrame implements Observer{
+public class GameModeWindow extends JFrame implements Observer{
     
     private final Controller controller;
     private final ChallengeModel challengeModel;
@@ -46,11 +46,11 @@ public class JFrameGameMode extends JFrame implements Observer{
     private JButton option3 = new JButton("Option3");
     private JLabel giveUp   = new JLabel("Give Up");
     
-    public JFrameGameMode(Controller controller, ChallengeModel challengeModel) {
+    public GameModeWindow(Controller controller, ChallengeModel challengeModel) {
         this(controller, challengeModel, 350, 75, 600, 450);
     }
 
-    public JFrameGameMode(Controller controller, ChallengeModel challengeModel, int x, int y, int width, int height) {
+    public GameModeWindow(Controller controller, ChallengeModel challengeModel, int x, int y, int width, int height) {
         super("Português do Século XXI");
         this.controller = controller;
         this.challengeModel = challengeModel;

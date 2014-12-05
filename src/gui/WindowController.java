@@ -18,7 +18,7 @@ import states.WaitScore;
  * 
  * @author PTXXI
  */
-public class JFrames implements Observer {
+public class WindowController implements Observer {
     
     /**
      * Models/Logic
@@ -29,52 +29,61 @@ public class JFrames implements Observer {
     /**
      * Windows
      */
-    private final FrameMain entranceWindow;
-    private final JFrameChoosingWindow configurationWindow;
-    private final JFrameGameMode gameModeWindow;
-    private final JFrameScoreWindow gameScoreWindow;
+    private final EntranceWindow entranceWindow;
+    private final ConfigurationWindow configurationWindow;
+    private final GameModeWindow gameModeWindow;
+    private final ScoresWindow scoresWindow;
     
     /**
      * Constructor.
      * Creates the only Controller and ChalengeModel instance.
      * Also creates every JFrame.
      */
-    public JFrames() {
+    public WindowController() {
         this.controller = new Controller();
         
         this.challengeModel = new ChallengeModel(new Challenge(controller, null));
         this.challengeModel.addObserver(this);
         
-        this.entranceWindow = new FrameMain(this.controller, this.challengeModel);
+        this.entranceWindow = new EntranceWindow(this.controller, this.challengeModel);
         
-        this.configurationWindow = new JFrameChoosingWindow(this.controller, this.challengeModel);
+        this.configurationWindow = new ConfigurationWindow(this.controller, this.challengeModel);
         this.configurationWindow.setVisible(false);
         
-        this.gameModeWindow = new JFrameGameMode(this.controller, this.challengeModel);
+        this.gameModeWindow = new GameModeWindow(this.controller, this.challengeModel);
         this.gameModeWindow.setVisible(false);
         
-        this.gameScoreWindow = new JFrameScoreWindow(this.controller, this.challengeModel);
-        this.gameScoreWindow.setVisible(false);
+        this.scoresWindow = new ScoresWindow(this.controller, this.challengeModel);
+        this.scoresWindow.setVisible(false);
     }
 
     /**
      * Updates interface when a notification occurs.
+     * @param o
+     * @param o1
      */
     @Override
     public void update(Observable o, Object o1) {
-        if (challengeModel.getChallenge() == null) {
+        if (challengeModel.isScoreWindow()) {
+            // Scores table
+            entranceWindow.setVisible(false);
+            configurationWindow.setVisible(false);
+            gameModeWindow.setVisible(false);
+            scoresWindow.setVisible(true);
+        }
+        else if (challengeModel.getChallenge() == null) {
             // Entrance
             entranceWindow.setVisible(true);
             configurationWindow.setVisible(false);
             gameModeWindow.setVisible(false);
-            gameScoreWindow.setVisible(false);
+            scoresWindow.setVisible(false);
         }
         else if (challengeModel.getChallenge().getCurrentState() instanceof WaitConfiguration) {
             // Configuration
             entranceWindow.setVisible(false);
             configurationWindow.setVisible(true);
             gameModeWindow.setVisible(false);
-            gameScoreWindow.setVisible(false);
+            scoresWindow.setVisible(false);
         }
         else if (challengeModel.getChallenge().getCurrentState() instanceof WaitAnswer) {
             // Verify if the game has already started
@@ -87,7 +96,7 @@ public class JFrames implements Observer {
                 entranceWindow.setVisible(false);
                 configurationWindow.setVisible(false);
                 gameModeWindow.setVisible(true);
-                gameScoreWindow.setVisible(false);
+                scoresWindow.setVisible(false);
             }
         }
         else if (challengeModel.getChallenge().getCurrentState() instanceof WaitScore) {
@@ -95,7 +104,7 @@ public class JFrames implements Observer {
             entranceWindow.setVisible(false);
             configurationWindow.setVisible(false);
             gameModeWindow.setVisible(false);
-            gameScoreWindow.setVisible(true);
+            scoresWindow.setVisible(false);
         }
     }
 }
