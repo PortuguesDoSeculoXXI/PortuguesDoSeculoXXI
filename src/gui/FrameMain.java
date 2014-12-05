@@ -189,12 +189,18 @@ public final class FrameMain extends JFrame {
             }
         });
         
+        score.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                challengeModel.setScoreWindow(true);
+            }
+        });
+        
         // Exit Button
         this.exit.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                //System.gc();
                 System.exit(0);
             }
         });

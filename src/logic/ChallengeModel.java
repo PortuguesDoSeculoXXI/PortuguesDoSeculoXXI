@@ -12,6 +12,7 @@ import java.util.Observable;
  */
 public class ChallengeModel extends Observable implements ChallengeInterface {
     Challenge challenge;
+    boolean scoreWindow = false; // Says if JFrames should show score window or not
 
     public ChallengeModel(Challenge challenge) {
         this.challenge = challenge;
@@ -80,5 +81,14 @@ public class ChallengeModel extends Observable implements ChallengeInterface {
 
     public void backPressed() {
         setChallenge(null);
+    }
+
+    public boolean isScoreWindow() {
+        return scoreWindow;
+    }
+
+    public void setScoreWindow(boolean scoreWindow) {
+        this.scoreWindow = scoreWindow;
+        sendNotification();
     }
 }

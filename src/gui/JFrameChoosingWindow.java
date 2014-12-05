@@ -366,7 +366,7 @@ public final class JFrameChoosingWindow extends JFrame implements Observer {
      */
     @Override
     public void update(Observable t, Object o) {
-        if (challengeModel.getChallenge() != null) {
+        if (challengeModel.getChallenge() != null && !challengeModel.isScoreWindow()) {
             if (challengeModel.getChallenge().getCurrentState() instanceof WaitConfiguration) {
                 currentProfile.setText("<HTML><B>" + challengeModel.getCurrentPlayer().getName() + "</B></HTML>");
             }

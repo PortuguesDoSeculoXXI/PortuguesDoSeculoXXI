@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Observable;
 import logic.Category;
 import logic.Player;
+import logic.Score;
 
 /**
  * Controller class.
@@ -138,5 +139,9 @@ public class Controller extends Observable {
                 return false;
         
         return true;
+    }
+    
+    public List<Score> getScoreByPlayer(int player) {
+        return dataController.getScoreByPlayer(player);
     }
 }

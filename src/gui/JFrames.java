@@ -50,24 +50,31 @@ public class JFrames implements Observer {
 
     /**
      * Updates interface when a notification occurs.
+     * @param o
+     * @param o1
      */
     @Override
     public void update(Observable o, Object o1) {
-        if (challengeModel.getChallenge() == null) {
+        if (challengeModel.isScoreWindow()) {
+            frameMain.setVisible(false);
+            choosingWindow.setVisible(false);
+            gameMode.setVisible(false);
+            scoreWindow.setVisible(true);
+        } else if (challengeModel.getChallenge() == null) {
             frameMain.setVisible(true);
             choosingWindow.setVisible(false);
             gameMode.setVisible(false);
-        }
-        else if (challengeModel.getChallenge().getCurrentState() instanceof WaitConfiguration) {
+            scoreWindow.setVisible(false);
+        } else if (challengeModel.getChallenge().getCurrentState() instanceof WaitConfiguration) {
             frameMain.setVisible(false);
             choosingWindow.setVisible(true);
             gameMode.setVisible(false);
-        }
-        else if(challengeModel.getChallenge().getCurrentState() instanceof WaitAnswer){
+            scoreWindow.setVisible(false);
+        } else if(challengeModel.getChallenge().getCurrentState() instanceof WaitAnswer){
             frameMain.setVisible(false);
             choosingWindow.setVisible(false);
             gameMode.setVisible(true);
-          
+            scoreWindow.setVisible(false);
         } 
     }
 }
