@@ -1,6 +1,7 @@
 package states;
 
 import java.util.List;
+import logic.Answer;
 import logic.Challenge;
 
 /**
@@ -38,7 +39,7 @@ public interface IState {
      * @param answer Represents the answer chosen by the user.
      * @return <b>this</b> if challenge isn't over. WaitScore if challenge is over.
      */
-    public IState nextAnswer(int answer);
+    public IState nextAnswer(Answer answer);
     
     /**
      * This action represents the end of a challenge by answering all questions.

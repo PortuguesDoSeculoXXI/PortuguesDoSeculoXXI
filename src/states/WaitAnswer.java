@@ -1,6 +1,7 @@
 package states;
 
 import java.util.Date;
+import logic.Answer;
 import logic.Challenge;
 import logic.Score;
 import logic.database.Controller;
@@ -21,7 +22,7 @@ public class WaitAnswer extends StateAdapter {
     }
 
     @Override
-    public IState nextAnswer(int answer) {
+    public IState nextAnswer(Answer answer) {
         // If user got the answer right increment number of qestions right
         if (challenge.getCurrentQuestion().getAnswer() == answer)
             challenge.incrementNumberOfQuestionsRight();

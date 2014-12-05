@@ -20,6 +20,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import logic.Answer;
 import logic.Challenge;
 import logic.ChallengeModel;
 import logic.database.Controller;
@@ -35,16 +36,16 @@ public class GameModeWindow extends JFrame implements Observer{
     private final Controller controller;
     private final ChallengeModel challengeModel;
     private Container mainContainer;
-    private JPanel jpanelNorth;
-    private JPanel jpanelcenter;
-    private JPanel jpanelsouth;
-    private JLabel profile;
-    private JLabel time;
-    private JLabel lblQuestion;
-    private JButton option1 = new JButton("Option1");
-    private JButton option2 = new JButton("Option2");
-    private JButton option3 = new JButton("Option3");
-    private JLabel giveUp   = new JLabel("Give Up");
+    private JPanel panelNorth;
+    private JPanel panelCenter;
+    private JPanel panelSouth;
+    private JLabel labelProfile;
+    private JLabel labelTime;
+    private JLabel labelQuestion;
+    private JLabel labelGiveUp = new JLabel("Give Up");
+    private JButton buttonOptionA = new JButton("Option1");
+    private JButton buttonOptionB = new JButton("Option2");
+    private JButton buttonOptionBoth = new JButton("Option3");
     
     public GameModeWindow(Controller controller, ChallengeModel challengeModel) {
         this(controller, challengeModel, 350, 75, 600, 450);
@@ -83,31 +84,31 @@ public class GameModeWindow extends JFrame implements Observer{
     }
      
     private void createLayout() {
-         this.jPanelNorth();
-         this.jPanelCenter();
-         this.jPanelSouth();
+         jPanelNorth();
+         jPanelCenter();
+         jPanelSouth();
      }   
         
     private void jPanelNorth() {
-        jpanelNorth = new JPanel(new BorderLayout());
-        this.jpanelNorth.setPreferredSize(new Dimension(400, 50));
-        this.profile = new JLabel("Perfil atual: ");
-        this.time =  new JLabel("Time...");
+        panelNorth = new JPanel(new BorderLayout());
+        this.panelNorth.setPreferredSize(new Dimension(400, 50));
+        this.labelProfile = new JLabel("Perfil atual: ");
+        this.labelTime = new JLabel("Time...");
         
-        jpanelNorth.add(this.profile,BorderLayout.WEST);
-        jpanelNorth.add(this.time,BorderLayout.EAST);
-        this.mainContainer.add(this.jpanelNorth, BorderLayout.NORTH);
+        panelNorth.add(this.labelProfile,BorderLayout.WEST);
+        panelNorth.add(this.labelTime,BorderLayout.EAST);
+        this.mainContainer.add(this.panelNorth, BorderLayout.NORTH);
      }
      
     private void jPanelCenter() {
-        this.jpanelcenter = new JPanel(new FlowLayout(FlowLayout.CENTER)); 
+        this.panelCenter = new JPanel(new FlowLayout(FlowLayout.CENTER)); 
         
         JPanel jp = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        lblQuestion = new JLabel("Pergunta");
-        lblQuestion.setFont(lblQuestion.getFont().deriveFont(42f));
-        jp.add(lblQuestion);
+        labelQuestion = new JLabel("Pergunta");
+        labelQuestion.setFont(labelQuestion.getFont().deriveFont(20f));
+        jp.add(labelQuestion);
         
-        jpanelcenter.add(jp);
+        panelCenter.add(jp);
         //Questions
         Box verticalBox = Box.createVerticalBox();
         verticalBox.setPreferredSize(new Dimension(500, 200));
@@ -116,36 +117,36 @@ public class GameModeWindow extends JFrame implements Observer{
         Box horizontalBox = Box.createHorizontalBox();
         horizontalBox.add(Box.createHorizontalStrut(10));
         
-        horizontalBox.add(this.option1);
+        horizontalBox.add(this.buttonOptionA);
         horizontalBox.add(new JLabel("                    "));
-        horizontalBox.add(this.option2);
+        horizontalBox.add(this.buttonOptionB);
         
         verticalBox.add(horizontalBox);
        
-        this.option3.setAlignmentX(CENTER_ALIGNMENT);
-        verticalBox.add(this.option3);
-        this.jpanelcenter.add(verticalBox);
+        this.buttonOptionBoth.setAlignmentX(CENTER_ALIGNMENT);
+        verticalBox.add(this.buttonOptionBoth);
+        this.panelCenter.add(verticalBox);
         
-        this.mainContainer.add(this.jpanelcenter, BorderLayout.CENTER);
+        this.mainContainer.add(this.panelCenter, BorderLayout.CENTER);
     }
     
     private void jPanelSouth() {
-        this.jpanelsouth = new JPanel(new BorderLayout());
+        this.panelSouth = new JPanel(new BorderLayout());
 
-        this.giveUp.setText("<HTML><U>Desistir</U></HTML>");
-        this.giveUp.setForeground(Color.BLUE);
-        this.giveUp.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        this.labelGiveUp.setText("<HTML><U>Desistir</U></HTML>");
+        this.labelGiveUp.setForeground(Color.BLUE);
+        this.labelGiveUp.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        this.jpanelsouth.add(this.giveUp, BorderLayout.WEST);
+        this.panelSouth.add(this.labelGiveUp, BorderLayout.WEST);
 
-        this.jpanelsouth.setPreferredSize(new Dimension(400, 50));
+        this.panelSouth.setPreferredSize(new Dimension(400, 50));
 
-        this.mainContainer.add(this.jpanelsouth, BorderLayout.SOUTH);
+        this.mainContainer.add(this.panelSouth, BorderLayout.SOUTH);
     }
     
     private void registerListeners() {
         
-        this.giveUp.addMouseListener(new MouseAdapter() {
+        this.labelGiveUp.addMouseListener(new MouseAdapter() {
 
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -153,43 +154,34 @@ public class GameModeWindow extends JFrame implements Observer{
             }
         });
 
-        this.option1.addMouseListener(new MouseAdapter() {
+        this.buttonOptionA.addMouseListener(new MouseAdapter() {
 
             @Override
             public void mouseClicked(MouseEvent e) {
                 verifyQuestion();
+                challengeModel.nextAnswer(Answer.OPTION_A);
             }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                verifyQuestion();
-            }
+            
         });
 
-        this.option2.addMouseListener(new MouseAdapter() {
+        this.buttonOptionB.addMouseListener(new MouseAdapter() {
 
             @Override
             public void mouseClicked(MouseEvent e) {
                 verifyQuestion();
+                challengeModel.nextAnswer(Answer.OPTION_B);
             }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                verifyQuestion();
-            }
+            
         });
 
-        this.option3.addMouseListener(new MouseAdapter() {
+        this.buttonOptionBoth.addMouseListener(new MouseAdapter() {
 
             @Override
             public void mouseClicked(MouseEvent e) {
                 verifyQuestion();
+                challengeModel.nextAnswer(Answer.OPTION_BOTH);
             }
 
-            @Override
-            public void mousePressed(MouseEvent e) {
-                verifyQuestion();
-            }
         });
         
     }
@@ -198,8 +190,7 @@ public class GameModeWindow extends JFrame implements Observer{
      * Verify that hit the question.
      */
     private void  verifyQuestion() {
-        dialogNext();
-        scoreResultDialog();
+        
     }
     
     /**
@@ -221,7 +212,7 @@ public class GameModeWindow extends JFrame implements Observer{
     /**
      * Show clarification.
      */
-    private void dialogNext() {
+    private void dialogClarification() {
         JPanel jp = new JPanel(new GridLayout(2, 2));
         // jp.add(new JLabel(" "));
         jp.add(new JLabel("Esclarecimento......"));
@@ -249,9 +240,9 @@ public class GameModeWindow extends JFrame implements Observer{
     }
     
     public void refreshGame() {
-        if (challengeModel.getChallenge().getQuestionsList().isEmpty())
+        if (challengeModel.getChallenge().getCurrentQuestion() == null)
             return;
         
-        lblQuestion.setText(challengeModel.getChallenge().getQuestionsList().get(0).getQuestion());
+        labelQuestion.setText(challengeModel.getChallenge().getCurrentQuestion().getQuestion());
     }
 }

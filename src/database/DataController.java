@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import logic.Answer;
 import logic.Category;
 import logic.Challenge;
 import logic.Level;
@@ -482,7 +483,7 @@ public class DataController {
 
             ResultSet rs = st.executeQuery(builder.getSelectQuery()+" ORDER BY RANDOM() LIMIT "+numberOfQuestions);
             while (rs.next()) {
-                questions.add(new Question(rs.getInt("RIGHT_ANSWER"), 
+                questions.add(new Question(Answer.values()[rs.getInt("RIGHT_ANSWER")],
                         rs.getString("ENUNCIATION"), 
                         rs.getString("ANSWER_A"),
                         rs.getString("ANSWER_B")));
@@ -512,7 +513,7 @@ public class DataController {
             builder.addTable("question");
             ResultSet rs = st.executeQuery(builder.getSelectQuery()+" ORDER BY RANDOM() LIMIT "+numberOfQuestions);
             while (rs.next()) {
-                questions.add(new Question(rs.getInt("RIGHT_ANSWER"), 
+                questions.add(new Question(Answer.values()[rs.getInt("RIGHT_ANSWER")],
                         rs.getString("ENUNCIATION"), 
                         rs.getString("ANSWER_A"),
                         rs.getString("ANSWER_B")));

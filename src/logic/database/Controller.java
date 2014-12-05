@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import logic.Category;
+import logic.Challenge;
 import logic.Player;
+import logic.Question;
 import logic.Score;
 
 /**
@@ -49,14 +51,6 @@ public class Controller extends Observable {
     public void sendNotification() {
         setChanged();
         notifyObservers();
-    }
-    
-    /**
-     * Getter of DataController.
-     * @return DataController instance.
-     */
-    public DataController getDataController() {
-        return dataController;
     }
 
     /**
@@ -157,4 +151,9 @@ public class Controller extends Observable {
     public List<Score> getScoreByPlayer(int player) {
         return dataController.getScoreByPlayer(player);
     }
+    
+    public List<Question> getQuestionsByCategory(List<Challenge.Categories> categories) {
+        return dataController.getQuestionsByCategory(categories, 15);
+    }    
+
 }

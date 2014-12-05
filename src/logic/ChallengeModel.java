@@ -2,7 +2,6 @@ package logic;
 
 import java.util.List;
 import java.util.Observable;
-import logic.database.Controller;
 
 /**
  * Model class.
@@ -46,7 +45,7 @@ public class ChallengeModel extends Observable implements ChallengeInterface {
     }
 
     @Override
-    public void nextAnswer(int answer) {
+    public void nextAnswer(Answer answer) {
         challenge.nextAnswer(answer);
         sendNotification();
     }

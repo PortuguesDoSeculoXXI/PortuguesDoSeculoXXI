@@ -103,6 +103,10 @@ public class Challenge extends Observable implements ChallengeInterface {
 
     public void setQuestionsList(List<Question> questionsList) {
         this.questionsList = questionsList;
+        if (this.questionsList.isEmpty())
+            return;
+        this.currentQuestionNumber = 1;
+        this.currentQuestion = questionsList.get((++currentQuestionNumber) - 1);
     }
 
     public Question getCurrentQuestion() {
@@ -167,7 +171,7 @@ public class Challenge extends Observable implements ChallengeInterface {
     }
 
     @Override
-    public void nextAnswer(int answer) {
+    public void nextAnswer(Answer answer) {
         currentState = currentState.nextAnswer(answer);
     }
 

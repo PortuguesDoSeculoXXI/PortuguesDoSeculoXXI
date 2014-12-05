@@ -1,8 +1,8 @@
 package states;
 
 import java.util.List;
+import logic.Answer;
 import logic.Challenge;
-import logic.database.Controller;
 
 /**
  * State Adapter.
@@ -62,7 +62,7 @@ public abstract class StateAdapter implements IState {
      * @return <b>this</b> if challenge isn't over. WaitScore if challenge is over.
      */
     @Override
-    public IState nextAnswer(int answer) {
+    public IState nextAnswer(Answer answer) {
         return this;
     }
 

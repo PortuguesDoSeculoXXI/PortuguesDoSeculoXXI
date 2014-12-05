@@ -9,16 +9,17 @@ package logic;
  * @author PTXXI
  */
 public class Question {
-    private int answer;
-    private String question;
-    private String optionA;
-    private String optionB;
+    
+    private final Answer answer;
+    private final String question;
+    private final String optionA;
+    private final String optionB;
 
-    public int getAnswer() {
+    public Answer getAnswer() {
         return answer;
     }
 
-    public Question(int answer, String question, String optionA, String optionB) {
+    public Question(Answer answer, String question, String optionA, String optionB) {
         this.answer = answer;
         this.question = question;
         this.optionA = optionA;
@@ -36,4 +37,5 @@ public class Question {
     public String getOptionB() {
         return optionB;
     }
+    
 }

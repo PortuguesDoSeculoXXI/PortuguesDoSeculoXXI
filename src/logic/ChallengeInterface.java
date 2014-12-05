@@ -11,7 +11,7 @@ import java.util.List;
 public interface ChallengeInterface {
     public void newGame();
     public void startGame(List<Challenge.Categories> categoryList);
-    public void nextAnswer(int answer);
+    public void nextAnswer(Answer answer);
     public void quitGame();
     public void end();
 }
