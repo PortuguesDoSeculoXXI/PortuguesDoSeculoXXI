@@ -23,6 +23,7 @@ import javax.swing.JPanel;
 import logic.Answer;
 import logic.Challenge;
 import logic.ChallengeModel;
+import logic.Question;
 import logic.database.Controller;
 
 /**
@@ -42,10 +43,10 @@ public class GameModeWindow extends JFrame implements Observer{
     private JLabel labelProfile;
     private JLabel labelTime;
     private JLabel labelQuestion;
-    private JLabel labelGiveUp = new JLabel("Give Up");
-    private JButton buttonOptionA = new JButton("Option1");
-    private JButton buttonOptionB = new JButton("Option2");
-    private JButton buttonOptionBoth = new JButton("Option3");
+    private JLabel labelGiveUp;
+    private JButton buttonOptionA = new JButton("Resposta A");
+    private JButton buttonOptionB = new JButton("Resposta B");
+    private JButton buttonOptionBoth = new JButton("Ambas estão correctas");
     
     public GameModeWindow(Controller controller, ChallengeModel challengeModel) {
         this(controller, challengeModel, 350, 75, 600, 450);
@@ -105,7 +106,7 @@ public class GameModeWindow extends JFrame implements Observer{
         
         JPanel jp = new JPanel(new FlowLayout(FlowLayout.CENTER));
         labelQuestion = new JLabel("Pergunta");
-        labelQuestion.setFont(labelQuestion.getFont().deriveFont(20f));
+        //labelQuestion.setFont(labelQuestion.getFont().deriveFont(20f));
         jp.add(labelQuestion);
         
         panelCenter.add(jp);
@@ -133,7 +134,7 @@ public class GameModeWindow extends JFrame implements Observer{
     private void jPanelSouth() {
         this.panelSouth = new JPanel(new BorderLayout());
 
-        this.labelGiveUp.setText("<HTML><U>Desistir</U></HTML>");
+        this.labelGiveUp = new JLabel("<HTML><U>Desistir</U></HTML>");
         this.labelGiveUp.setForeground(Color.BLUE);
         this.labelGiveUp.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
@@ -151,6 +152,7 @@ public class GameModeWindow extends JFrame implements Observer{
             @Override
             public void mouseClicked(MouseEvent e) {
                 dialogExit();
+                challengeModel.end();
             }
         });
 
@@ -183,7 +185,7 @@ public class GameModeWindow extends JFrame implements Observer{
             }
 
         });
-        
+
     }
     
     /**
@@ -240,9 +242,13 @@ public class GameModeWindow extends JFrame implements Observer{
     }
     
     public void refreshGame() {
-        if (challengeModel.getChallenge().getCurrentQuestion() == null)
+        Question currentQuestion = challengeModel.getChallenge().getCurrentQuestion();
+        if (currentQuestion == null)
             return;
         
-        labelQuestion.setText(challengeModel.getChallenge().getCurrentQuestion().getQuestion());
+        buttonOptionA.setText(currentQuestion.getOptionA());
+        buttonOptionB.setText(currentQuestion.getOptionB());
+        
+        labelQuestion.setText("<HTML><B>"+currentQuestion.getQuestion()+"</B></HTML>");
     }
 }
