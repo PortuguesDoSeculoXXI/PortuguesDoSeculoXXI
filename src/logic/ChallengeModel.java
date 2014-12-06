@@ -92,4 +92,10 @@ public class ChallengeModel extends Observable implements ChallengeInterface {
         this.scoreWindow = scoreWindow;
         sendNotification();
     }
+    
+    public int getChallengeScore(long duration) {
+        Score score = challenge.getScore();
+        Double totalScore = duration * 0.2 * (1 + 1000 * score.getGold() + 200 * score.getSilver() + 100 * score.getBronze());
+        return totalScore.intValue();
+    }
 }

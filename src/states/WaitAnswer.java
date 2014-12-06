@@ -3,6 +3,7 @@ package states;
 import java.util.Date;
 import logic.Answer;
 import logic.Challenge;
+import logic.ChallengeHard;
 import logic.Level;
 import logic.Score;
 import logic.database.Controller;
@@ -52,12 +53,14 @@ public class WaitAnswer extends StateAdapter {
         long timeDelta = timeEnd - challenge.getDuration();
         challenge.setDuration((long) (timeDelta / 1000.0)); // CONFIRMAR SE ISTO NAO PERDE VALORES
         
-        // TO DO - Save data to database HERE
-        System.out.println("Tempo total: "+challenge.getDuration());
+        System.out.println("Tempo total: " + challenge.getDuration());
         
         Score currentScore = calculateScore(challenge.getNumberOfQuestionsRight());
+        challenge.setScore(currentScore);
         
-        challenge.getController().insertChallengeScore(challenge.getCurrentProfile(), challenge.getDuration(), Level.MODE_EASY, currentScore);
+        Level level = challenge instanceof ChallengeHard ? Level.MODE_HARD : Level.MODE_EASY;
+        
+        challenge.getController().insertChallengeScore(challenge.getCurrentProfile(), challenge.getDuration(), level, currentScore);
         
         return new WaitScore(challenge);
     }

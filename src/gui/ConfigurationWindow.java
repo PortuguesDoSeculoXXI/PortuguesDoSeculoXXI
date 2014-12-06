@@ -376,7 +376,7 @@ public final class ConfigurationWindow extends JFrame implements Observer {
     }
 
     /**
-     * Select/Unselect game mode.
+     * Select/Un select game mode.
      */
     private void deselectMode(int gameMode) {
         if (gameMode == 1) {
@@ -398,7 +398,7 @@ public final class ConfigurationWindow extends JFrame implements Observer {
     }
 
     /**
-     * Verify that you have choosen a game mode.
+     * Verify that you have chosen a game mode.
      * 
      * @return true: user selected a mode, false: nothing selected.
      */

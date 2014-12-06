@@ -420,7 +420,7 @@ public class GameModeWindow extends JFrame implements Observer{
     }
     
     /**
-     * Quit game confimation.
+     * Quit game confirmation.
      */
     private void dialogExit() {
         JPanel jp = new JPanel(new GridLayout(2, 6));
@@ -476,7 +476,7 @@ public class GameModeWindow extends JFrame implements Observer{
         
         Box verticalBox = Box.createVerticalBox();
         
-        JLabel scoreTitle = new JLabel("<html><font size=13><center>Score: " + challengeModel.getChallenge().getScore().getScore() + "</center></font></html>");
+        JLabel scoreTitle = new JLabel("<html><font size=13><center>Score: " + challengeModel.getChallengeScore(challengeModel.getChallenge().getDuration()) + "</center></font></html>");
         scoreTitle.setAlignmentX(CENTER_ALIGNMENT);
         verticalBox.add(scoreTitle);
         
@@ -499,6 +499,11 @@ public class GameModeWindow extends JFrame implements Observer{
         jp.add(verticalBox);
         
         int value = JOptionPane.showOptionDialog(null, jp, "Fim do desafio", JOptionPane.NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, new String[] {"Sair", "Novo Desafio"}, 1);
+        
+        if (value == 0)
+            System.exit(0);
+        else
+            challengeModel.newGame();
     }
     
     /**

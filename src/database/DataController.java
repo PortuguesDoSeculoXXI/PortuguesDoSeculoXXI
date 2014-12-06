@@ -42,7 +42,7 @@ public class DataController {
     
     /**
      * DataController Constructor.
-     * Responsable for instance creation. Connects directly to the database.
+     * Responsible for instance creation. Connects directly to the database.
      */
     public DataController() {
         // Driver
