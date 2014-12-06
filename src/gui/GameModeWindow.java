@@ -12,6 +12,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.Box;
@@ -39,6 +42,8 @@ public class GameModeWindow extends JFrame implements Observer{
     
     private final Controller controller;
     private final ChallengeModel challengeModel;
+    private Date questionStartTime;
+    private Date questionAnswerTime;
     
     /**
      * UI Components
@@ -108,6 +113,27 @@ public class GameModeWindow extends JFrame implements Observer{
         jPanelNorth();
         jPanelCenter();
         jPanelSouth();
+
+        int timeDelay = 1000;
+        questionStartTime = new Date();
+        
+        ActionListener time;
+        time = new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                DateFormat df = new SimpleDateFormat("mm:ss");
+                Date currentDate = new Date();
+                // Time elapsed
+                long timeElapsed = currentDate.getTime() - questionStartTime.getTime();
+                // Show timer
+                String timeStr = df.format(new Date(timeElapsed));
+                labelTimeQuestion.setText(timeStr);
+            }
+            
+        };
+
+        new Timer(timeDelay, time).start();
     }
     
     private void initMargins() {
@@ -195,22 +221,22 @@ public class GameModeWindow extends JFrame implements Observer{
         panelCenter.add(group);
         
         panelCenter.add(Box.createRigidArea(new Dimension(5,15)));
-        
+        // Answer Result
         labelAnswerResult.setAlignmentX(CENTER_ALIGNMENT);
         panelCenter.add(labelAnswerResult);
         
         panelCenter.add(Box.createRigidArea(new Dimension(5,5)));
-        
+        // Clarification
         labelClarification.setAlignmentX(CENTER_ALIGNMENT);
         panelCenter.add(labelClarification);
         
         panelCenter.add(Box.createRigidArea(new Dimension(5,5)));
-        
+        // Dimsiss the answer message with clarification
         buttonDismiss.setAlignmentX(CENTER_ALIGNMENT);
         panelCenter.add(buttonDismiss);
 
         panelCenter.add(Box.createRigidArea(new Dimension(5,5)));
-                
+        
         group = new JPanel();
         group.setBackground(Resources.getLogoColor());
         group.setPreferredSize(new Dimension(100,130));
@@ -246,7 +272,7 @@ public class GameModeWindow extends JFrame implements Observer{
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (timerAnswer != null && timerAnswer.isRunning())
+                if (timerAnswer != null)
                     return;
 
                 verifyQuestion();
@@ -259,7 +285,7 @@ public class GameModeWindow extends JFrame implements Observer{
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (timerAnswer != null && timerAnswer.isRunning())
+                if (timerAnswer != null)
                     return;
 
                 verifyQuestion();
@@ -272,7 +298,7 @@ public class GameModeWindow extends JFrame implements Observer{
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (timerAnswer != null && timerAnswer.isRunning())
+                if (timerAnswer != null)
                     return;
 
                 verifyQuestion();
@@ -361,9 +387,12 @@ public class GameModeWindow extends JFrame implements Observer{
         buttonOptionB.setEnabled(true);
         buttonOptionBoth.setEnabled(true);
 
-        refreshGame();
-        if (timerAnswer != null)
+        if (timerAnswer != null) {
             timerAnswer.stop();
+            timerAnswer = null;
+        }
+        
+        refreshGame();
     }
     
     /**
@@ -403,8 +432,10 @@ public class GameModeWindow extends JFrame implements Observer{
         
         labelProfile.setText("<HTML><B>"+captionCurrentProfile+"</B>"+challengeModel.getChallenge().getCurrentProfile().getName()+"</HTML>");
         
-        if (timerAnswer != null && timerAnswer.isRunning())
+        if (timerAnswer != null)
             return;
+        
+        questionStartTime = new Date();
         
         buttonOptionA.setText(currentQuestion.getOptionA());
         buttonOptionB.setText(currentQuestion.getOptionB());

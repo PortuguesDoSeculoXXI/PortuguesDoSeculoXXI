@@ -5,15 +5,12 @@ import java.awt.Container;
 import java.awt.FlowLayout;
 import java.util.Observable;
 import java.util.Observer;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
 import logic.ChallengeModel;
 import logic.database.Controller;
-import org.jfree.chart.ChartPanel;
+import resources.Resources;
 
 /**
  * Score Game Window.
@@ -83,6 +80,7 @@ public class GameScoreWindow extends JFrame implements Observer {
         final JPanel jPanelCenter = new JPanel(new FlowLayout());
 
         jPanelCenter.add(new JLabel("<HTML><B><FONT SIZE=64>Pontuação</FONT></B></HTML>"));
+        jPanelCenter.setBackground(Resources.getLogoColor());
         
         mainContainer.add(jPanelCenter);
     }
