@@ -175,5 +175,11 @@ public class Controller extends Observable {
         dataController.insertChallengeScore(player.getId(), new Date(), (int) duration, level, totalScore.intValue(),
                 score.getGold(), score.getSilver(), score.getBronze());
     }
+    
+    public String getRuleClarification(Question question) {
+        if (question == null)
+            return "";        
+        return dataController.getRuleClarification(question.getIdRule());
+    }
 
 }

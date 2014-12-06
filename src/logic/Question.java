@@ -14,16 +14,18 @@ public class Question {
     private final String question;
     private final String optionA;
     private final String optionB;
+    private final int idRule;
 
     public Answer getAnswer() {
         return answer;
     }
 
-    public Question(Answer answer, String question, String optionA, String optionB) {
+    public Question(Answer answer, String question, String optionA, String optionB, int idRule) {
         this.answer = answer;
         this.question = question;
         this.optionA = optionA;
         this.optionB = optionB;
+        this.idRule = idRule;
     }
 
     public String getQuestion() {
@@ -36,6 +38,10 @@ public class Question {
 
     public String getOptionB() {
         return optionB;
+    }
+
+    public int getIdRule() {
+        return idRule;
     }
     
 }
