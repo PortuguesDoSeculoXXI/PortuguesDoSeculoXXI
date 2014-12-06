@@ -27,6 +27,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import logic.Answer;
+import logic.ChallengeHard;
 import logic.ChallengeModel;
 import logic.Question;
 import logic.database.Controller;
@@ -66,14 +67,30 @@ public class GameModeWindow extends JFrame implements Observer{
     
     private static final String captionCurrentProfile = " Perfil atual: ";
     
-    // Teste
+    /**
+     * Timers
+     */
     private Timer timerAnswer;
     private Timer timerQuestion;
     
+    /**
+     * Constructor.
+     * @param controller
+     * @param challengeModel 
+     */
     public GameModeWindow(Controller controller, ChallengeModel challengeModel) {
         this(controller, challengeModel, 350, 75, 600, 450);
     }
 
+    /**
+     * Constructor.
+     * @param controller
+     * @param challengeModel
+     * @param x
+     * @param y
+     * @param width
+     * @param height 
+     */
     public GameModeWindow(Controller controller, ChallengeModel challengeModel, int x, int y, int width, int height) {
         super("Português do Século XXI");
         this.controller = controller;
@@ -101,7 +118,9 @@ public class GameModeWindow extends JFrame implements Observer{
         this.controller.addObserver(this);
         this.challengeModel.addObserver(this);
         // Listeners
-        registerListeners();
+        registerListeners();        
+        // Timer
+        prepareQuestionTimer();
         
         // First time
         refreshGame();
@@ -113,15 +132,15 @@ public class GameModeWindow extends JFrame implements Observer{
         jPanelNorth();
         jPanelCenter();
         jPanelSouth();
-
-        int timeDelay = 1000;
-        questionStartTime = new Date();
-        
-        ActionListener time;
-        time = new ActionListener() {
+    }
+    
+    private void prepareQuestionTimer() {
+        timerQuestion = new Timer(1000, new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent evt) {
+                if (questionStartTime == null)
+                    return;
                 DateFormat df = new SimpleDateFormat("mm:ss");
                 Date currentDate = new Date();
                 // Time elapsed
@@ -129,11 +148,10 @@ public class GameModeWindow extends JFrame implements Observer{
                 // Show timer
                 String timeStr = df.format(new Date(timeElapsed));
                 labelTimeQuestion.setText(timeStr);
+                labelTimeQuestion.repaint();
             }
             
-        };
-
-        new Timer(timeDelay, time).start();
+        });
     }
     
     private void initMargins() {
@@ -322,6 +340,10 @@ public class GameModeWindow extends JFrame implements Observer{
      * Verify the answer of question.
      */
     private void  verifyQuestion() {
+        // If is running, stop the question timer
+        //(Hard mode)
+        timerQuestion.stop();
+        
         if (challengeModel.getChallenge().getCurrentCorrectAnswer()) {
             imgCenter.setIcon(Resources.getImageCorrect());
             labelAnswerResult.setText("Correto ");
@@ -426,16 +448,22 @@ public class GameModeWindow extends JFrame implements Observer{
         if (challengeModel.getChallenge() == null)
             return;
         
+        // Waiting when ready
         Question currentQuestion = challengeModel.getChallenge().getCurrentQuestion();
         if (currentQuestion == null)
             return;
         
         labelProfile.setText("<HTML><B>"+captionCurrentProfile+"</B>"+challengeModel.getChallenge().getCurrentProfile().getName()+"</HTML>");
         
+        // Waiting for clarification dismiss
         if (timerAnswer != null)
             return;
-        
-        questionStartTime = new Date();
+                
+        // Hard mode
+        if (challengeModel.getChallenge() instanceof ChallengeHard) {
+            questionStartTime = new Date();
+            timerQuestion.start();
+        }
         
         buttonOptionA.setText(currentQuestion.getOptionA());
         buttonOptionB.setText(currentQuestion.getOptionB());
