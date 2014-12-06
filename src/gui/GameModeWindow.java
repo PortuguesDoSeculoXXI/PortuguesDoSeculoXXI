@@ -12,6 +12,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.Box;
@@ -24,6 +27,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import logic.Answer;
+import logic.ChallengeHard;
 import logic.ChallengeModel;
 import logic.Question;
 import logic.database.Controller;
@@ -39,6 +43,8 @@ public class GameModeWindow extends JFrame implements Observer{
     
     private final Controller controller;
     private final ChallengeModel challengeModel;
+    private Date questionStartTime;
+    private Date questionAnswerTime;
     
     /**
      * UI Components
@@ -61,14 +67,30 @@ public class GameModeWindow extends JFrame implements Observer{
     
     private static final String captionCurrentProfile = " Perfil atual: ";
     
-    // Teste
+    /**
+     * Timers
+     */
     private Timer timerAnswer;
     private Timer timerQuestion;
     
+    /**
+     * Constructor.
+     * @param controller
+     * @param challengeModel 
+     */
     public GameModeWindow(Controller controller, ChallengeModel challengeModel) {
         this(controller, challengeModel, 350, 75, 600, 450);
     }
 
+    /**
+     * Constructor.
+     * @param controller
+     * @param challengeModel
+     * @param x
+     * @param y
+     * @param width
+     * @param height 
+     */
     public GameModeWindow(Controller controller, ChallengeModel challengeModel, int x, int y, int width, int height) {
         super("Português do Século XXI");
         this.controller = controller;
@@ -96,7 +118,9 @@ public class GameModeWindow extends JFrame implements Observer{
         this.controller.addObserver(this);
         this.challengeModel.addObserver(this);
         // Listeners
-        registerListeners();
+        registerListeners();        
+        // Timer
+        prepareQuestionTimer();
         
         // First time
         refreshGame();
@@ -108,6 +132,26 @@ public class GameModeWindow extends JFrame implements Observer{
         jPanelNorth();
         jPanelCenter();
         jPanelSouth();
+    }
+    
+    private void prepareQuestionTimer() {
+        timerQuestion = new Timer(1000, new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                if (questionStartTime == null)
+                    return;
+                DateFormat df = new SimpleDateFormat("mm:ss");
+                Date currentDate = new Date();
+                // Time elapsed
+                long timeElapsed = currentDate.getTime() - questionStartTime.getTime();
+                // Show timer
+                String timeStr = df.format(new Date(timeElapsed));
+                labelTimeQuestion.setText(timeStr);
+                labelTimeQuestion.repaint();
+            }
+            
+        });
     }
     
     private void initMargins() {
@@ -195,22 +239,22 @@ public class GameModeWindow extends JFrame implements Observer{
         panelCenter.add(group);
         
         panelCenter.add(Box.createRigidArea(new Dimension(5,15)));
-        
+        // Answer Result
         labelAnswerResult.setAlignmentX(CENTER_ALIGNMENT);
         panelCenter.add(labelAnswerResult);
         
         panelCenter.add(Box.createRigidArea(new Dimension(5,5)));
-        
+        // Clarification
         labelClarification.setAlignmentX(CENTER_ALIGNMENT);
         panelCenter.add(labelClarification);
         
         panelCenter.add(Box.createRigidArea(new Dimension(5,5)));
-        
+        // Dimsiss the answer message with clarification
         buttonDismiss.setAlignmentX(CENTER_ALIGNMENT);
         panelCenter.add(buttonDismiss);
 
         panelCenter.add(Box.createRigidArea(new Dimension(5,5)));
-                
+        
         group = new JPanel();
         group.setBackground(Resources.getLogoColor());
         group.setPreferredSize(new Dimension(100,130));
@@ -246,7 +290,7 @@ public class GameModeWindow extends JFrame implements Observer{
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (timerAnswer != null && timerAnswer.isRunning())
+                if (timerAnswer != null)
                     return;
 
                 verifyQuestion();
@@ -259,7 +303,7 @@ public class GameModeWindow extends JFrame implements Observer{
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (timerAnswer != null && timerAnswer.isRunning())
+                if (timerAnswer != null)
                     return;
 
                 verifyQuestion();
@@ -272,7 +316,7 @@ public class GameModeWindow extends JFrame implements Observer{
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (timerAnswer != null && timerAnswer.isRunning())
+                if (timerAnswer != null)
                     return;
 
                 verifyQuestion();
@@ -296,6 +340,10 @@ public class GameModeWindow extends JFrame implements Observer{
      * Verify the answer of question.
      */
     private void  verifyQuestion() {
+        // If is running, stop the question timer
+        //(Hard mode)
+        timerQuestion.stop();
+        
         if (challengeModel.getChallenge().getCurrentCorrectAnswer()) {
             imgCenter.setIcon(Resources.getImageCorrect());
             labelAnswerResult.setText("Correto ");
@@ -361,9 +409,12 @@ public class GameModeWindow extends JFrame implements Observer{
         buttonOptionB.setEnabled(true);
         buttonOptionBoth.setEnabled(true);
 
-        refreshGame();
-        if (timerAnswer != null)
+        if (timerAnswer != null) {
             timerAnswer.stop();
+            timerAnswer = null;
+        }
+        
+        refreshGame();
     }
     
     /**
@@ -397,14 +448,22 @@ public class GameModeWindow extends JFrame implements Observer{
         if (challengeModel.getChallenge() == null)
             return;
         
+        // Waiting when ready
         Question currentQuestion = challengeModel.getChallenge().getCurrentQuestion();
         if (currentQuestion == null)
             return;
         
         labelProfile.setText("<HTML><B>"+captionCurrentProfile+"</B>"+challengeModel.getChallenge().getCurrentProfile().getName()+"</HTML>");
         
-        if (timerAnswer != null && timerAnswer.isRunning())
+        // Waiting for clarification dismiss
+        if (timerAnswer != null)
             return;
+                
+        // Hard mode
+        if (challengeModel.getChallenge() instanceof ChallengeHard) {
+            questionStartTime = new Date();
+            timerQuestion.start();
+        }
         
         buttonOptionA.setText(currentQuestion.getOptionA());
         buttonOptionB.setText(currentQuestion.getOptionB());
