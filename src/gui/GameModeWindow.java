@@ -148,7 +148,11 @@ public class GameModeWindow extends JFrame implements Observer{
                 long timeElapsed = currentDate.getTime() - questionStartTime.getTime();
                 // Show timer
                 String timeStr = df.format(new Date(timeElapsed));
-                labelTimeQuestion.setText("" + (Integer.parseInt(labelTimeQuestion.getText()) - 1));
+                try {
+                    labelTimeQuestion.setText("" + (Integer.parseInt(labelTimeQuestion.getText()) - 1));
+                } catch(NumberFormatException e) {
+                    labelTimeQuestion.setText("15");
+                }
                 labelTimeQuestion.repaint();
                 if (labelTimeQuestion.getText().equals("0")) {
                     verifyQuestion();
@@ -177,7 +181,10 @@ public class GameModeWindow extends JFrame implements Observer{
     
     private void initComponents() {
         labelProfile = new JLabel();
-        labelTimeQuestion = new JLabel("15");
+        if (challengeModel.getChallenge() instanceof ChallengeHard)
+            labelTimeQuestion = new JLabel("15");
+        else
+            labelTimeQuestion = new JLabel();
         labelQuestion = new JLabel("Pergunta");
         labelClarification = new JLabel();        
         labelAnswerResult = new JLabel();
@@ -401,7 +408,8 @@ public class GameModeWindow extends JFrame implements Observer{
         
         timerAnswer.setRepeats(false);
         timerAnswer.start();
-        labelTimeQuestion.setText("15");
+        if (challengeModel.getChallenge() instanceof ChallengeHard)
+            labelTimeQuestion.setText("15");
     }
     
     public void hideAnswerResult() {
@@ -520,7 +528,7 @@ public class GameModeWindow extends JFrame implements Observer{
         if (challengeModel.getChallenge() != null && challengeModel.getChallenge().getCurrentState() instanceof WaitScore) {
             scoreDialog();
         }
-        if (challengeModel.getChallenge() != null && challengeModel.getChallenge().getCurrentState() instanceof WaitScore) {
+        if (challengeModel.getChallenge() != null && challengeModel.getChallenge().getCurrentState() instanceof WaitScore && challengeModel.getChallenge() instanceof ChallengeHard) {
             labelTimeQuestion.setText("15");
         }
     }
