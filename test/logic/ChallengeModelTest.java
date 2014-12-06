@@ -82,9 +82,8 @@ public class ChallengeModelTest {
     public void testStartGame() {
         System.out.println("startGame");
         List<Challenge.Categories> categoryList = null;
-        Challenge challengeMode = null;
         ChallengeModel instance = null;
-        instance.startGame(categoryList, challengeMode);
+        instance.startGame(categoryList);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
@@ -95,7 +94,7 @@ public class ChallengeModelTest {
     @Test
     public void testNextAnswer() {
         System.out.println("nextAnswer");
-        int answer = 0;
+        Answer answer = null;
         ChallengeModel instance = null;
         instance.nextAnswer(answer);
         // TODO review the generated test code and remove the default call to fail.
@@ -175,6 +174,48 @@ public class ChallengeModelTest {
         System.out.println("backPressed");
         ChallengeModel instance = null;
         instance.backPressed();
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of isScoreWindow method, of class ChallengeModel.
+     */
+    @Test
+    public void testIsScoreWindow() {
+        System.out.println("isScoreWindow");
+        ChallengeModel instance = null;
+        boolean expResult = false;
+        boolean result = instance.isScoreWindow();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of setScoreWindow method, of class ChallengeModel.
+     */
+    @Test
+    public void testSetScoreWindow() {
+        System.out.println("setScoreWindow");
+        boolean scoreWindow = false;
+        ChallengeModel instance = null;
+        instance.setScoreWindow(scoreWindow);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getChallengeScore method, of class ChallengeModel.
+     */
+    @Test
+    public void testGetChallengeScore() {
+        System.out.println("getChallengeScore");
+        long duration = 0L;
+        ChallengeModel instance = null;
+        int expResult = 0;
+        int result = instance.getChallengeScore(duration);
+        assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }

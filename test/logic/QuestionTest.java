@@ -32,7 +32,8 @@ public class QuestionTest {
     
     @Before
     public void setUp() {
-        instance = new Question(2, "Como se escreve o quarto mês do ano civil?", "Abril", "abril");
+        Answer answer = Answer.OPTION_B;
+        instance = new Question(answer, "Como se escreve o quarto mês do ano civil?", "Abril", "abril", 0);
     }
     
     @After
@@ -46,7 +47,7 @@ public class QuestionTest {
     public void testGetAnswer() {
         System.out.println("getAnswer");
         int expResult = 2;
-        int result = instance.getAnswer();
+        Answer result = instance.getAnswer();
         assertEquals(expResult, result);
     }
 
