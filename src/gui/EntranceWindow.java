@@ -24,6 +24,7 @@ import javax.swing.JTextField;
 import logic.Challenge;
 import logic.ChallengeModel;
 import logic.database.Controller;
+import resources.Resources;
 
 /**
  * Frame Main Class.
@@ -105,18 +106,11 @@ public final class EntranceWindow extends JFrame {
      */
     private void jPanelNorth() {
         this.jpanel = new JPanel(new FlowLayout());
-        JPanel jp = new JPanel(new GridLayout(3, 1));
-        jp.add(new JLabel(" "));
-        JLabel jb = new JLabel("   Português");
-        jb.setFont(jb.getFont().deriveFont(64f));
+        this.jpanel.setBackground(Resources.getLogoColor());
+        
+        JLabel jb = new JLabel(Resources.getLogo());
 
-        jp.add(jb);
-
-        JLabel jb2 = new JLabel("do Século XXI");
-        jb2.setFont(jb2.getFont().deriveFont(64f));
-        jp.add(jb2);
-
-        this.jpanel.add(jp);
+        this.jpanel.add(jb);
         this.mainContainer.add(this.jpanel, BorderLayout.NORTH);
     }
 
@@ -124,13 +118,14 @@ public final class EntranceWindow extends JFrame {
      * Method instantiates <b>Center</b> components and its characteristics
      */
     private void jPanelCenter() {
-        //this.jpanelcenter = new JPanel(new GridLayout(10, 1));
         jpanelcenter = new JPanel(new BorderLayout());
+        this.jpanelcenter.setBackground(Resources.getLogoColor());
         this.jpanelcenter.setAlignmentX(CENTER_ALIGNMENT);
 
         this.jc = new JComboBox(this.simbolos);
 
         JPanel jp = new JPanel(new GridLayout(1, 6));
+        jp.setBackground(Resources.getLogoColor());
         jp.add(new JLabel(" "));
         jp.add(new JLabel("Perfil do utilizador:"));
         jp.add(this.jc);
@@ -144,6 +139,7 @@ public final class EntranceWindow extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 dialogEditProfile();
             }
+            
         });
 
         jp.add(this.click);
@@ -152,7 +148,6 @@ public final class EntranceWindow extends JFrame {
         this.jpanelcenter.add(new JLabel(" "));
 
         Box buttonsBox = Box.createVerticalBox();
-        //buttonsBox.setMinimumSize(new Dimension(50, 0));
         buttonsBox.add(Box.createVerticalStrut(25));
         
         play.setMaximumSize(new Dimension(140, Integer.MAX_VALUE));
@@ -168,9 +163,11 @@ public final class EntranceWindow extends JFrame {
         exit.setMaximumSize(new Dimension(140, Integer.MAX_VALUE));
         exit.setAlignmentX(CENTER_ALIGNMENT);
         buttonsBox.add(exit);
-
         jpanelcenter.add(buttonsBox);
+        
         this.jpanelsout = new JPanel(new FlowLayout());
+        this.jpanelsout.setBackground(Resources.getLogoColor());
+        
         this.mainContainer.add(this.jpanelsout, BorderLayout.SOUTH);
         this.mainContainer.add(this.jpanelcenter, BorderLayout.CENTER);
     }

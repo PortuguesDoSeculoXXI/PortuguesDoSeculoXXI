@@ -8,23 +8,27 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.Box;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import logic.Answer;
 import logic.Challenge;
 import logic.ChallengeModel;
 import logic.Question;
 import logic.database.Controller;
+import resources.Resources;
 
 /**
  * Game Window.
@@ -44,9 +48,14 @@ public class GameModeWindow extends JFrame implements Observer{
     private JLabel labelTime;
     private JLabel labelQuestion;
     private JLabel labelGiveUp;
+    private JLabel imgCenter;
     private JButton buttonOptionA = new JButton("Resposta A");
     private JButton buttonOptionB = new JButton("Resposta B");
     private JButton buttonOptionBoth = new JButton("Ambas estão correctas");
+    
+    // Teste
+    private Timer timerAnswer;
+    private Timer timerQuestion;
     
     public GameModeWindow(Controller controller, ChallengeModel challengeModel) {
         this(controller, challengeModel, 350, 75, 600, 450);
@@ -93,8 +102,8 @@ public class GameModeWindow extends JFrame implements Observer{
     private void jPanelNorth() {
         panelNorth = new JPanel(new BorderLayout());
         this.panelNorth.setPreferredSize(new Dimension(400, 50));
-        this.labelProfile = new JLabel("Perfil atual: ");
-        this.labelTime = new JLabel("Time...");
+        this.labelProfile = new JLabel(" Perfil atual: ");
+        this.labelTime = new JLabel("Time... ");
         
         panelNorth.add(this.labelProfile,BorderLayout.WEST);
         panelNorth.add(this.labelTime,BorderLayout.EAST);
@@ -106,15 +115,14 @@ public class GameModeWindow extends JFrame implements Observer{
         
         JPanel jp = new JPanel(new FlowLayout(FlowLayout.CENTER));
         labelQuestion = new JLabel("Pergunta");
-        //labelQuestion.setFont(labelQuestion.getFont().deriveFont(20f));
         jp.add(labelQuestion);
-        
         panelCenter.add(jp);
-        //Questions
-        Box verticalBox = Box.createVerticalBox();
-        verticalBox.setPreferredSize(new Dimension(500, 200));
-        verticalBox.add(Box.createVerticalStrut(10));
         
+        // Questions
+        Box verticalBox = Box.createVerticalBox();
+        verticalBox.setPreferredSize(new Dimension(500, 120));
+        verticalBox.add(Box.createVerticalStrut(10));
+                
         Box horizontalBox = Box.createHorizontalBox();
         horizontalBox.add(Box.createHorizontalStrut(10));
         
@@ -128,13 +136,26 @@ public class GameModeWindow extends JFrame implements Observer{
         verticalBox.add(this.buttonOptionBoth);
         this.panelCenter.add(verticalBox);
         
+        // Image: Correct/Incorrect
+        verticalBox = Box.createVerticalBox();
+        verticalBox.setPreferredSize(new Dimension(500, 130));
+        verticalBox.add(Box.createVerticalStrut(30));
+        horizontalBox = Box.createHorizontalBox();
+        horizontalBox.add(Box.createHorizontalStrut(10));
+        imgCenter = new JLabel();
+        imgCenter.setIcon(Resources.getImageCorrect());
+        imgCenter.setVisible(false);
+        horizontalBox.add(imgCenter);
+        verticalBox.add(horizontalBox);
+        this.panelCenter.add(verticalBox);
+        
         this.mainContainer.add(this.panelCenter, BorderLayout.CENTER);
     }
     
     private void jPanelSouth() {
         this.panelSouth = new JPanel(new BorderLayout());
 
-        this.labelGiveUp = new JLabel("<HTML><U>Desistir</U></HTML>");
+        this.labelGiveUp = new JLabel("<HTML> <U>Desistir</U></HTML>");
         this.labelGiveUp.setForeground(Color.BLUE);
         this.labelGiveUp.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
@@ -152,7 +173,6 @@ public class GameModeWindow extends JFrame implements Observer{
             @Override
             public void mouseClicked(MouseEvent e) {
                 dialogExit();
-                challengeModel.end();
             }
         });
 
@@ -160,6 +180,9 @@ public class GameModeWindow extends JFrame implements Observer{
 
             @Override
             public void mouseClicked(MouseEvent e) {
+                if (timerAnswer != null && timerAnswer.isRunning())
+                    return;
+
                 verifyQuestion();
                 challengeModel.nextAnswer(Answer.OPTION_A);
             }
@@ -170,6 +193,9 @@ public class GameModeWindow extends JFrame implements Observer{
 
             @Override
             public void mouseClicked(MouseEvent e) {
+                if (timerAnswer != null && timerAnswer.isRunning())
+                    return;
+
                 verifyQuestion();
                 challengeModel.nextAnswer(Answer.OPTION_B);
             }
@@ -180,6 +206,9 @@ public class GameModeWindow extends JFrame implements Observer{
 
             @Override
             public void mouseClicked(MouseEvent e) {
+                if (timerAnswer != null && timerAnswer.isRunning())
+                    return;
+
                 verifyQuestion();
                 challengeModel.nextAnswer(Answer.OPTION_BOTH);
             }
@@ -189,10 +218,51 @@ public class GameModeWindow extends JFrame implements Observer{
     }
     
     /**
-     * Verify that hit the question.
+     * Verify the answer of question.
      */
     private void  verifyQuestion() {
+        if (challengeModel.getChallenge().getCurrentCorrectAnswer())
+            imgCenter.setIcon(Resources.getImageCorrect());
+        else
+            imgCenter.setIcon(Resources.getImageIncorrect());
         
+        imgCenter.setVisible(true);
+        imgCenter.invalidate();
+        
+        buttonOptionA.setEnabled(false);
+        buttonOptionB.setEnabled(false);
+        buttonOptionBoth.setEnabled(false);
+        
+        // Refresh in thread
+        SwingUtilities.invokeLater(new Runnable() {
+            
+                                @Override
+                                public void run() { 
+                                   imgCenter.repaint();
+                                }
+                                
+                            });
+        
+        // Timer for next answer
+        timerAnswer = new Timer(1000, new ActionListener() {
+            
+                @Override
+                public void actionPerformed(ActionEvent event) {
+                    imgCenter.setVisible(false);
+                    imgCenter.invalidate();
+                    
+                    buttonOptionA.setEnabled(true);
+                    buttonOptionB.setEnabled(true);
+                    buttonOptionBoth.setEnabled(true);
+                    
+                    refreshGame();
+                    timerAnswer.stop();
+                }
+
+            });
+        
+        timerAnswer.setRepeats(false);
+        timerAnswer.start();
     }
     
     /**
@@ -200,14 +270,14 @@ public class GameModeWindow extends JFrame implements Observer{
      */
     private void dialogExit() {
         JPanel jp = new JPanel(new GridLayout(2, 6));
-        jp.add(new JLabel("Deseja desistir?"));
+        jp.add(new JLabel("Deseja realmente desistir?"));
 
-        String options[] = {"Cancelar", "Confirmar"};
-        int value = JOptionPane.showOptionDialog(null, jp, "Desistir", JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+        String options[] = {"Confirmar", "Cancelar"};
+        int value = JOptionPane.showOptionDialog(null, jp, "Desistir", JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
 
         //Is ready to give up
-        if (value == 1) {
-
+        if (value == 0) {
+            challengeModel.quitGame();
         }
     }
     
@@ -224,26 +294,25 @@ public class GameModeWindow extends JFrame implements Observer{
     }
     
     /**
-     * Show Score result.
+     * Update event.
      */
-    private void scoreResultDialog() {
-        JPanel jp = new JPanel(new GridLayout(2, 6));
-        JLabel jb = new JLabel("Parabens");
-        jb.setFont(jb.getFont().deriveFont(42f));
-        jp.add(jb);
-
-        String options[] = {"Sair", "Novo Desafio"};
-        int value = JOptionPane.showOptionDialog(null, jp, "Fim do desafio", JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-    }
- 
     @Override
     public void update(Observable t, Object o) {
         refreshGame();
     }
     
+    /**
+     * Refresh interface data.
+     */
     public void refreshGame() {
+        if (challengeModel.getChallenge() == null)
+            return;
+        
         Question currentQuestion = challengeModel.getChallenge().getCurrentQuestion();
         if (currentQuestion == null)
+            return;
+        
+        if (timerAnswer != null && timerAnswer.isRunning())
             return;
         
         buttonOptionA.setText(currentQuestion.getOptionA());
