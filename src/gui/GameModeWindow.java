@@ -7,6 +7,7 @@ import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,7 +16,7 @@ import java.awt.event.MouseEvent;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.Box;
-import javax.swing.ImageIcon;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -24,7 +25,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import logic.Answer;
-import logic.Challenge;
 import logic.ChallengeModel;
 import logic.Question;
 import logic.database.Controller;
@@ -40,18 +40,25 @@ public class GameModeWindow extends JFrame implements Observer{
     
     private final Controller controller;
     private final ChallengeModel challengeModel;
+    
+    /**
+     * UI Components
+     */
     private Container mainContainer;
     private JPanel panelNorth;
     private JPanel panelCenter;
     private JPanel panelSouth;
     private JLabel labelProfile;
-    private JLabel labelTime;
+    private JLabel labelTimeQuestion;
     private JLabel labelQuestion;
+    private JLabel labelClarification;
     private JLabel labelGiveUp;
     private JLabel imgCenter;
     private JButton buttonOptionA = new JButton("Resposta A");
     private JButton buttonOptionB = new JButton("Resposta B");
-    private JButton buttonOptionBoth = new JButton("Ambas estão correctas");
+    private JButton buttonOptionBoth = new JButton("Ambas estão corretas");
+    
+    private static final String captionCurrentProfile = " Perfil atual: ";
     
     // Teste
     private Timer timerAnswer;
@@ -76,9 +83,10 @@ public class GameModeWindow extends JFrame implements Observer{
     
     protected void init() {
         // Init components/panels
-        this.mainContainer = getContentPane();
-        this.mainContainer.setLayout(new BorderLayout());
+        getContentPane().setLayout(new BorderLayout());
+        this.mainContainer = new JPanel(new BorderLayout());
         this.mainContainer.validate();
+        getContentPane().add(mainContainer, BorderLayout.CENTER);
 
         // Layout
         createLayout();
@@ -94,81 +102,123 @@ public class GameModeWindow extends JFrame implements Observer{
     }
      
     private void createLayout() {
-         jPanelNorth();
-         jPanelCenter();
-         jPanelSouth();
-     }   
-        
-    private void jPanelNorth() {
-        panelNorth = new JPanel(new BorderLayout());
-        this.panelNorth.setPreferredSize(new Dimension(400, 50));
-        this.labelProfile = new JLabel(" Perfil atual: ");
-        this.labelTime = new JLabel("Time... ");
-        
-        panelNorth.add(this.labelProfile,BorderLayout.WEST);
-        panelNorth.add(this.labelTime,BorderLayout.EAST);
-        this.mainContainer.add(this.panelNorth, BorderLayout.NORTH);
-     }
-     
-    private void jPanelCenter() {
-        this.panelCenter = new JPanel(new FlowLayout(FlowLayout.CENTER)); 
-        
-        JPanel jp = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        initComponents();
+        initMargins();
+        jPanelNorth();
+        jPanelCenter();
+        jPanelSouth();
+    }
+    
+    private void initMargins() {
+        // Margin Left
+        JPanel marginLeft = new JPanel(new BorderLayout());
+        marginLeft.setBackground(Resources.getLogoColor());
+        marginLeft.setMinimumSize(new Dimension(10, 400));
+        marginLeft.setPreferredSize(new Dimension(10, 400));
+        getContentPane().add(marginLeft, BorderLayout.WEST);
+        // Margin Right
+        JPanel marginRight = new JPanel(new BorderLayout());
+        marginRight.setBackground(Resources.getLogoColor());
+        marginRight.setMinimumSize(new Dimension(10, 400));
+        marginRight.setPreferredSize(new Dimension(10, 400));
+        getContentPane().add(marginRight, BorderLayout.EAST);
+    }
+    
+    private void initComponents() {
+        labelProfile = new JLabel();
+        labelTimeQuestion = new JLabel();
         labelQuestion = new JLabel("Pergunta");
-        jp.add(labelQuestion);
-        panelCenter.add(jp);
+        labelClarification = new JLabel("");
         
-        // Questions
-        Box verticalBox = Box.createVerticalBox();
-        verticalBox.setPreferredSize(new Dimension(500, 120));
-        verticalBox.add(Box.createVerticalStrut(10));
-                
-        Box horizontalBox = Box.createHorizontalBox();
-        horizontalBox.add(Box.createHorizontalStrut(10));
-        
-        horizontalBox.add(this.buttonOptionA);
-        horizontalBox.add(new JLabel("                    "));
-        horizontalBox.add(this.buttonOptionB);
-        
-        verticalBox.add(horizontalBox);
-       
-        this.buttonOptionBoth.setAlignmentX(CENTER_ALIGNMENT);
-        verticalBox.add(this.buttonOptionBoth);
-        this.panelCenter.add(verticalBox);
-        
-        // Image: Correct/Incorrect
-        verticalBox = Box.createVerticalBox();
-        verticalBox.setPreferredSize(new Dimension(500, 130));
-        verticalBox.add(Box.createVerticalStrut(30));
-        horizontalBox = Box.createHorizontalBox();
-        horizontalBox.add(Box.createHorizontalStrut(10));
         imgCenter = new JLabel();
         imgCenter.setIcon(Resources.getImageCorrect());
         imgCenter.setVisible(false);
-        horizontalBox.add(imgCenter);
-        verticalBox.add(horizontalBox);
-        this.panelCenter.add(verticalBox);
         
-        this.mainContainer.add(this.panelCenter, BorderLayout.CENTER);
+        labelGiveUp = new JLabel("<HTML><U>Desistir</U></HTML>");
+        labelGiveUp.setForeground(Color.BLUE);
+        labelGiveUp.setCursor(new Cursor(Cursor.HAND_CURSOR));
+    }
+        
+    private void jPanelNorth() {
+        panelNorth = new JPanel(new BorderLayout());
+        panelNorth.setPreferredSize(new Dimension(400, 50));
+        panelNorth.setBackground(Resources.getLogoColor());
+
+        panelNorth.add(labelProfile,BorderLayout.WEST);
+        panelNorth.add(labelTimeQuestion,BorderLayout.EAST);
+        
+        mainContainer.add(panelNorth, BorderLayout.NORTH);
+     }
+     
+    private void jPanelCenter() {
+        panelCenter = new JPanel();
+        panelCenter.setLayout(new BoxLayout(panelCenter,BoxLayout.Y_AXIS));
+        panelCenter.setBackground(Color.CYAN); //Resources.getLogoColor()
+        
+        JLabel labelCaption = new JLabel("Pergunta");
+        Font labelFont = labelCaption.getFont();
+        labelCaption.setFont(new Font(labelFont.getName(), Font.PLAIN, 24));
+        labelCaption.setAlignmentX(CENTER_ALIGNMENT);
+        labelCaption.setAlignmentY(CENTER_ALIGNMENT);
+        panelCenter.add(labelCaption);
+        
+        panelCenter.add(Box.createRigidArea(new Dimension(5,15)));
+        
+        labelQuestion.setAlignmentX(CENTER_ALIGNMENT);
+        labelQuestion.setAlignmentY(CENTER_ALIGNMENT);
+        panelCenter.add(labelQuestion);
+        
+        panelCenter.add(Box.createRigidArea(new Dimension(5,15)));
+        
+        JPanel group;
+        
+        group = new JPanel();
+        group.setLayout(new BoxLayout(group,BoxLayout.X_AXIS));
+        group.add(this.buttonOptionA);
+        group.add(Box.createRigidArea(new Dimension(5,5)));
+        group.add(this.buttonOptionB);        
+        panelCenter.add(group);
+        
+        panelCenter.add(Box.createRigidArea(new Dimension(5,5)));
+       
+        group = new JPanel();
+        group.setLayout(new BoxLayout(group,BoxLayout.X_AXIS));
+        buttonOptionBoth.setAlignmentX(CENTER_ALIGNMENT);
+        group.add(this.buttonOptionBoth);
+        panelCenter.add(group);
+        
+        panelCenter.add(Box.createRigidArea(new Dimension(5,5)));
+        
+        group = new JPanel();
+        group.setLayout(new BoxLayout(group,BoxLayout.X_AXIS));
+        group.add(labelClarification);
+        panelCenter.add(group);
+        
+        panelCenter.add(Box.createRigidArea(new Dimension(5,5)));
+        
+        group = new JPanel();
+        group.setPreferredSize(new Dimension(100,100));
+        group.setMinimumSize(new Dimension(100,100));
+        // Image: Correct/Incorrect
+        group.add(imgCenter);
+        panelCenter.add(group);
+        
+        mainContainer.add(panelCenter, BorderLayout.CENTER);
     }
     
     private void jPanelSouth() {
-        this.panelSouth = new JPanel(new BorderLayout());
+        panelSouth = new JPanel(new BorderLayout());
+        panelSouth.setBackground(Resources.getLogoColor());
+        panelSouth.setPreferredSize(new Dimension(400, 50));
 
-        this.labelGiveUp = new JLabel("<HTML> <U>Desistir</U></HTML>");
-        this.labelGiveUp.setForeground(Color.BLUE);
-        this.labelGiveUp.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        panelSouth.add(labelGiveUp, BorderLayout.WEST);
 
-        this.panelSouth.add(this.labelGiveUp, BorderLayout.WEST);
-
-        this.panelSouth.setPreferredSize(new Dimension(400, 50));
-
-        this.mainContainer.add(this.panelSouth, BorderLayout.SOUTH);
+        mainContainer.add(panelSouth, BorderLayout.SOUTH);
     }
     
     private void registerListeners() {
         
-        this.labelGiveUp.addMouseListener(new MouseAdapter() {
+        labelGiveUp.addMouseListener(new MouseAdapter() {
 
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -176,7 +226,7 @@ public class GameModeWindow extends JFrame implements Observer{
             }
         });
 
-        this.buttonOptionA.addMouseListener(new MouseAdapter() {
+        buttonOptionA.addMouseListener(new MouseAdapter() {
 
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -189,7 +239,7 @@ public class GameModeWindow extends JFrame implements Observer{
             
         });
 
-        this.buttonOptionB.addMouseListener(new MouseAdapter() {
+        buttonOptionB.addMouseListener(new MouseAdapter() {
 
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -202,7 +252,7 @@ public class GameModeWindow extends JFrame implements Observer{
             
         });
 
-        this.buttonOptionBoth.addMouseListener(new MouseAdapter() {
+        buttonOptionBoth.addMouseListener(new MouseAdapter() {
 
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -221,10 +271,15 @@ public class GameModeWindow extends JFrame implements Observer{
      * Verify the answer of question.
      */
     private void  verifyQuestion() {
-        if (challengeModel.getChallenge().getCurrentCorrectAnswer())
+        if (challengeModel.getChallenge().getCurrentCorrectAnswer()) {
             imgCenter.setIcon(Resources.getImageCorrect());
-        else
+            labelClarification.setText("Correto");
+        }
+        else {
             imgCenter.setIcon(Resources.getImageIncorrect());
+            // Show clarification
+            labelClarification.setText("Incorreto: "+challengeModel.getChallenge().getCurrentRuleClarification());
+        }
         
         imgCenter.setVisible(true);
         imgCenter.invalidate();
@@ -251,6 +306,7 @@ public class GameModeWindow extends JFrame implements Observer{
                     imgCenter.setVisible(false);
                     imgCenter.invalidate();
                     
+                    labelClarification.setText("");
                     buttonOptionA.setEnabled(true);
                     buttonOptionB.setEnabled(true);
                     buttonOptionBoth.setEnabled(true);
@@ -282,18 +338,6 @@ public class GameModeWindow extends JFrame implements Observer{
     }
     
     /**
-     * Show clarification.
-     */
-    private void dialogClarification() {
-        JPanel jp = new JPanel(new GridLayout(2, 2));
-        // jp.add(new JLabel(" "));
-        jp.add(new JLabel("Esclarecimento......"));
-  
-        String options[] = {"Nova pergunta"};
-        int value = JOptionPane.showOptionDialog(null, jp, "Resposta errada", JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-    }
-    
-    /**
      * Update event.
      */
     @Override
@@ -311,6 +355,8 @@ public class GameModeWindow extends JFrame implements Observer{
         Question currentQuestion = challengeModel.getChallenge().getCurrentQuestion();
         if (currentQuestion == null)
             return;
+        
+        labelProfile.setText("<HTML><B>"+captionCurrentProfile+"</B>"+challengeModel.getChallenge().getCurrentProfile().getName()+"</HTML>");
         
         if (timerAnswer != null && timerAnswer.isRunning())
             return;
