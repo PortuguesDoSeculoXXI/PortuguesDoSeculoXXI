@@ -3,28 +3,40 @@ package gui;
 import database.DataController;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Set;
+import java.util.Vector;
 import javax.swing.Box;
+import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 import logic.ChallengeModel;
 import logic.Level;
@@ -45,15 +57,16 @@ import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import resources.Resources;
 
 /**
- * JFrame Score Window class.
- * This window presents all scores per user profile.
+ * JFrame Score Window class. This window presents all scores per user profile.
  * Is implemented with all FR characteristics described on SRS: FR-9
- * 
+ *
  * @author PTXXI
  */
 public final class ScoresWindow extends JFrame implements Observer {
+
     private final Controller controller;
     private final ChallengeModel challengeModel;
     private Container mainContainer;
@@ -61,37 +74,35 @@ public final class ScoresWindow extends JFrame implements Observer {
     private JTabbedPane tabs;
     private ChartPanel seriesChartPanel;
     private JTable scoreTable;
-    private final String[] COLUMN_NAMES = {"Medalhas", "Score", "Tempo", "Data"}; 
+    private final String[] COLUMN_NAMES = {"Medalhas", "Score", "Nível", "Tempo", "Data"};
     private final JLabel backLabel = new JLabel("Voltar");
 
-    
     /**
-     * Constructor.
-     * Initializes model variables and define layout parameters.
-     * 
+     * Constructor. Initializes model variables and define layout parameters.
+     *
      * @param controller
-     * @param challengeModel 
+     * @param challengeModel
      */
     public ScoresWindow(Controller controller, ChallengeModel challengeModel) {
         this(controller, challengeModel, 350, 75, 600, 500);
     }
+
     /**
-     * Constructor.
-     * Initializes model variables and define layout parameters.
-     * 
+     * Constructor. Initializes model variables and define layout parameters.
+     *
      * @param controller
      * @param challengeModel
      * @param x
      * @param y
      * @param width
-     * @param height 
+     * @param height
      */
     public ScoresWindow(Controller controller, ChallengeModel challengeModel, int x, int y, int width, int height) {
         super("Português do Século XXI");
         this.controller = controller;
         this.challengeModel = challengeModel;
         jc = new JComboBox(controller.getPlayersAsStrings());
-        
+
         init();
 
         setLocation(x, y);
@@ -99,7 +110,7 @@ public final class ScoresWindow extends JFrame implements Observer {
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
-    
+
     /**
      * Instantiates content panes and register component listeners
      */
@@ -124,31 +135,32 @@ public final class ScoresWindow extends JFrame implements Observer {
         jPanelCenter();
         jPanelSouth();
     }
-    
+
     /**
      * Method instantiates <b>Center</b> components and its characteristics.
      */
     private void jPanelCenter() {
         final JPanel jPanelCenter = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        
+
         jPanelCenter.setBackground(resources.Resources.getLogoColor());
-        
+
         Box verticalBox = Box.createVerticalBox();
         verticalBox.setAlignmentX(CENTER_ALIGNMENT);
-        
+
         //JLabel title = new JLabel("<HTML><B><FONT SIZE=64>Pontuações</FONT></B></HTML>");
         JLabel titleLabel = new JLabel("Pontuações");
         //titleLabel.setForeground(Color.WHITE);
         titleLabel.setFont(titleLabel.getFont().deriveFont(32f));
+        titleLabel.setAlignmentX(CENTER_ALIGNMENT);
         verticalBox.add(titleLabel);
-        
+
         verticalBox.add(Box.createVerticalStrut(10));
-        
+
         Box horizontalBox = Box.createHorizontalBox();
         horizontalBox.add(new JLabel("Visualizar pontuações de: "));
         horizontalBox.add(jc);
         verticalBox.add(horizontalBox);
-        
+
         verticalBox.add(Box.createVerticalStrut(10));
         // Instantiate tabbed pane
         tabs = new JTabbedPane();
@@ -158,11 +170,11 @@ public final class ScoresWindow extends JFrame implements Observer {
         generateSeriesChart();
         // Add to tab panel and configure it
         tabs.add(seriesChartPanel);
-        tabs.add(scoreTable);
+        tabs.add(new JScrollPane(scoreTable));
         tabs.setTitleAt(0, "Gráfico de Scores");
         tabs.setTitleAt(1, "Tabela de Scores");
-        tabs.setPreferredSize(new Dimension(380, 380));
-        
+        tabs.setPreferredSize(new Dimension(380, 330));
+
         //jPanelCenter.add(this)
         verticalBox.add(tabs);
         jPanelCenter.add(verticalBox);
@@ -174,7 +186,7 @@ public final class ScoresWindow extends JFrame implements Observer {
      */
     private void jPanelSouth() {
         final JPanel jPanelSouth = new JPanel(new BorderLayout());
-        
+
         jPanelSouth.setBackground(resources.Resources.getLogoColor());
 
         this.backLabel.setText("<HTML><U>Voltar</U></HTML>");
@@ -187,7 +199,7 @@ public final class ScoresWindow extends JFrame implements Observer {
 
         this.mainContainer.add(jPanelSouth, BorderLayout.SOUTH);
     }
-    
+
     /**
      * Static listeners.
      */
@@ -198,60 +210,57 @@ public final class ScoresWindow extends JFrame implements Observer {
             public void mouseClicked(MouseEvent e) {
                 challengeModel.setChallenge(null);
                 challengeModel.setScoreWindow(false);
-                
-//                DataController a  = new DataController();
-//                a.insertChallengeScore(1, new Date("12/2/2014"), 10, Level.MODE_HARD, 100, 1, 1, 1);
-//                a.insertChallengeScore(1, new Date("12/1/2014"), 10, Level.MODE_HARD, 10, 1, 1, 1);
-//                a.insertChallengeScore(1, new Date("12/6/2014"), 10, Level.MODE_HARD, 200, 1, 1, 1);
-//                a.insertChallengeScore(1, new Date("12/5/2014"), 10, Level.MODE_HARD, 1, 1, 1, 1);
-//                a.insertChallengeScore(1, new Date("12/5/2014"), 10, Level.MODE_HARD, 140, 1, 1, 1);
-//                generateSeriesChart();
             }
         });
-        
+
         jc.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
-                refreshChart();
+                refreshChartAndTable();
             }
         });
     }
 
-    private void refreshChart() {
+    /**
+     * Chart needs to be refreshed this way so updates are done in runtime.
+     */
+    private void refreshChartAndTable() {
         tabs.removeAll();
         tabs.revalidate(); // This removes the old chart and table
-        
+
         generateSeriesChart();
         generateScoreTable();
 
-        tabs.add(seriesChartPanel);
-        tabs.add(scoreTable);
-        
+        tabs.add(new JScrollPane(seriesChartPanel));
+        tabs.add(new JScrollPane(scoreTable));
+
         tabs.setTitleAt(0, "Gráfico de Scores");
         tabs.setTitleAt(1, "Tabela de Scores");
-        
+
         tabs.repaint(); // This method makes the new chart appear
     }
-    
+
     /**
      * Generate graph accordingly to selected user on JComboBox.
      */
     private void generateSeriesChart() {
         TimeSeries easyModeSerie = new TimeSeries("Fácil", Day.class);
         TimeSeries hardModeSerie = new TimeSeries("Difícil", Day.class);
-        
+
         // Get avg score list by selected player
         List<Score> scores = new DataController().getAvgScoreByPlayer(controller.getProfileOf(jc.getSelectedItem().toString()).getId(), Level.MODE_EASY);
         //if (scores.get(0).getDateTime() != null)
-            for(Score aux : scores)
-                easyModeSerie.add(new Day(aux.getDateTime()), aux.getScore());
-        
-        scores = new DataController().getAvgScoreByPlayer(controller.getProfileOf(jc.getSelectedItem().toString()).getId(), Level.MODE_HARD);
+        for (Score aux : scores) {
+            easyModeSerie.add(new Day(aux.getDateTime()), aux.getScore());
+        }
+
+        //scores = new DataController().getAvgScoreByPlayer(controller.getProfileOf(jc.getSelectedItem().toString()).getId(), Level.MODE_HARD);
         //if (scores.get(0).getDateTime() != null)
-            for(Score aux : new DataController().getAvgScoreByPlayer(controller.getProfileOf(jc.getSelectedItem().toString()).getId(), Level.MODE_HARD))
-                hardModeSerie.add(new Day(aux.getDateTime()), aux.getScore());
-        
+        for (Score aux : new DataController().getAvgScoreByPlayer(controller.getProfileOf(jc.getSelectedItem().toString()).getId(), Level.MODE_HARD)) {
+            hardModeSerie.add(new Day(aux.getDateTime()), aux.getScore());
+        }
+
         final TimeSeriesCollection dataset = new TimeSeriesCollection();
         // Add series
         dataset.addSeries(easyModeSerie);
@@ -260,11 +269,11 @@ public final class ScoresWindow extends JFrame implements Observer {
         DateAxis dateAxis = new DateAxis("Dia");
         NumberAxis scoreAxis = new NumberAxis("Pontuação (Média diária)");
         // Define chart type
-        XYSplineRenderer r = new XYSplineRenderer(3);
+        XYSplineRenderer r = new XYSplineRenderer(1);
         XYPlot xyplot = new XYPlot(dataset, dateAxis, scoreAxis, r);
         // Generate chart
         JFreeChart chart = new JFreeChart(xyplot);
-        seriesChartPanel = new ChartPanel(chart){
+        seriesChartPanel = new ChartPanel(chart) {
 
             @Override
             public Dimension getPreferredSize() {
@@ -273,22 +282,106 @@ public final class ScoresWindow extends JFrame implements Observer {
         };
     }
 
+    /**
+     * Generate a updated version of the score table, depending on user selected
+     * on the combo box.
+     */
     private void generateScoreTable() {
-        //scoreTable = new JTable(new DefaultTableModel(COLUMN_NAMES, controller.getScoreByPlayer(controller.getProfileOf(jc.getSelectedItem().toString()).getId()).size()));
-        scoreTable = new JTable(new Object[][] {}, COLUMN_NAMES);
+        List<Score> scores = controller.getScoreByPlayer((controller.getProfileOf(jc.getSelectedItem().toString())).getId());
+        Object[][] tableContent = new Object[scores.size()][5];
+        // Initialize panels cells
+        for (int i = 0; i < tableContent.length; i++) {
+            for (int j = 0; j < tableContent[i].length; j++) {
+                tableContent[i][j] = new JPanel();
+            }
+        }
+
+        for (int i = 0; i < tableContent.length; i++) {
+            // Medals
+            tableContent[i][0] = "" + scores.get(i).getGold() + scores.get(i).getSilver() + scores.get(i).getBronze();
+
+            // Score
+            JPanel aux = new JPanel(new FlowLayout());
+            aux.add(new JLabel("" + scores.get(i).getScore()));
+            tableContent[i][1] = "" + scores.get(i).getScore();
+
+            // Level
+            aux = new JPanel(new FlowLayout());
+            aux.add(scores.get(i).getLevel() == Level.MODE_EASY ? new JLabel("Fácil") : new JLabel("Difícil"));
+            if (scores.get(i).getLevel() == Level.MODE_EASY) {
+             tableContent[i][2] = "Fácil";
+             } else
+             tableContent[i][2] = "Difícil";
+
+            // Duration
+            aux = new JPanel(new FlowLayout());
+            aux.add(new JLabel("" + scores.get(i).getDuration()));
+            tableContent[i][3] = "" + scores.get(i).getDuration();
+
+            // Date
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/M/yyyy");
+            String date = sdf.format(scores.get(i).getDateTime());
+            aux = new JPanel(new FlowLayout());
+            aux.add(new JLabel(date));
+            tableContent[i][4] = date;
+        }
+
+        scoreTable = new JTable(tableContent, COLUMN_NAMES);
+        scoreTable.setRowHeight(32);
+        scoreTable.getColumnModel().getColumn(scoreTable.getColumnCount()-1).setMinWidth(100);
+        scoreTable.getColumnModel().getColumn(0).setCellRenderer(new ImageRenderer());
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment( JLabel.CENTER );
+        scoreTable.getColumnModel().getColumn(1).setCellRenderer( centerRenderer );
+        scoreTable.getColumnModel().getColumn(2).setCellRenderer( centerRenderer );
+        scoreTable.getColumnModel().getColumn(3).setCellRenderer( centerRenderer );
+        scoreTable.getColumnModel().getColumn(4).setCellRenderer( centerRenderer );
         scoreTable.setEnabled(false);
         scoreTable.setFillsViewportHeight(true); // Uses the entire height even withou enough scores
+
     }
     
     /**
-     * Update method - Observer.
-     * Defines this frame behavior according to the current state on ChallengeModel
+     * Image Renderer class.
      * 
+     * To insert imageIcon on cells it's necessary to create a TableCellRenderer.
+     * Draws medals according to number on cell: "111" OR "11" OR "1".
+     */
+    class ImageRenderer extends JPanel implements TableCellRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable jtable, Object o, boolean bln, boolean bln1, int i, int i1) {
+            JLabel label;
+            this.removeAll();
+            setPreferredSize(new Dimension(20, 20));
+            setBackground(Color.WHITE);
+            switch (Integer.parseInt((String)o)) {
+                case 111: // Gold, Silver, Bronze
+                    label = new JLabel(Resources.getImageResized(Resources.getImageMedalGold(), 16, 25));
+                    add(label);
+                case 11: // Silver, Bronze
+                    label = new JLabel(Resources.getImageResized(Resources.getImageMedalSilver(), 16, 25));
+                    add(label);
+                case 1: // Bronze
+                    label = new JLabel(Resources.getImageResized(Resources.getImageMedalBronze(), 16, 25));
+                    add(label);
+                    break;
+                default: // None
+                    break;
+            }
+            return this;
+        }
+    }
+
+    /**
+     * Update method - Observer. Defines this frame behavior according to the
+     * current state on ChallengeModel
+     *
      * @param o
-     * @param o1 
+     * @param o1
      */
     @Override
     public void update(Observable o, Object o1) {
-        
+
     }
 }

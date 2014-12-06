@@ -33,7 +33,7 @@ public class WindowController implements Observer {
     private final ConfigurationWindow configurationWindow;
     private final GameModeWindow gameModeWindow;
     private final GameScoreWindow gameScoreWindow;
-    private final ScoresWindow scoresWindow;
+    private ScoresWindow scoresWindow;
     
     /**
      * Constructor.
@@ -74,6 +74,8 @@ public class WindowController implements Observer {
             configurationWindow.setVisible(false);
             gameModeWindow.setVisible(false);
             gameScoreWindow.setVisible(false);
+            if (scoresWindow == null)
+                scoresWindow = new ScoresWindow(this.controller, this.challengeModel);
             scoresWindow.setVisible(true);
         }
         else if (challengeModel.getChallenge() == null) {
