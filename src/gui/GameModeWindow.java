@@ -141,6 +141,7 @@ public class GameModeWindow extends JFrame implements Observer{
         labelGiveUp.setCursor(new Cursor(Cursor.HAND_CURSOR));
         
         buttonDismiss = new JButton("Continuar");
+        buttonDismiss.setVisible(false);
     }
         
     private void jPanelNorth() {
@@ -205,14 +206,19 @@ public class GameModeWindow extends JFrame implements Observer{
         
         panelCenter.add(Box.createRigidArea(new Dimension(5,5)));
         
+        buttonDismiss.setAlignmentX(CENTER_ALIGNMENT);
+        panelCenter.add(buttonDismiss);
+
+        panelCenter.add(Box.createRigidArea(new Dimension(5,5)));
+                
         group = new JPanel();
         group.setBackground(Resources.getLogoColor());
-        group.setPreferredSize(new Dimension(100,120));
-        group.setMinimumSize(new Dimension(100,120));
+        group.setPreferredSize(new Dimension(100,130));
+        group.setMinimumSize(new Dimension(100,130));
         // Image: Correct/Incorrect
         group.add(imgCenter);
         panelCenter.add(group);
-        
+                
         mainContainer.add(panelCenter, BorderLayout.CENTER);
     }
     
@@ -275,6 +281,15 @@ public class GameModeWindow extends JFrame implements Observer{
 
         });
 
+        buttonDismiss.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                hideAnswerResult();
+            }
+
+        });
+        
     }
     
     /**
@@ -315,8 +330,10 @@ public class GameModeWindow extends JFrame implements Observer{
                             });
         
         int answerDuration = 1000;
-        if (!challengeModel.getChallenge().getCurrentCorrectAnswer())
-            answerDuration = 5000;
+        if (!challengeModel.getChallenge().getCurrentCorrectAnswer()) {
+            answerDuration = 10000;
+            buttonDismiss.setVisible(true);
+        }
         
         // Timer for next answer
         timerAnswer = new Timer(answerDuration, new ActionListener() {
@@ -339,6 +356,7 @@ public class GameModeWindow extends JFrame implements Observer{
         labelAnswerResult.setText("");
         labelClarification.setText("");
 
+        buttonDismiss.setVisible(false);
         buttonOptionA.setEnabled(true);
         buttonOptionB.setEnabled(true);
         buttonOptionBoth.setEnabled(true);
