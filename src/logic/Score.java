@@ -12,7 +12,7 @@ import java.util.Date;
 public class Score {
 
     private final int idPlayer;
-    private final int score;
+    private final float score;
     private Date dateTime;
     private int duration; //Segundos
     private Level level;
@@ -20,7 +20,7 @@ public class Score {
     private int silver;
     private int bronze;
 
-    public Score(int idPlayer, int score) {
+    public Score(int idPlayer, float score) {
         this.idPlayer = idPlayer;
         this.score = score;
     }
@@ -76,8 +76,12 @@ public class Score {
     public int getIdPlayer() {
         return idPlayer;
     }
-
+    
     public int getScore() {
+        return (int) score;
+    }
+
+    public float getFloatScore() {
         return score;
     }
 }

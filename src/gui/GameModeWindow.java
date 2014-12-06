@@ -6,6 +6,7 @@ import static java.awt.Component.CENTER_ALIGNMENT;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -32,6 +33,7 @@ import logic.ChallengeModel;
 import logic.Question;
 import logic.database.Controller;
 import resources.Resources;
+import states.WaitScore;
 
 /**
  * Game Window.
@@ -434,14 +436,6 @@ public class GameModeWindow extends JFrame implements Observer{
     }
     
     /**
-     * Update event.
-     */
-    @Override
-    public void update(Observable t, Object o) {
-        refreshGame();
-    }
-    
-    /**
      * Refresh interface data.
      */
     public void refreshGame() {
@@ -469,5 +463,52 @@ public class GameModeWindow extends JFrame implements Observer{
         buttonOptionB.setText(currentQuestion.getOptionB());
         
         labelQuestion.setText("<HTML><B>"+currentQuestion.getQuestion()+"</B></HTML>");
+    }
+    
+    /**
+     * Presents score dialog.
+     * Where the score of the current challenge is shown.
+     * This dialog should only be called when the user reaches the end of a challenge,
+     * by answering all questions.
+     */
+    private void scoreDialog() {
+        JPanel jp = new JPanel();
+        
+        Box verticalBox = Box.createVerticalBox();
+        
+        JLabel scoreTitle = new JLabel("<html><font size=13><center>Score: " + challengeModel.getChallenge().getScore().getScore() + "</center></font></html>");
+        scoreTitle.setAlignmentX(CENTER_ALIGNMENT);
+        verticalBox.add(scoreTitle);
+        
+        Box horizontalBox = Box.createHorizontalBox();
+        String scoreResult = "" + challengeModel.getChallenge().getScore().getGold() + challengeModel.getChallenge().getScore().getSilver() + challengeModel.getChallenge().getScore().getBronze();
+        switch(Integer.parseInt(scoreResult)) {
+            case 111: // Gold, Silver, Bronze
+                horizontalBox.add(new JLabel(Resources.getImageMedalGold()));
+            case 11: // Silver, Bronze
+                horizontalBox.add(new JLabel(Resources.getImageMedalSilver()));
+            case 1: // Bronze
+                horizontalBox.add(new JLabel(Resources.getImageMedalBronze()));
+                break;
+            default:
+                break;
+        }
+        
+        verticalBox.add(horizontalBox);
+        
+        jp.add(verticalBox);
+        
+        int value = JOptionPane.showOptionDialog(null, jp, "Fim do desafio", JOptionPane.NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, new String[] {"Sair", "Novo Desafio"}, 1);
+    }
+    
+    /**
+     * Update event.
+     */
+    @Override
+    public void update(Observable t, Object o) {
+        refreshGame();
+        if (challengeModel.getChallenge() != null && challengeModel.getChallenge().getCurrentState() instanceof WaitScore) {
+            scoreDialog();
+        }
     }
 }

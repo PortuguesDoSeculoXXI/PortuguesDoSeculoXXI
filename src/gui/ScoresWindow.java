@@ -252,11 +252,11 @@ public final class ScoresWindow extends JFrame implements Observer {
         List<Score> scores = new DataController().getAvgScoreByPlayer(controller.getProfileOf(jc.getSelectedItem().toString()).getId(), Level.MODE_EASY);
 
         for (Score aux : scores) {
-            easyModeSerie.add(new Day(aux.getDateTime()), aux.getScore());
+            easyModeSerie.add(new Day(aux.getDateTime()), (double)aux.getFloatScore());
         }
 
         for(Score aux : new DataController().getAvgScoreByPlayer(controller.getProfileOf(jc.getSelectedItem().toString()).getId(), Level.MODE_HARD))
-                hardModeSerie.addOrUpdate(new Day(aux.getDateTime()), aux.getScore());
+                hardModeSerie.addOrUpdate(new Day(aux.getDateTime()), (double)aux.getFloatScore());
 
         final TimeSeriesCollection dataset = new TimeSeriesCollection();
         // Add series
@@ -265,6 +265,7 @@ public final class ScoresWindow extends JFrame implements Observer {
         // Format axis
         DateAxis dateAxis = new DateAxis("Dia");
         NumberAxis scoreAxis = new NumberAxis("Pontuação (Média diária)");
+        scoreAxis.setStandardTickUnits(NumberAxis.createStandardTickUnits());
         // Define chart type
         XYSplineRenderer r = new XYSplineRenderer(1);
         XYPlot xyplot = new XYPlot(dataset, dateAxis, scoreAxis, r);

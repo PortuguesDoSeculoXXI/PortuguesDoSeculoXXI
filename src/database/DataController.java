@@ -5,9 +5,12 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 import logic.Answer;
 import logic.Category;
 import logic.Challenge;
@@ -162,11 +165,11 @@ public class DataController {
             Statement st = connection.createStatement();
             st.setQueryTimeout(30);  // set timeout to 30 sec.
             
-            ResultSet rs = st.executeQuery("select ID_PLAYER, avg(score) as `score_avg`, date, DURATION, LEVEL, SCORE, GOLD, SILVER, BRONZE from challengescores where id_player = "+Integer.toString(idPlayer) + " and level=" + level.ordinal() + " group by id_player, duration, level, score, gold, silver, bronze");
+            ResultSet rs = st.executeQuery("select ID_PLAYER, avg(score) as `score_avg`, date, DURATION, LEVEL, SCORE, GOLD, SILVER, BRONZE from challengescores where id_player = "+Integer.toString(idPlayer) + " and level=" + level.ordinal() + " group by date");
             
             Score item;
             while (rs.next()) {
-                item = new Score(rs.getInt("id_player"),rs.getInt("score_avg"));
+                item = new Score(rs.getInt("id_player"),rs.getFloat("score_avg"));
                 item.setDateTime(rs.getTimestamp("date"));
                 item.setDuration(rs.getInt("duration"));
                 item.setLevel(Level.values()[rs.getInt("level")]);
@@ -431,7 +434,8 @@ public class DataController {
             SQLBuilder builder = new SQLBuilder();
             builder.addTable("ChallengeScores")
                 .addField("id_player", Integer.toString(idPlayer), SQLBuilder.DataType.asNum)
-                .addField("date", Double.toString(dateTime.getTime()), SQLBuilder.DataType.asNum)
+                //.addField("date", Double.toString(dateTime.getTime()), SQLBuilder.DataType.asNum)
+                .addField("date", Double.toString(new SimpleDateFormat("yyyy-MM-dd").parse(new SimpleDateFormat("yyyy-MM-dd").format(dateTime)).getTime()), SQLBuilder.DataType.asNum)
                 .addField("duration", Integer.toString(duration), SQLBuilder.DataType.asNum)
                 .addField("level", Integer.toString(level.ordinal()), SQLBuilder.DataType.asNum)
                 .addField("score", Integer.toString(score), SQLBuilder.DataType.asNum)
@@ -443,6 +447,8 @@ public class DataController {
             st.execute(builder.getInsertQuery());
         } catch(SQLException e) {
             System.err.println(e.getMessage());
+        } catch (ParseException ex) {
+            System.err.println(ex.getMessage());
         } finally {
             disconnect();
         }
