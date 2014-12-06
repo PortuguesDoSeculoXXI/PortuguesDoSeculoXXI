@@ -1,11 +1,14 @@
 package logic.database;
 
 import database.DataController;
+import java.lang.Math;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Observable;
 import logic.Category;
 import logic.Challenge;
+import logic.Level;
 import logic.Player;
 import logic.Question;
 import logic.Score;
@@ -148,12 +151,29 @@ public class Controller extends Observable {
         return true;
     }
     
+    /**
+     * Proxy to DataController.getScoreByPlayer.
+     */
     public List<Score> getScoreByPlayer(int player) {
         return dataController.getScoreByPlayer(player);
     }
     
+    /**
+     * Proxy to DataController.getQuestionsByCategory.
+     */
     public List<Question> getQuestionsByCategory(List<Challenge.Categories> categories) {
         return dataController.getQuestionsByCategory(categories, 15);
-    }    
+    }
+    
+    /**
+     * Proxy to DataController.insertChallengeScore.
+     */
+    public void insertChallengeScore(Player player, long duration, Level level, Score score) {
+        // Teste
+        Double totalScore = duration * 0.2 * (1 + 1000 * score.getGold() + 200 * score.getSilver() + 100 * score.getBronze());
+        
+        dataController.insertChallengeScore(player.getId(), new Date(), (int) duration, level, totalScore.intValue(),
+                score.getGold(), score.getSilver(), score.getBronze());
+    }
 
 }

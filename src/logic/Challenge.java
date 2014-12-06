@@ -30,6 +30,10 @@ public class Challenge extends Observable implements ChallengeInterface {
      */
     protected Question currentQuestion;
     /**
+     * Current result answer.
+     */
+    protected boolean currentCorrectAnswer;
+    /**
      * Represents current question number.
      * This is only to facilitate the determination of last question without 
      * having to compare which question is currentQuestion in the array list.
@@ -62,7 +66,7 @@ public class Challenge extends Observable implements ChallengeInterface {
      * This variable has the time that took to complete the challenge.
      * this should be instantiated when the challenge starts.
      */
-    private long timer;
+    private long duration;
     /**
      * Controller for data access/store.
      */
@@ -79,6 +83,21 @@ public class Challenge extends Observable implements ChallengeInterface {
         this.currentState = new WaitConfiguration(this);
     }
 
+    public void nextQuestion() {
+        this.currentQuestion = questionsList.get((++currentQuestionNumber) - 1);
+    }
+
+    public void incrementNumberOfQuestionsRight() {
+        this.numberOfQuestionsRight++;
+    }
+    
+    public void madeCorrectAnswer() {
+        currentCorrectAnswer = true;
+    }
+    
+    public void madeIncorrectAnswer() {
+        currentCorrectAnswer = false;
+    }
     
     //  ______________________________________________________________________
     // |                                                                      |
@@ -105,16 +124,14 @@ public class Challenge extends Observable implements ChallengeInterface {
         this.questionsList = questionsList;
         if (this.questionsList.isEmpty())
             return;
+
         this.currentQuestionNumber = 1;
+        this.currentCorrectAnswer = false;
         this.currentQuestion = questionsList.get((++currentQuestionNumber) - 1);
     }
 
     public Question getCurrentQuestion() {
         return currentQuestion;
-    }
-
-    public void nextQuestion() {
-        this.currentQuestion = questionsList.get((++currentQuestionNumber) - 1);
     }
 
     public int getCurrentQuestionNumber() {
@@ -137,20 +154,20 @@ public class Challenge extends Observable implements ChallengeInterface {
         this.score = score;
     }
 
-    public long getTimer() {
-        return timer;
+    public long getDuration() {
+        return duration;
     }
 
-    public void setTimer(long timer) {
-        this.timer = timer;
+    public void setDuration(long duration) {
+        this.duration = duration;
     }
 
     public int getNumberOfQuestionsRight() {
         return numberOfQuestionsRight;
     }
-
-    public void incrementNumberOfQuestionsRight() {
-        this.numberOfQuestionsRight++;
+    
+    public boolean getCurrentCorrectAnswer() {
+        return currentCorrectAnswer;
     }
     
     
