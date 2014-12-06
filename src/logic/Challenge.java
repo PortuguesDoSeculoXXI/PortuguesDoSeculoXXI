@@ -170,6 +170,10 @@ public class Challenge extends Observable implements ChallengeInterface {
         return currentCorrectAnswer;
     }
     
+    public String getCurrentRuleClarification() {
+        return controller.getRuleClarification(currentQuestion);
+    }
+    
     
     //  ______________________________________________________________________
     // |                                                                      |

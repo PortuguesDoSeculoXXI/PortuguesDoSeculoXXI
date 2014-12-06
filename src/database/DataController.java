@@ -484,9 +484,10 @@ public class DataController {
             ResultSet rs = st.executeQuery(builder.getSelectQuery()+" ORDER BY RANDOM() LIMIT "+numberOfQuestions);
             while (rs.next()) {
                 questions.add(new Question(Answer.values()[rs.getInt("RIGHT_ANSWER")],
-                        rs.getString("ENUNCIATION"), 
-                        rs.getString("ANSWER_A"),
-                        rs.getString("ANSWER_B")));
+                    rs.getString("ENUNCIATION"), 
+                    rs.getString("ANSWER_A"),
+                    rs.getString("ANSWER_B"),
+                    rs.getInt("ID_RULE")));
             }
         } catch(SQLException e) {
             System.err.println(e.getMessage());
@@ -514,9 +515,10 @@ public class DataController {
             ResultSet rs = st.executeQuery(builder.getSelectQuery()+" ORDER BY RANDOM() LIMIT "+numberOfQuestions);
             while (rs.next()) {
                 questions.add(new Question(Answer.values()[rs.getInt("RIGHT_ANSWER")],
-                        rs.getString("ENUNCIATION"), 
-                        rs.getString("ANSWER_A"),
-                        rs.getString("ANSWER_B")));
+                    rs.getString("ENUNCIATION"), 
+                    rs.getString("ANSWER_A"),
+                    rs.getString("ANSWER_B"),
+                    rs.getInt("ID_RULE")));
             }
         } catch(SQLException e) {
             System.err.println(e.getMessage());
