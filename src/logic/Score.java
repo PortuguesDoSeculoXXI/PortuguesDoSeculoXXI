@@ -25,6 +25,19 @@ public class Score {
         this.score = score;
     }
 
+    public Score(int idPlayer, int score, Date dateTime, int duration, Level level, int gold, int silver, int bronze) {
+        this.idPlayer = idPlayer;
+        this.score = score;
+        this.dateTime = dateTime;
+        this.duration = duration;
+        this.level = level;
+        this.gold = gold;
+        this.silver = silver;
+        this.bronze = bronze;
+    }
+    
+    
+
     public Date getDateTime() {
         return dateTime;
     }
