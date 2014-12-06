@@ -6,7 +6,6 @@ import static java.awt.Component.CENTER_ALIGNMENT;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -149,8 +148,13 @@ public class GameModeWindow extends JFrame implements Observer{
                 long timeElapsed = currentDate.getTime() - questionStartTime.getTime();
                 // Show timer
                 String timeStr = df.format(new Date(timeElapsed));
-                labelTimeQuestion.setText(timeStr);
+                labelTimeQuestion.setText("" + (Integer.parseInt(labelTimeQuestion.getText()) - 1));
                 labelTimeQuestion.repaint();
+                if (labelTimeQuestion.getText().equals("0")) {
+                    verifyQuestion();
+                    challengeModel.nextAnswer(null);
+                    labelTimeQuestion.setText("15");
+                }
             }
             
         });
@@ -173,7 +177,7 @@ public class GameModeWindow extends JFrame implements Observer{
     
     private void initComponents() {
         labelProfile = new JLabel();
-        labelTimeQuestion = new JLabel();
+        labelTimeQuestion = new JLabel("15");
         labelQuestion = new JLabel("Pergunta");
         labelClarification = new JLabel();        
         labelAnswerResult = new JLabel();
@@ -397,6 +401,7 @@ public class GameModeWindow extends JFrame implements Observer{
         
         timerAnswer.setRepeats(false);
         timerAnswer.start();
+        labelTimeQuestion.setText("15");
     }
     
     public void hideAnswerResult() {
@@ -514,6 +519,9 @@ public class GameModeWindow extends JFrame implements Observer{
         refreshGame();
         if (challengeModel.getChallenge() != null && challengeModel.getChallenge().getCurrentState() instanceof WaitScore) {
             scoreDialog();
+        }
+        if (challengeModel.getChallenge() != null && challengeModel.getChallenge().getCurrentState() instanceof WaitScore) {
+            labelTimeQuestion.setText("15");
         }
     }
 }
