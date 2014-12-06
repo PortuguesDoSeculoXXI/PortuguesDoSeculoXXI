@@ -6,7 +6,6 @@ import static java.awt.Component.CENTER_ALIGNMENT;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -52,8 +51,10 @@ public class GameModeWindow extends JFrame implements Observer{
     private JLabel labelTimeQuestion;
     private JLabel labelQuestion;
     private JLabel labelClarification;
+    private JLabel labelAnswerResult;
     private JLabel labelGiveUp;
     private JLabel imgCenter;
+    private JButton buttonDismiss;
     private JButton buttonOptionA = new JButton("Resposta A");
     private JButton buttonOptionB = new JButton("Resposta B");
     private JButton buttonOptionBoth = new JButton("Ambas estão corretas");
@@ -128,7 +129,8 @@ public class GameModeWindow extends JFrame implements Observer{
         labelProfile = new JLabel();
         labelTimeQuestion = new JLabel();
         labelQuestion = new JLabel("Pergunta");
-        labelClarification = new JLabel("");
+        labelClarification = new JLabel();        
+        labelAnswerResult = new JLabel();
         
         imgCenter = new JLabel();
         imgCenter.setIcon(Resources.getImageCorrect());
@@ -137,6 +139,8 @@ public class GameModeWindow extends JFrame implements Observer{
         labelGiveUp = new JLabel("<HTML><U>Desistir</U></HTML>");
         labelGiveUp.setForeground(Color.BLUE);
         labelGiveUp.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        
+        buttonDismiss = new JButton("Continuar");
     }
         
     private void jPanelNorth() {
@@ -153,7 +157,7 @@ public class GameModeWindow extends JFrame implements Observer{
     private void jPanelCenter() {
         panelCenter = new JPanel();
         panelCenter.setLayout(new BoxLayout(panelCenter,BoxLayout.Y_AXIS));
-        panelCenter.setBackground(Color.CYAN); //Resources.getLogoColor()
+        panelCenter.setBackground(Resources.getLogoColor());
         
         JLabel labelCaption = new JLabel("Pergunta");
         Font labelFont = labelCaption.getFont();
@@ -173,6 +177,7 @@ public class GameModeWindow extends JFrame implements Observer{
         JPanel group;
         
         group = new JPanel();
+        group.setBackground(Resources.getLogoColor());
         group.setLayout(new BoxLayout(group,BoxLayout.X_AXIS));
         group.add(this.buttonOptionA);
         group.add(Box.createRigidArea(new Dimension(5,5)));
@@ -182,23 +187,28 @@ public class GameModeWindow extends JFrame implements Observer{
         panelCenter.add(Box.createRigidArea(new Dimension(5,5)));
        
         group = new JPanel();
+        group.setBackground(Resources.getLogoColor());
         group.setLayout(new BoxLayout(group,BoxLayout.X_AXIS));
         buttonOptionBoth.setAlignmentX(CENTER_ALIGNMENT);
         group.add(this.buttonOptionBoth);
         panelCenter.add(group);
         
-        panelCenter.add(Box.createRigidArea(new Dimension(5,5)));
+        panelCenter.add(Box.createRigidArea(new Dimension(5,15)));
         
-        group = new JPanel();
-        group.setLayout(new BoxLayout(group,BoxLayout.X_AXIS));
-        group.add(labelClarification);
-        panelCenter.add(group);
+        labelAnswerResult.setAlignmentX(CENTER_ALIGNMENT);
+        panelCenter.add(labelAnswerResult);
         
         panelCenter.add(Box.createRigidArea(new Dimension(5,5)));
         
+        labelClarification.setAlignmentX(CENTER_ALIGNMENT);
+        panelCenter.add(labelClarification);
+        
+        panelCenter.add(Box.createRigidArea(new Dimension(5,5)));
+        
         group = new JPanel();
-        group.setPreferredSize(new Dimension(100,100));
-        group.setMinimumSize(new Dimension(100,100));
+        group.setBackground(Resources.getLogoColor());
+        group.setPreferredSize(new Dimension(100,120));
+        group.setMinimumSize(new Dimension(100,120));
         // Image: Correct/Incorrect
         group.add(imgCenter);
         panelCenter.add(group);
@@ -273,14 +283,20 @@ public class GameModeWindow extends JFrame implements Observer{
     private void  verifyQuestion() {
         if (challengeModel.getChallenge().getCurrentCorrectAnswer()) {
             imgCenter.setIcon(Resources.getImageCorrect());
-            labelClarification.setText("Correto");
+            labelAnswerResult.setText("Correto ");
+            labelClarification.setText("");
         }
         else {
             imgCenter.setIcon(Resources.getImageIncorrect());
             // Show clarification
-            labelClarification.setText("Incorreto: "+challengeModel.getChallenge().getCurrentRuleClarification());
+            labelAnswerResult.setText("");
+            labelClarification.setText("<HTML><B>Esclarecimento: </B>"+challengeModel.getChallenge().getCurrentRuleClarification()+"</HTML>");
         }
         
+        showAnswerResult();
+    }
+    
+    public void showAnswerResult() {
         imgCenter.setVisible(true);
         imgCenter.invalidate();
         
@@ -298,27 +314,38 @@ public class GameModeWindow extends JFrame implements Observer{
                                 
                             });
         
+        int answerDuration = 1000;
+        if (!challengeModel.getChallenge().getCurrentCorrectAnswer())
+            answerDuration = 5000;
+        
         // Timer for next answer
-        timerAnswer = new Timer(1000, new ActionListener() {
+        timerAnswer = new Timer(answerDuration, new ActionListener() {
             
                 @Override
                 public void actionPerformed(ActionEvent event) {
-                    imgCenter.setVisible(false);
-                    imgCenter.invalidate();
-                    
-                    labelClarification.setText("");
-                    buttonOptionA.setEnabled(true);
-                    buttonOptionB.setEnabled(true);
-                    buttonOptionBoth.setEnabled(true);
-                    
-                    refreshGame();
-                    timerAnswer.stop();
+                    hideAnswerResult();
                 }
 
             });
         
         timerAnswer.setRepeats(false);
         timerAnswer.start();
+    }
+    
+    public void hideAnswerResult() {
+        imgCenter.setVisible(false);
+        imgCenter.invalidate();
+
+        labelAnswerResult.setText("");
+        labelClarification.setText("");
+
+        buttonOptionA.setEnabled(true);
+        buttonOptionB.setEnabled(true);
+        buttonOptionBoth.setEnabled(true);
+
+        refreshGame();
+        if (timerAnswer != null)
+            timerAnswer.stop();
     }
     
     /**

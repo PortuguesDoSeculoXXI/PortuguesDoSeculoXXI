@@ -245,12 +245,12 @@ public final class ScoresWindow extends JFrame implements Observer {
         List<Score> scores = new DataController().getAvgScoreByPlayer(controller.getProfileOf(jc.getSelectedItem().toString()).getId(), Level.MODE_EASY);
         //if (scores.get(0).getDateTime() != null)
             for(Score aux : scores)
-                easyModeSerie.add(new Day(aux.getDateTime()), aux.getScore());
+                easyModeSerie.addOrUpdate(new Day(aux.getDateTime()), aux.getScore());
         
         scores = new DataController().getAvgScoreByPlayer(controller.getProfileOf(jc.getSelectedItem().toString()).getId(), Level.MODE_HARD);
         //if (scores.get(0).getDateTime() != null)
             for(Score aux : new DataController().getAvgScoreByPlayer(controller.getProfileOf(jc.getSelectedItem().toString()).getId(), Level.MODE_HARD))
-                hardModeSerie.add(new Day(aux.getDateTime()), aux.getScore());
+                hardModeSerie.addOrUpdate(new Day(aux.getDateTime()), aux.getScore());
         
         final TimeSeriesCollection dataset = new TimeSeriesCollection();
         // Add series
