@@ -43,7 +43,7 @@ public final class EntranceWindow extends JFrame {
     private JPanel jpanelcenter;
     private JPanel jpanelsout;
     private final JButton play = new JButton("Jogar");
-    private final JButton score = new JButton("Pontuacoes");
+    private final JButton score = new JButton("Pontuações");
     private final JButton exit = new JButton("Sair");
     private final String[] simbolos = {"Novo perfil..."};
     private JComboBox jc = null;

@@ -154,7 +154,7 @@ public class DataController {
      *
      * @returns List of Scores.
      */
-    public List<Score> getAvgScoreByPlayer(int idPlayer) {
+    public List<Score> getAvgScoreByPlayer(int idPlayer, Level level) {
         List<Score> scoresPlayer= new ArrayList<>();
         
         connect();
@@ -162,7 +162,7 @@ public class DataController {
             Statement st = connection.createStatement();
             st.setQueryTimeout(30);  // set timeout to 30 sec.
             
-            ResultSet rs = st.executeQuery("select ID_PLAYER, avg(score) as `score_avg`, date, DURATION, LEVEL, SCORE, GOLD, SILVER, BRONZE from challengescores where id_player = "+Integer.toString(idPlayer));
+            ResultSet rs = st.executeQuery("select ID_PLAYER, avg(score) as `score_avg`, date, DURATION, LEVEL, SCORE, GOLD, SILVER, BRONZE from challengescores where id_player = "+Integer.toString(idPlayer) + " and level=" + level.ordinal() + " group by id_player, duration, level, score, gold, silver, bronze");
             
             Score item;
             while (rs.next()) {
@@ -557,7 +557,7 @@ public class DataController {
         List<Score> scores = getScoreByPlayer(2);
         System.out.println(scores.get(0).getDateTime());
                 
-        scores = getAvgScoreByPlayer(2);
+        scores = getAvgScoreByPlayer(2, Level.MODE_EASY);
         System.out.println(scores.size());
         System.out.println(scores.get(0).getScore());
     }

@@ -17,6 +17,7 @@ import java.util.Observable;
 import java.util.Observer;
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -50,17 +51,18 @@ public final class ConfigurationWindow extends JFrame implements Observer {
     private JPanel jpanelsouth;
     private JPanel jpanelWest;
     private JPanel jpaneleast;
-    private final Checkbox consoants = new Checkbox("Consoantes");
-    private final Checkbox accents = new Checkbox("Acentos");
-    private final Checkbox hyphen = new Checkbox("Hífen"); 
-    private final Checkbox caseSensitive = new Checkbox("Maiúsculas e Minúsculas");
-    private final Checkbox random = new Checkbox("Aleatório");
+    private final JCheckBox consoants = new JCheckBox("Consoantes");
+    private final JCheckBox accents = new JCheckBox("Acentos");
+    private final JCheckBox hyphen = new JCheckBox("Hífen"); 
+    private final JCheckBox caseSensitive = new JCheckBox("Maiúsculas e Minúsculas");
+    private final JCheckBox random = new JCheckBox("Aleatório");
     private final JLabel currentProfile = new JLabel("");
     private final JLabel changeCurrentProfile = new JLabel("Mudar");
     private final JButton buttonPlay = new JButton("Jogar");
     private final JRadioButton easy  = new JRadioButton("Fácil (Sem tempo)");
     private final JRadioButton hard = new JRadioButton(" Difícil (Com tempo)");
     private JLabel backLabel;
+
  
     /**
      * Constructor.
@@ -68,7 +70,7 @@ public final class ConfigurationWindow extends JFrame implements Observer {
      * @param challengeModel
      */
     public ConfigurationWindow(Controller controller, ChallengeModel challengeModel) {
-        this(controller, challengeModel, 350, 75, 600, 550);
+        this(controller, challengeModel, 350, 75, 600, 500);
     }
     
     /**
@@ -128,8 +130,11 @@ public final class ConfigurationWindow extends JFrame implements Observer {
     private void jPanelNorth() {
         jpanelNorth = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-        Box verticalBox = Box.createVerticalBox();
+        jpanelNorth.setBackground(resources.Resources.getLogoColor());
+        
+        Box verticalBox = Box.createVerticalBox();        
         JPanel horizontalFlow = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        horizontalFlow.setBackground(resources.Resources.getLogoColor());
         horizontalFlow.setPreferredSize(new Dimension(600, 30));
         horizontalFlow.add(new JLabel("Perfil atual: "));
 
@@ -145,10 +150,12 @@ public final class ConfigurationWindow extends JFrame implements Observer {
         verticalBox.add(Box.createVerticalStrut(40));
 
         JPanel jp = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        jp.setBackground(resources.Resources.getLogoColor());
         JLabel jb = new JLabel("<HTML><CENTER>Português<BR>do Século XXI</CENTER><HTML>");
         jb.setFont(jb.getFont().deriveFont(64f));
 
-        jp.add(jb);
+        jp.add(jb);        
+        jpanelWest = new JPanel(new BorderLayout());
 
         verticalBox.add(jp);
 
@@ -163,38 +170,52 @@ public final class ConfigurationWindow extends JFrame implements Observer {
     private void jPanelCenter() {
         jpanelcenter = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
+        jpanelcenter.setBackground(resources.Resources.getLogoColor());
+        
         Box verticalBox = Box.createVerticalBox();
         Box horizontalBox = Box.createHorizontalBox();
 
         verticalBox.setPreferredSize(new Dimension(500, 200));
 
         horizontalBox.add(new JLabel("Dificuldade: "));
+        this.easy.setBackground(resources.Resources.getLogoColor());
+        this.hard.setBackground(resources.Resources.getLogoColor());
         horizontalBox.add(this.easy);
         horizontalBox.add(this.hard);
 
         verticalBox.add(horizontalBox);
         verticalBox.add(Box.createVerticalStrut(10));
 
-        consoants.setMaximumSize(new Dimension(160, Integer.MAX_VALUE));
+        consoants.setMaximumSize(new Dimension(200, Integer.MAX_VALUE));
         consoants.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+        consoants.setBackground(resources.Resources.getLogoColor());
+        consoants.setAlignmentX(CENTER_ALIGNMENT);
         verticalBox.add(this.consoants);
 
-        accents.setMaximumSize(new Dimension(160, Integer.MAX_VALUE));
+        accents.setMaximumSize(new Dimension(200, Integer.MAX_VALUE));
         accents.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+        accents.setBackground(resources.Resources.getLogoColor());
+        accents.setAlignmentX(CENTER_ALIGNMENT);
         verticalBox.add(this.accents);
 
-        hyphen.setMaximumSize(new Dimension(160, Integer.MAX_VALUE));
+        hyphen.setMaximumSize(new Dimension(200, Integer.MAX_VALUE));
         hyphen.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+        hyphen.setBackground(resources.Resources.getLogoColor());
+        hyphen.setAlignmentX(CENTER_ALIGNMENT);
         verticalBox.add(this.hyphen);
         
         caseSensitive.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
-        caseSensitive.setMaximumSize(new Dimension(160, Integer.MAX_VALUE));
-
+        caseSensitive.setMaximumSize(new Dimension(200, Integer.MAX_VALUE));
+        caseSensitive.setBackground(resources.Resources.getLogoColor());
+        caseSensitive.setAlignmentX(CENTER_ALIGNMENT);
         verticalBox.add(this.caseSensitive);
 
-        random.setMaximumSize(new Dimension(160, Integer.MAX_VALUE));
+        random.setMaximumSize(new Dimension(200, Integer.MAX_VALUE));
         random.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+        random.setBackground(resources.Resources.getLogoColor());
+        random.setAlignmentX(CENTER_ALIGNMENT);
         verticalBox.add(random);
+        
         verticalBox.add(this.buttonPlay);
         buttonPlay.setMaximumSize(new Dimension(160, Integer.MAX_VALUE));
         buttonPlay.setAlignmentX(CENTER_ALIGNMENT);
@@ -215,12 +236,8 @@ public final class ConfigurationWindow extends JFrame implements Observer {
         jpanelsouth = new JPanel(new FlowLayout (FlowLayout.LEFT));
         jpanelsouth.add(backLabel);
         
-        jpanelWest = new JPanel(new BorderLayout());
-        
-        this.jpaneleast = new JPanel(new BorderLayout());
-        jpaneleast.add(backLabel,BorderLayout.SOUTH);
-        
-        this.mainContainer.add(this.jpaneleast, BorderLayout.WEST);
+        jpanelsouth.setBackground(resources.Resources.getLogoColor());
+        this.mainContainer.add(jpanelsouth, BorderLayout.SOUTH);
     }
 
     /**
@@ -374,10 +391,10 @@ public final class ConfigurationWindow extends JFrame implements Observer {
      * Remove categories.
      */
     private void changeCategories() {
-        this.consoants.setState(false);
-        this.accents.setState(false);
-        this.hyphen.setState(false);
-        this.caseSensitive.setState(false);
+        this.consoants.setSelected(false);
+        this.accents.setSelected(false);
+        this.hyphen.setSelected(false);
+        this.caseSensitive.setSelected(false);
     }
 
     /**
@@ -393,7 +410,7 @@ public final class ConfigurationWindow extends JFrame implements Observer {
      * Remove categories.
      */
     private void removeRandom(){
-        this.random.setState(false);
+        this.random.setSelected(false);
     }
     
     /**
@@ -403,19 +420,19 @@ public final class ConfigurationWindow extends JFrame implements Observer {
      *  false: nothing selected.
      */
     private boolean checkCategories() {
-        if (this.consoants.getState()) {
+        if (this.consoants.isSelected()) {
             return true;
         } 
-        else if (this.accents.getState()) {
+        else if (this.accents.isSelected()) {
             return true;
         } 
-        else if (this.hyphen.getState()) {
+        else if (this.hyphen.isSelected()) {
             return true;
         } 
-        else if (this.caseSensitive.getState()) {
+        else if (this.caseSensitive.isSelected()) {
             return true;
         } 
-        else if (this.random.getState()) {
+        else if (this.random.isSelected()) {
             return true;
         }
         return false;
@@ -429,19 +446,19 @@ public final class ConfigurationWindow extends JFrame implements Observer {
     private List<Challenge.Categories> getSelectedCategories() {
         ArrayList<Challenge.Categories> list = new ArrayList<>();
         
-        if (this.consoants.getState()) {
+        if (this.consoants.isSelected()) {
             list.add(Challenge.Categories.CONSOANTS);
         } 
-        if (this.accents.getState()) {
+        if (this.accents.isSelected()) {
             list.add(Challenge.Categories.GRAPHIC_ACCENTS);
         } 
-        if (this.hyphen.getState()) {
+        if (this.hyphen.isSelected()) {
             list.add(Challenge.Categories.HYPHEN);
         } 
-        if (this.caseSensitive.getState()) {
+        if (this.caseSensitive.isSelected()) {
             list.add(Challenge.Categories.UPPERCASE_AND_LOWERCASE);
         } 
-        if (this.random.getState()) {
+        if (this.random.isSelected()) {
             list.add(Challenge.Categories.CONSOANTS);
             list.add(Challenge.Categories.GRAPHIC_ACCENTS);
             list.add(Challenge.Categories.HYPHEN);
