@@ -48,6 +48,7 @@ public class Challenge extends Observable implements ChallengeInterface {
      * All possible categories and the random mode.
      */
     public static enum Categories { 
+        None,
         CONSOANTS, 
         GRAPHIC_ACCENTS, 
         HYPHEN, 
