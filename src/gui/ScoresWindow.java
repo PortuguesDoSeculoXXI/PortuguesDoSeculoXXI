@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -24,8 +25,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import logic.ChallengeModel;
 import logic.Level;
 import logic.Score;
@@ -281,32 +286,24 @@ public final class ScoresWindow extends JFrame implements Observer {
             tableContent[i][0] = "" + scores.get(i).getGold() + scores.get(i).getSilver() + scores.get(i).getBronze();
 
             // Score
-            JPanel aux = new JPanel(new FlowLayout());
-            aux.add(new JLabel("" + scores.get(i).getScore()));
-            tableContent[i][1] = "" + scores.get(i).getScore();
+            tableContent[i][1] = (Integer)scores.get(i).getScore();
 
             // Level
-            aux = new JPanel(new FlowLayout());
-            aux.add(scores.get(i).getLevel() == Level.MODE_EASY ? new JLabel("Fácil") : new JLabel("Difícil"));
             if (scores.get(i).getLevel() == Level.MODE_EASY) {
              tableContent[i][2] = "Fácil";
              } else
              tableContent[i][2] = "Difícil";
 
             // Duration
-            aux = new JPanel(new FlowLayout());
-            aux.add(new JLabel("" + scores.get(i).getDuration()));
             tableContent[i][3] = "" + scores.get(i).getDuration();
 
             // Date
             SimpleDateFormat sdf = new SimpleDateFormat("dd/M/yyyy");
             String date = sdf.format(scores.get(i).getDateTime());
-            aux = new JPanel(new FlowLayout());
-            aux.add(new JLabel(date));
             tableContent[i][4] = date;
         }
 
-        scoreTable = new JTable(tableContent, COLUMN_NAMES);
+        scoreTable = new JTable(new MyTableModel(tableContent, COLUMN_NAMES));
         scoreTable.setRowHeight(32);
         scoreTable.getColumnModel().getColumn(scoreTable.getColumnCount()-1).setMinWidth(100);
         scoreTable.getColumnModel().getColumn(0).setCellRenderer(new ImageRenderer());
@@ -315,10 +312,34 @@ public final class ScoresWindow extends JFrame implements Observer {
         scoreTable.getColumnModel().getColumn(1).setCellRenderer( centerRenderer );
         scoreTable.getColumnModel().getColumn(2).setCellRenderer( centerRenderer );
         scoreTable.getColumnModel().getColumn(3).setCellRenderer( centerRenderer );
-        scoreTable.getColumnModel().getColumn(4).setCellRenderer( centerRenderer );
+        scoreTable.getColumnModel().getColumn(4).setCellRenderer( centerRenderer );    
+        scoreTable.setAutoCreateRowSorter(true);
+        scoreTable.getRowSorter().toggleSortOrder(1);
+        scoreTable.getRowSorter().toggleSortOrder(1);
         scoreTable.setEnabled(false);
         scoreTable.setFillsViewportHeight(true); // Uses the entire height even withou enough scores
 
+    }
+    
+    /**
+     * My Table Model.
+     * 
+     * This class is used so we're able to sort table contents from column 1 (Score)
+     * as Integer values.
+     */
+    class MyTableModel extends DefaultTableModel implements TableModel {
+
+        public MyTableModel(Object[][] data, Object[] columnNames) {
+            super(data, columnNames);
+        }
+        
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            if (columnIndex == 1)
+                return Integer.class;
+            else
+                return Object.class;
+        }
     }
     
     /**
