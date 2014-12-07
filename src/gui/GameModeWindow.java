@@ -155,7 +155,7 @@ public class GameModeWindow extends JFrame implements Observer{
                 }
                 labelTimeQuestion.repaint();
                 if (labelTimeQuestion.getText().equals("0")) {
-                    verifyQuestion();
+                    verifyQuestion(Answer.NO_ANSWER);
                     challengeModel.nextAnswer(null);
                     labelTimeQuestion.setText("15");
                 }
@@ -306,8 +306,8 @@ public class GameModeWindow extends JFrame implements Observer{
                 if (timerAnswer != null)
                     return;
 
+                verifyQuestion(Answer.OPTION_A);
                 challengeModel.nextAnswer(Answer.OPTION_A);
-                verifyQuestion();
             }
             
         });
@@ -319,8 +319,8 @@ public class GameModeWindow extends JFrame implements Observer{
                 if (timerAnswer != null)
                     return;
 
+                verifyQuestion(Answer.OPTION_B);
                 challengeModel.nextAnswer(Answer.OPTION_B);
-                verifyQuestion();
             }
             
         });
@@ -332,8 +332,8 @@ public class GameModeWindow extends JFrame implements Observer{
                 if (timerAnswer != null)
                     return;
 
+                verifyQuestion(Answer.OPTION_BOTH);
                 challengeModel.nextAnswer(Answer.OPTION_BOTH);
-                verifyQuestion();
             }
 
         });
@@ -352,12 +352,13 @@ public class GameModeWindow extends JFrame implements Observer{
     /**
      * Verify the answer of question.
      */
-    private void  verifyQuestion() {
+    private void  verifyQuestion(Answer answer) {
         // If is running, stop the question timer
         //(Hard mode)
         timerQuestion.stop();
         
-        if (challengeModel.getChallenge().getCurrentCorrectAnswer()) {
+        //if (challengeModel.getChallenge().getCurrentCorrectAnswer()) {
+        if (challengeModel.getChallenge().getQuestionsList().get(challengeModel.getChallenge().getCurrentQuestionNumber()-1).getAnswer() == answer) {
             imgCenter.setIcon(Resources.getImageCorrect());
             labelAnswerResult.setText("Correto ");
             labelClarification.setText("");
@@ -369,10 +370,10 @@ public class GameModeWindow extends JFrame implements Observer{
             labelClarification.setText("<HTML><B>Esclarecimento: </B>"+challengeModel.getChallenge().getCurrentRuleClarification()+"</HTML>");
         }
         
-        showAnswerResult();
+        showAnswerResult(answer);
     }
     
-    public void showAnswerResult() {
+    public void showAnswerResult(Answer answer) {
         imgCenter.setVisible(true);
         imgCenter.invalidate();
         
@@ -391,7 +392,7 @@ public class GameModeWindow extends JFrame implements Observer{
                             });
         
         int answerDuration = 1000;
-        if (!challengeModel.getChallenge().getCurrentCorrectAnswer()) {
+        if (challengeModel.getChallenge().getQuestionsList().get(challengeModel.getChallenge().getCurrentQuestionNumber()-1).getAnswer() != answer) {
             answerDuration = 10000;
             buttonDismiss.setVisible(true);
         }
