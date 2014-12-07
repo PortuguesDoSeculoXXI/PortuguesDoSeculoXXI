@@ -86,7 +86,7 @@ public class WindowController implements Observer {
             //gameScoreWindow.setVisible(false);
             scoresWindow.setVisible(false);
         }
-        else if (challengeModel.getChallenge().getCurrentState() instanceof WaitConfiguration) {
+        else if (challengeModel.getChallenge().getCurrentState() instanceof WaitConfiguration && scoresWindow != null) {
             // Configuration
             entranceWindow.setVisible(false);
             configurationWindow.setVisible(true);

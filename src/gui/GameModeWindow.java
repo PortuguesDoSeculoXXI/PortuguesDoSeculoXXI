@@ -306,8 +306,8 @@ public class GameModeWindow extends JFrame implements Observer{
                 if (timerAnswer != null)
                     return;
 
-                verifyQuestion();
                 challengeModel.nextAnswer(Answer.OPTION_A);
+                verifyQuestion();
             }
             
         });
@@ -319,8 +319,8 @@ public class GameModeWindow extends JFrame implements Observer{
                 if (timerAnswer != null)
                     return;
 
-                verifyQuestion();
                 challengeModel.nextAnswer(Answer.OPTION_B);
+                verifyQuestion();
             }
             
         });
@@ -332,8 +332,8 @@ public class GameModeWindow extends JFrame implements Observer{
                 if (timerAnswer != null)
                     return;
 
-                verifyQuestion();
                 challengeModel.nextAnswer(Answer.OPTION_BOTH);
+                verifyQuestion();
             }
 
         });
