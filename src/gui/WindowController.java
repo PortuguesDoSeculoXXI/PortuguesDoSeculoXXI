@@ -1,5 +1,6 @@
 package gui;
 
+import database.DataController;
 import java.util.Observable;
 import java.util.Observer;
 import logic.Challenge;
@@ -41,7 +42,7 @@ public class WindowController implements Observer {
      * Also creates every JFrame.
      */
     public WindowController() {
-        this.controller = new Controller();
+        this.controller = new Controller(new DataController());
         
         this.challengeModel = new ChallengeModel(new Challenge(controller, null));
         this.challengeModel.addObserver(this);

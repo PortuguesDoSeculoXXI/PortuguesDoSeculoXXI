@@ -37,15 +37,15 @@ public class Controller extends Observable {
     /**
      * Constructor.
      * Initialize dataController, categories and players
+     * @param dataController
      */
-    public Controller() {
-        dataController = new DataController();
-        categories = dataController.getAllCategories();
-        players = dataController.getAllPlayers();
+    public Controller(DataController dataController) {
+        this.dataController = dataController;
         
-        for (int i = 0; i < players.size(); i++) {
-            System.out.println("Player: " + players.get(i).getId() + " " + players.get(i).getName());
-        }
+        if (hasDataController()) {
+            categories = dataController.getAllCategories();
+            players = dataController.getAllPlayers();
+        }        
     }
     
     /**
@@ -61,6 +61,8 @@ public class Controller extends Observable {
      * @return list of categories.
      */
     public List<Category> getCategories() {
+        if (categories == null)
+            categories = new ArrayList<>();
         return categories;
     }
 
@@ -69,6 +71,8 @@ public class Controller extends Observable {
      * @return list of players.
      */
     public List<Player> getPlayers() {
+        if (players == null)
+            players = new ArrayList<>();
         return players;
     }
 
@@ -107,6 +111,8 @@ public class Controller extends Observable {
      * @return 
      */
     public boolean insertPlayer(String name) {
+        if (!hasDataController())
+            return false;
         boolean result = dataController.insertPlayer(name);
         players = dataController.getAllPlayers();
         return result;
@@ -118,6 +124,8 @@ public class Controller extends Observable {
      * @param player 
      */
     public void deletePlayer(Player player) {
+        if (!hasDataController())
+            return;
         dataController.deletePlayer(player.getId());
         players.remove(player);
     }
@@ -130,6 +138,8 @@ public class Controller extends Observable {
      * @param newName 
      */
     public boolean updatePlayer(Player player, String newName) {
+        if (!hasDataController())
+            return false;
         boolean result = dataController.updatePlayer(player.getId(), newName);
         players = dataController.getAllPlayers();
         return result;
@@ -147,7 +157,6 @@ public class Controller extends Observable {
         for (Player aux : players)
             if (aux.getName().equalsIgnoreCase(newName))
                 return false;
-        
         return true;
     }
     
@@ -155,6 +164,8 @@ public class Controller extends Observable {
      * Proxy to DataController.getScoreByPlayer.
      */
     public List<Score> getScoreByPlayer(int player) {
+        if (!hasDataController())
+            return null;
         return dataController.getScoreByPlayer(player);
     }
     
@@ -162,6 +173,8 @@ public class Controller extends Observable {
      * Proxy to DataController.getQuestionsByCategory.
      */
     public List<Question> getQuestionsByCategory(List<Challenge.Categories> categories) {
+        if (!hasDataController())
+            return null;
         return dataController.getQuestionsByCategory(categories, 15);
     }
     
@@ -182,6 +195,8 @@ public class Controller extends Observable {
      * Proxy to DataController.getRuleClarification.
      */
     public String getRuleClarification(Question question) {
+        if (!hasDataController())
+            return "";
         if (question == null)
             return "";        
         return dataController.getRuleClarification(question.getIdRule());
