@@ -25,9 +25,11 @@ public class WaitConfiguration extends StateAdapter {
         // When game starts set current time in milliseconds
         challenge.setDuration(System.currentTimeMillis());
         
-        // List of questions based on selected categories
-        List<Question> list = challenge.getController().getQuestionsByCategory(categoryList);
-        challenge.setQuestionsList(list);
+        if (challenge.getController().hasDataController()) {
+            // List of questions based on selected categories
+            List<Question> list = challenge.getController().getQuestionsByCategory(categoryList);
+            challenge.setQuestionsList(list);
+        }
         
         return new WaitAnswer(challenge);
     }

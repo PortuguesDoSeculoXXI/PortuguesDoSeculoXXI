@@ -176,10 +176,22 @@ public class Controller extends Observable {
                 score.getGold(), score.getSilver(), score.getBronze());
     }
     
+    
+    /**
+     * Proxy to DataController.getRuleClarification.
+     */
     public String getRuleClarification(Question question) {
         if (question == null)
             return "";        
         return dataController.getRuleClarification(question.getIdRule());
+    }
+    
+    
+    /**
+     * Has access to persistent data.
+     */
+    public boolean hasDataController() {
+        return dataController != null;
     }
 
 }
