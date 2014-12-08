@@ -5,6 +5,7 @@
  */
 package logic;
 
+import database.DataController;
 import java.util.ArrayList;
 import java.util.List;
 import logic.database.Controller;
@@ -27,6 +28,7 @@ public class ChallengeModelTest {
     private Challenge instanceC;
     private Player player;
     private Controller controller;
+    private DataController dc;
     
     public ChallengeModelTest() {
     }
@@ -41,39 +43,16 @@ public class ChallengeModelTest {
     
     @Before
     public void setUp() {
-        //player = new Player(1, "Carol");
-        //controller = new Controller();
-        instanceC = new Challenge(null, player);
+        player = new Player(1, "Carol");
+        dc = new DataController();
+        controller = new Controller(dc);
+        instanceC = new Challenge(controller, player);
         instanceCM = new ChallengeModel(instanceC);
     }
     
     @After
     public void tearDown() {
     }
-
-    /**
-     * Test of setChallenge method, of class ChallengeModel.
-     */
-//    @Test
-//    public void testSetChallenge() {
-//        System.out.println("setChallenge");
-//        Challenge challenge = new Challenge(null, null);
-//        instanceCM.setChallenge(challenge);
-//        if(instanceCM.getChallenge().ge)
-//       
-//    }
-
-    /**
-     * Test of sendNotification method, of class ChallengeModel.
-     */
-//    @Test
-//    public void testSendNotification() {
-//        System.out.println("sendNotification");
-//        ChallengeModel instance = null;
-//        instance.sendNotification();
-//        //TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
 
     /**
      * Test of newGame method, of class ChallengeModel.
@@ -89,28 +68,36 @@ public class ChallengeModelTest {
     /**
      * Test of startGame method, of class ChallengeModel.
      */
-//    @Test
-//    public void testStartGame() {
-//        System.out.println("startGame");
-//        List<Challenge.Categories> categoryList = new ArrayList<>();
-//        categoryList.add(Challenge.Categories.RANDOM);
-//        instanceCM.startGame(categoryList);
-//        if(!(instanceCM.getChallenge().getCurrentState() instanceof WaitAnswer))
-//            fail("Error.");
-//    }
+    @Test
+    public void testStartGame() {
+        System.out.println("startGame");
+        List<Challenge.Categories> categoryList = new ArrayList<>();
+        categoryList.add(Challenge.Categories.RANDOM);
+        instanceCM.startGame(categoryList);
+        if(!(instanceCM.getChallenge().getCurrentState() instanceof WaitAnswer))
+            fail("Error.");
+    }
 
     /**
      * Test of nextAnswer method, of class ChallengeModel.
      */
-//    @Test
-//    public void testNextAnswer() {
-//        System.out.println("nextAnswer");
-//        Answer answer = null;
-//        ChallengeModel instance = null;
-//        instance.nextAnswer(answer);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
+    @Test
+    public void testNextAnswer() {
+        System.out.println("nextAnswer");
+        String question1, question2;
+        
+        List<Challenge.Categories> categoryList = new ArrayList<>();
+        categoryList.add(Challenge.Categories.UPPERCASE_AND_LOWERCASE);
+        instanceCM.startGame(categoryList);
+        System.out.println(instanceCM.challenge.getCurrentQuestion().getQuestion());
+        question1 = instanceCM.challenge.getCurrentQuestion().getQuestion(); 
+        instanceCM.nextAnswer(Answer.OPTION_A);
+        System.out.println(instanceCM.challenge.getCurrentQuestion().getQuestion());
+        question2 = instanceCM.challenge.getCurrentQuestion().getQuestion(); 
+        
+        if(question1 == question2)
+            fail("Error.");
+    }
 
     /**
      * Test of quitGame method, of class ChallengeModel.
@@ -118,8 +105,9 @@ public class ChallengeModelTest {
     @Test
     public void testQuitGame() {
         System.out.println("quitGame");
+        instanceCM.startGame(null);
         instanceCM.quitGame();
-        if(!(instanceCM.getChallenge().getCurrentState() instanceof WaitConfiguration)) //nai tenho a certeza se e este estado?!
+        if(!(instanceCM.getChallenge().getCurrentState() instanceof WaitConfiguration))
             fail("Error.");
     }
 
@@ -129,7 +117,9 @@ public class ChallengeModelTest {
     @Test
     public void testEnd() {
         System.out.println("end");
+        instanceCM.startGame(null);
         instanceCM.end();
+        System.out.println(instanceCM.challenge.getCurrentState().toString());
         if(!(instanceCM.getChallenge().getCurrentState() instanceof WaitScore)) 
             fail("Error.");
     }
@@ -153,12 +143,13 @@ public class ChallengeModelTest {
 //    @Test
 //    public void testGetChallenge() {
 //        System.out.println("getChallenge");
-//        ChallengeModel instance = null;
-//        Challenge expResult = null;
-//        Challenge result = instance.getChallenge();
-//        assertEquals(expResult, result);
+//       // ChallengeModel instance = null;
+//        //Challenge expResult = null;
+//        String result = instanceCM.getChallenge().toString();
+//        System.out.println(result);
+//        //assertEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
+//        //fail("The test case is a prototype.");
 //    }
 
     /**
@@ -177,54 +168,12 @@ public class ChallengeModelTest {
     /**
      * Test of backPressed method, of class ChallengeModel.
      */
-//    @Test
-//    public void testBackPressed() {
-//        System.out.println("backPressed");
-//        ChallengeModel instance = null;
-//        instance.backPressed();
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-
-    /**
-     * Test of isScoreWindow method, of class ChallengeModel.
-     */
-//    @Test
-//    public void testIsScoreWindow() {
-//        System.out.println("isScoreWindow");
-//        ChallengeModel instance = null;
-//        boolean expResult = false;
-//        boolean result = instance.isScoreWindow();
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-
-    /**
-     * Test of setScoreWindow method, of class ChallengeModel.
-     */
     @Test
-    public void testSetScoreWindow() {
-        System.out.println("setScoreWindow");
-        boolean scoreWindow = false;
-        instanceCM.setScoreWindow(scoreWindow);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+    public void testBackPressed() {
+        System.out.println("backPressed");
+        instanceCM.backPressed();
+        if(instanceCM.getChallenge() != null)
+            fail("Error.");
     }
-
-    /**
-     * Test of getChallengeScore method, of class ChallengeModel.
-     */
-//    @Test
-//    public void testGetChallengeScore() {
-//        System.out.println("getChallengeScore");
-//        long duration = 0L;
-//        ChallengeModel instance = null;
-//        int expResult = 0;
-//        int result = instance.getChallengeScore(duration);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
     
 }
