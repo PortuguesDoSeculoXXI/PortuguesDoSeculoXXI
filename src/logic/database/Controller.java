@@ -169,13 +169,14 @@ public class Controller extends Observable {
      * Proxy to DataController.insertChallengeScore.
      */
     public void insertChallengeScore(Player player, long duration, Level level, Score score) {
+        if (!hasDataController())
+            return;
         // Teste
         Double totalScore = duration * 0.2 * (1 + 1000 * score.getGold() + 200 * score.getSilver() + 100 * score.getBronze());
         
         dataController.insertChallengeScore(player.getId(), new Date(), (int) duration, level, totalScore.intValue(),
                 score.getGold(), score.getSilver(), score.getBronze());
     }
-    
     
     /**
      * Proxy to DataController.getRuleClarification.
@@ -185,7 +186,6 @@ public class Controller extends Observable {
             return "";        
         return dataController.getRuleClarification(question.getIdRule());
     }
-    
     
     /**
      * Has access to persistent data.

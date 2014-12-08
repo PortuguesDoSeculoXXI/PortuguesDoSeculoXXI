@@ -51,10 +51,8 @@ public class WaitAnswer extends StateAdapter {
         // Stop counting time
         long timeEnd = System.currentTimeMillis();
         long timeDelta = timeEnd - challenge.getDuration();
-        challenge.setDuration((long) (timeDelta / 1000.0)); // CONFIRMAR SE ISTO NAO PERDE VALORES
-        
-        System.out.println("Tempo total: " + challenge.getDuration());
-        
+        challenge.setDuration((long) (timeDelta / 1000.0));
+                
         Score currentScore = calculateScore(challenge.getNumberOfQuestionsRight());
         challenge.setScore(currentScore);
         

@@ -118,6 +118,8 @@ public class Challenge extends Observable implements ChallengeInterface {
     }
 
     public List<Question> getQuestionsList() {
+        if (questionsList == null)
+            questionsList = new ArrayList<>();
         return questionsList;
     }
 
