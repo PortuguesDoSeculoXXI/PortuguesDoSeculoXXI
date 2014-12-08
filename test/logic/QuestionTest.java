@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package logic;
 
 import org.junit.After;
@@ -13,10 +8,13 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
- * @author Filipe
+ * Question Unit Test.
+ * This class test the Question.
+ * 
+ * @author PTXXI
  */
 public class QuestionTest {
+    
     private Question instance;
     
     public QuestionTest() {
@@ -46,7 +44,7 @@ public class QuestionTest {
     @Test
     public void testGetAnswer() {
         System.out.println("getAnswer");
-        int expResult = 2;
+        Answer expResult = Answer.OPTION_B; //2
         Answer result = instance.getAnswer();
         assertEquals(expResult, result);
     }

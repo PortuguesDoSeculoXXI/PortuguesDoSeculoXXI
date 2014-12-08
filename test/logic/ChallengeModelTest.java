@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package logic;
 
 import database.DataController;
@@ -20,10 +15,13 @@ import states.WaitConfiguration;
 import states.WaitScore;
 
 /**
- *
- * @author Filipe
+ * ChallengeModel Unit Test.
+ * This class test the ChallengeModel.
+ * 
+ * @author PTXXI
  */
 public class ChallengeModelTest {
+    
     private ChallengeModel instanceCM;
     private Challenge instanceC;
     private Player player;
@@ -44,8 +42,7 @@ public class ChallengeModelTest {
     @Before
     public void setUp() {
         player = new Player(1, "Carol");
-        dc = new DataController();
-        controller = new Controller(dc);
+        controller = new Controller(null);
         instanceC = new Challenge(controller, player);
         instanceCM = new ChallengeModel(instanceC);
     }
@@ -61,8 +58,8 @@ public class ChallengeModelTest {
     public void testNewGame() {
         System.out.println("newGame");
         instanceCM.newGame();
-        if(!(instanceCM.getChallenge().getCurrentState() instanceof WaitConfiguration))
-            fail("Error.");
+        if (!(instanceCM.getChallenge().getCurrentState() instanceof WaitConfiguration))
+            fail("Result: "+instanceCM.getChallenge().getCurrentState());
     }
 
     /**
@@ -74,8 +71,8 @@ public class ChallengeModelTest {
         List<Challenge.Categories> categoryList = new ArrayList<>();
         categoryList.add(Challenge.Categories.RANDOM);
         instanceCM.startGame(categoryList);
-        if(!(instanceCM.getChallenge().getCurrentState() instanceof WaitAnswer))
-            fail("Error.");
+        if (!(instanceCM.getChallenge().getCurrentState() instanceof WaitAnswer))
+            fail("Result: "+instanceCM.getChallenge().getCurrentState());
     }
 
     /**
@@ -84,19 +81,26 @@ public class ChallengeModelTest {
     @Test
     public void testNextAnswer() {
         System.out.println("nextAnswer");
-        String question1, question2;
+        Question question1, question2;
         
+        // State new game
+        instanceCM.newGame();
+        // State start game (done configurations)
         List<Challenge.Categories> categoryList = new ArrayList<>();
         categoryList.add(Challenge.Categories.UPPERCASE_AND_LOWERCASE);
         instanceCM.startGame(categoryList);
-        System.out.println(instanceCM.challenge.getCurrentQuestion().getQuestion());
-        question1 = instanceCM.challenge.getCurrentQuestion().getQuestion(); 
-        instanceCM.nextAnswer(Answer.OPTION_A);
-        System.out.println(instanceCM.challenge.getCurrentQuestion().getQuestion());
-        question2 = instanceCM.challenge.getCurrentQuestion().getQuestion(); 
+        // Test Questions
+        List<Question> questionList = new ArrayList<>();
+        question1 = new Question(Answer.NO_ANSWER, "Teste 1", "", "", 0);
+        question2 = new Question(Answer.NO_ANSWER, "Teste 2", "", "", 0);
+        questionList.add(question1);
+        questionList.add(question2);
+        instanceCM.challenge.setQuestionsList(questionList);
         
-        if(question1 == question2)
-            fail("Error.");
+        instanceCM.nextAnswer(Answer.OPTION_A);
+        
+        if (!instanceCM.challenge.getCurrentQuestion().getQuestion().equals(question2.getQuestion()))
+            fail("Result: "+instanceCM.challenge.getCurrentQuestion().getQuestion());
     }
 
     /**

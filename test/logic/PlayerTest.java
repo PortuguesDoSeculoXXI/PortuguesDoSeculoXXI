@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package logic;
 
 import org.junit.After;
@@ -13,10 +8,13 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
- * @author Filipe
+ * Player Unit Test.
+ * This class test the Player.
+ * 
+ * @author PTXXI
  */
 public class PlayerTest {
+    
     private Player instance;
     
     public PlayerTest() {
