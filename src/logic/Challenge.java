@@ -89,7 +89,7 @@ public class Challenge extends Observable implements ChallengeInterface {
     }
 
     public void incrementNumberOfQuestionsRight() {
-        this.numberOfQuestionsRight++;
+        ++this.numberOfQuestionsRight;
     }
     
     public void madeCorrectAnswer() {
@@ -128,7 +128,7 @@ public class Challenge extends Observable implements ChallengeInterface {
         if (this.questionsList.isEmpty())
             return;
 
-        this.currentQuestionNumber = 1;
+        this.currentQuestionNumber = 0;
         this.currentCorrectAnswer = false;
         this.currentQuestion = questionsList.get((++currentQuestionNumber) - 1);
     }

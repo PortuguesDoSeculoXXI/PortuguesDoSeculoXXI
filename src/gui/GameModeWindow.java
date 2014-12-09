@@ -471,6 +471,11 @@ public class GameModeWindow extends JFrame implements Observer{
         if (challengeModel.getChallenge() instanceof ChallengeHard) {
             questionStartTime = new Date();
             timerQuestion.start();
+            labelTimeQuestion.setVisible(true);
+            labelTimeQuestion.setText("15");
+        } else {
+            timerQuestion.stop();
+            labelTimeQuestion.setVisible(false);
         }
         
         buttonOptionA.setText(currentQuestion.getOptionA());
