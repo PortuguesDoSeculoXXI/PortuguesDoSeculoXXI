@@ -8,6 +8,7 @@ package logic;
  * @author PTXXI
  */
 public class Player {
+    
     private final int id;
     private final String name;
 
@@ -23,4 +24,5 @@ public class Player {
     public String getName() {
         return name;
     }
+    
 }

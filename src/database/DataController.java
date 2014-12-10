@@ -88,7 +88,7 @@ public class DataController {
     /**
      * Get all players from database.
      *
-     * @returns List of Players.
+     * @return List of Players.
      */
     public List<Player> getAllPlayers() {
         List<Player> players = new ArrayList<>();
@@ -116,7 +116,7 @@ public class DataController {
     /**
      * Get challenge score by player.
      *
-     * @returns List of Scores.
+     * @return List of Scores.
      */
     public List<Score> getScoreByPlayer(int idPlayer) {
         List<Score> scoresPlayer= new ArrayList<>();
@@ -155,7 +155,7 @@ public class DataController {
     /**
      * Get challenge score by player.
      *
-     * @returns List of Scores.
+     * @return List of Scores.
      */
     public List<Score> getAvgScoreByPlayer(int idPlayer, Level level) {
         List<Score> scoresPlayer= new ArrayList<>();
@@ -191,7 +191,7 @@ public class DataController {
     /**
      * Get all the categories from database.
      *
-     * @returns List of Categories.
+     * @return List of Categories.
      */
     public List<Category> getAllCategories() {
         List<Category> categories = new ArrayList<>();
@@ -422,7 +422,6 @@ public class DataController {
      * @param gold Gold medal.
      * @param silver Silver medal.
      * @param bronze Bronze medal.
-     * @return true-successfully inserted, false-already exists.
      */
     public void insertChallengeScore(int idPlayer, Date dateTime, int duration, 
             Level level, int score, int gold, int silver, int bronze) {

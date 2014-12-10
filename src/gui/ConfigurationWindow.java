@@ -63,7 +63,6 @@ public final class ConfigurationWindow extends JFrame implements Observer {
     private final JRadioButton hard = new JRadioButton(" Difícil (Com tempo)");
     private JLabel backLabel;
 
- 
     /**
      * Constructor.
      * @param controller

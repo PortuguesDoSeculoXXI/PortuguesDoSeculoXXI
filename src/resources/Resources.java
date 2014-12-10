@@ -24,27 +24,27 @@ public class Resources {
     }
     
     public static final ImageIcon getLogo() {
-        return new ImageIcon("src/resources/logo.png");
+        return new ImageIcon("resources/logo.png");
     }
     
     public static final ImageIcon getImageCorrect() {
-        return new ImageIcon("src/resources/correct.png");
+        return new ImageIcon("resources/correct.png");
     }
     
     public static final ImageIcon getImageIncorrect() {
-        return new ImageIcon("src/resources/incorrect.png");
+        return new ImageIcon("resources/incorrect.png");
     }
     
     public static final ImageIcon getImageMedalGold() {
-        return new ImageIcon("src/resources/Gold.png");
+        return new ImageIcon("resources/Gold.png");
     }
     
     public static final ImageIcon getImageMedalSilver() {
-        return new ImageIcon("src/resources/Silver.png");
+        return new ImageIcon("resources/Silver.png");
     }
     
     public static final ImageIcon getImageMedalBronze() {
-        return new ImageIcon("src/resources/Bronze.png");
+        return new ImageIcon("resources/Bronze.png");
     }
     
     public static final ImageIcon getImageResized(ImageIcon imageIcon, int width, int height) {

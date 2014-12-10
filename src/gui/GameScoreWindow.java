@@ -35,6 +35,15 @@ public class GameScoreWindow extends JFrame implements Observer {
         this(controller, challengeModel, 350, 75, 600, 550);
     }
     
+    /**
+     * Constructor.
+     * @param controller
+     * @param challengeModel
+     * @param x
+     * @param y
+     * @param width
+     * @param height 
+     */
     public GameScoreWindow(Controller controller, ChallengeModel challengeModel, int x, int y, int width, int height) {
         super("Português do Século XXI");
         this.controller = controller;
@@ -68,6 +77,9 @@ public class GameScoreWindow extends JFrame implements Observer {
         registerListeners();
     }
 
+    /**
+     * Create layout for view components.
+     */
     private void createLayout() {
         jPanelCenter();
         jPanelSouth();
