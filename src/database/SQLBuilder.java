@@ -10,17 +10,19 @@ import java.util.Set;
  * SQL Query Builder.
  * This class creates SQL queries dynamically.
  * 
- * To do:
- *  - INNER JOIN and LEFT OUTER JOIN
- *  - WHERE clause with LIKE
- *  - WHERE clause with num ou text
- *  - UPDATE clause
- *  - LIMIT clause
- *  - ORDER BY clause
- * 
  * @author PTXXI
  */
 class SQLBuilder {
+    
+    /*
+     * To do:
+     *  - INNER JOIN and LEFT OUTER JOIN
+     *  - WHERE clause with LIKE
+     *  - WHERE clause with num ou text
+     *  - UPDATE clause
+     *  - LIMIT clause
+     *  - ORDER BY clause
+    */
     
     private static class StringUtilities
     {

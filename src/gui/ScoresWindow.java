@@ -118,6 +118,9 @@ public final class ScoresWindow extends JFrame implements Observer {
         registerListeners();
     }
 
+    /**
+     * Create layout for view components.
+     */
     private void createLayout() {
         jPanelCenter();
         jPanelSouth();

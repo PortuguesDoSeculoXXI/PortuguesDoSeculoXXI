@@ -105,6 +105,9 @@ public class GameModeWindow extends JFrame implements Observer{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
     
+    /**
+     * Initializae window.
+     */
     protected void init() {
         // Init components/panels
         getContentPane().setLayout(new BorderLayout());
@@ -126,7 +129,10 @@ public class GameModeWindow extends JFrame implements Observer{
         // First time
         refreshGame();
     }
-     
+    
+    /**
+     * Create main layout.
+     */
     private void createLayout() {
         initComponents();
         initMargins();
@@ -135,6 +141,9 @@ public class GameModeWindow extends JFrame implements Observer{
         jPanelSouth();
     }
     
+    /**
+     * Prepare timer for hard mode game.
+     */
     private void prepareQuestionTimer() {
         timerQuestion = new Timer(1000, new ActionListener() {
 
@@ -164,6 +173,9 @@ public class GameModeWindow extends JFrame implements Observer{
         });
     }
     
+    /**
+     * Initialize margins for layout.
+     */
     private void initMargins() {
         // Margin Left
         JPanel marginLeft = new JPanel(new BorderLayout());
@@ -179,6 +191,9 @@ public class GameModeWindow extends JFrame implements Observer{
         getContentPane().add(marginRight, BorderLayout.EAST);
     }
     
+    /**
+     * Initialize view components.
+     */
     private void initComponents() {
         labelProfile = new JLabel();
         if (challengeModel.getChallenge() instanceof ChallengeHard)
@@ -200,7 +215,10 @@ public class GameModeWindow extends JFrame implements Observer{
         buttonDismiss = new JButton("Continuar");
         buttonDismiss.setVisible(false);
     }
-        
+    
+    /**
+     * Panel north.
+     */
     private void jPanelNorth() {
         panelNorth = new JPanel(new BorderLayout());
         panelNorth.setPreferredSize(new Dimension(400, 50));
@@ -211,7 +229,10 @@ public class GameModeWindow extends JFrame implements Observer{
         
         mainContainer.add(panelNorth, BorderLayout.NORTH);
      }
-     
+    
+    /**
+     * Panel center.
+     */
     private void jPanelCenter() {
         panelCenter = new JPanel();
         panelCenter.setLayout(new BoxLayout(panelCenter,BoxLayout.Y_AXIS));
@@ -279,6 +300,9 @@ public class GameModeWindow extends JFrame implements Observer{
         mainContainer.add(panelCenter, BorderLayout.CENTER);
     }
     
+    /**
+     * Panel south.
+     */
     private void jPanelSouth() {
         panelSouth = new JPanel(new BorderLayout());
         panelSouth.setBackground(Resources.getLogoColor());
@@ -289,6 +313,9 @@ public class GameModeWindow extends JFrame implements Observer{
         mainContainer.add(panelSouth, BorderLayout.SOUTH);
     }
     
+    /**
+     * Register components listeners.
+     */
     private void registerListeners() {
         
         labelGiveUp.addMouseListener(new MouseAdapter() {
@@ -373,6 +400,10 @@ public class GameModeWindow extends JFrame implements Observer{
         showAnswerResult(answer);
     }
     
+    /**
+     * Show the answer result and clarification.
+     * @param answer 
+     */
     public void showAnswerResult(Answer answer) {
         imgCenter.setVisible(true);
         imgCenter.invalidate();
@@ -413,6 +444,9 @@ public class GameModeWindow extends JFrame implements Observer{
             labelTimeQuestion.setText("15");
     }
     
+    /**
+     * Hide the answer result.
+     */
     public void hideAnswerResult() {
         imgCenter.setVisible(false);
         imgCenter.invalidate();
