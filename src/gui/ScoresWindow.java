@@ -386,6 +386,8 @@ public final class ScoresWindow extends JFrame implements Observer {
      */
     @Override
     public void update(Observable o, Object o1) {
-
+        if (challengeModel.isScoreWindow()) {
+            refreshChartAndTable();
+        }
     }
 }
