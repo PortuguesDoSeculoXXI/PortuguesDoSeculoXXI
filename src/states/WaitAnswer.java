@@ -1,12 +1,10 @@
 package states;
 
-import java.util.Date;
 import logic.Answer;
 import logic.Challenge;
 import logic.ChallengeHard;
 import logic.Level;
 import logic.Score;
-import logic.database.Controller;
 
 /**
  * Wait Answer.
