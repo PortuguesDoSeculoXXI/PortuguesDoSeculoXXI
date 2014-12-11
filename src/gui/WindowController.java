@@ -33,7 +33,6 @@ public class WindowController implements Observer {
     private final EntranceWindow entranceWindow;
     private final ConfigurationWindow configurationWindow;
     private final GameModeWindow gameModeWindow;
-    //private final GameScoreWindow gameScoreWindow;
     private ScoresWindow scoresWindow;
     
     /**
@@ -55,9 +54,6 @@ public class WindowController implements Observer {
         this.gameModeWindow = new GameModeWindow(this.controller, this.challengeModel);
         this.gameModeWindow.setVisible(false);
         
-        //this.gameScoreWindow = new GameScoreWindow(this.controller, this.challengeModel);
-        //this.gameScoreWindow.setVisible(false);
-        
         this.scoresWindow = new ScoresWindow(this.controller, this.challengeModel);
         this.scoresWindow.setVisible(false);
     }
@@ -74,7 +70,6 @@ public class WindowController implements Observer {
             entranceWindow.setVisible(false);
             configurationWindow.setVisible(false);
             gameModeWindow.setVisible(false);
-            //gameScoreWindow.setVisible(false);
             if (scoresWindow == null)
                 scoresWindow = new ScoresWindow(this.controller, this.challengeModel);
             scoresWindow.setVisible(true);
@@ -84,7 +79,6 @@ public class WindowController implements Observer {
             entranceWindow.setVisible(true);
             configurationWindow.setVisible(false);
             gameModeWindow.setVisible(false);
-            //gameScoreWindow.setVisible(false);
             scoresWindow.setVisible(false);
         }
         else if (challengeModel.getChallenge().getCurrentState() instanceof WaitConfiguration && scoresWindow != null) {
@@ -92,7 +86,6 @@ public class WindowController implements Observer {
             entranceWindow.setVisible(false);
             configurationWindow.setVisible(true);
             gameModeWindow.setVisible(false);
-            //gameScoreWindow.setVisible(false);
             scoresWindow.setVisible(false);
         }
         else if (challengeModel.getChallenge().getCurrentState() instanceof WaitAnswer) {
@@ -106,7 +99,6 @@ public class WindowController implements Observer {
                 entranceWindow.setVisible(false);
                 configurationWindow.setVisible(false);
                 gameModeWindow.setVisible(true);
-                //gameScoreWindow.setVisible(false);
                 scoresWindow.setVisible(false);
             }
         }
@@ -115,7 +107,6 @@ public class WindowController implements Observer {
             entranceWindow.setVisible(false);
             configurationWindow.setVisible(false);
             gameModeWindow.setVisible(false);
-            //gameScoreWindow.setVisible(true);
             scoresWindow.setVisible(false);
         }
     }
