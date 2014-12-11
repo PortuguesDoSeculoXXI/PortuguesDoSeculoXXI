@@ -45,15 +45,16 @@ public class WaitAnswer extends StateAdapter {
     @Override
     public IState end() {
         // Set score
-        challenge.setScore(calculateScore(challenge.getNumberOfQuestionsRight()));
+        challenge.setScore(calculateMedals(challenge.getNumberOfQuestionsRight()));
         // Stop counting time
         long timeEnd = System.currentTimeMillis();
-        long timeDelta = timeEnd - challenge.getDuration();
-        challenge.setDuration((long) (timeDelta / 1000.0));
-                
+        long timeDelta = timeEnd - challenge.getStartTime();
+        
+        challenge.getScore().setDuration(new Double((long) (timeDelta / 1000.0)).intValue());
+                        
         Level level = challenge instanceof ChallengeHard ? Level.MODE_HARD : Level.MODE_EASY;
         
-        challenge.getController().insertChallengeScore(challenge.getCurrentProfile(), challenge.getDuration(), level, challenge.getScore());
+        challenge.getController().insertChallengeScore(challenge.getCurrentProfile(), level, challenge.getScore());
         
         return new WaitScore(challenge);
     }
@@ -69,7 +70,7 @@ public class WaitAnswer extends StateAdapter {
      * @param numberOfQuestionsRight
      * @return Score with the respective result.
      */
-    private Score calculateScore(int numberOfQuestionsRight) {
+    private Score calculateMedals(int numberOfQuestionsRight) {
         Score challengeScore;
         
         // Calculate final score

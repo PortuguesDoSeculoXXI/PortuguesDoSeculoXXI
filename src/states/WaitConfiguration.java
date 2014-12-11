@@ -23,7 +23,7 @@ public class WaitConfiguration extends StateAdapter {
     @Override
     public IState startGame(List<Challenge.Categories> categoryList) {
         // When game starts set current time in milliseconds
-        challenge.setDuration(System.currentTimeMillis());
+        challenge.setStartTime(System.currentTimeMillis());
         
         if (challenge.getController().hasDataController()) {
             // List of questions based on selected categories
