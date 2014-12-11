@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.Box;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -320,6 +321,10 @@ public final class ScoresWindow extends JFrame implements Observer {
         scoreTable.setFillsViewportHeight(true); // Uses the entire height even withou enough scores
 
     }
+
+    private void refreshComboBox() {
+        jc.setModel(new DefaultComboBoxModel(controller.getPlayersAsStrings()));
+    }
     
     /**
      * My Table Model.
@@ -385,6 +390,7 @@ public final class ScoresWindow extends JFrame implements Observer {
     public void update(Observable o, Object o1) {
         if (challengeModel.isScoreWindow()) {
             refreshChartAndTable();
+            refreshComboBox();
         }
     }
 }
