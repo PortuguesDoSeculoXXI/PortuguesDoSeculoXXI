@@ -183,10 +183,13 @@ public class Controller extends Observable {
     public void insertChallengeScore(Player player, long duration, Level level, Score score) {
         if (!hasDataController())
             return;
-        // Teste
-        Double totalScore = duration * 0.2 * (1 + 1000 * score.getGold() + 200 * score.getSilver() + 100 * score.getBronze());
         
-        dataController.insertChallengeScore(player.getId(), new Date(), (int) duration, level, totalScore.intValue(),
+        if (score == null)
+            return;
+
+        long totalScore = (50 / duration + score.getRightAnswers()) * 100;
+        
+        dataController.insertChallengeScore(player.getId(), new Date(), (int) duration, level, new Double(totalScore).intValue(),
                 score.getGold(), score.getSilver(), score.getBronze());
     }
     

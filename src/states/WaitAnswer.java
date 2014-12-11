@@ -51,12 +51,9 @@ public class WaitAnswer extends StateAdapter {
         long timeDelta = timeEnd - challenge.getDuration();
         challenge.setDuration((long) (timeDelta / 1000.0));
                 
-        Score currentScore = calculateScore(challenge.getNumberOfQuestionsRight());
-        challenge.setScore(currentScore);
-        
         Level level = challenge instanceof ChallengeHard ? Level.MODE_HARD : Level.MODE_EASY;
         
-        challenge.getController().insertChallengeScore(challenge.getCurrentProfile(), challenge.getDuration(), level, currentScore);
+        challenge.getController().insertChallengeScore(challenge.getCurrentProfile(), challenge.getDuration(), level, challenge.getScore());
         
         return new WaitScore(challenge);
     }
@@ -81,6 +78,7 @@ public class WaitAnswer extends StateAdapter {
             challengeScore.setGold(1);
             challengeScore.setSilver(1);
             challengeScore.setBronze(1);
+            challengeScore.setRightAnswers(numberOfQuestionsRight);
             return challengeScore;
         }
         else if (numberOfQuestionsRight <= 14 && numberOfQuestionsRight >= 11) {
@@ -88,6 +86,7 @@ public class WaitAnswer extends StateAdapter {
             challengeScore.setGold(0);
             challengeScore.setSilver(1);
             challengeScore.setBronze(1);
+            challengeScore.setRightAnswers(numberOfQuestionsRight);
             return challengeScore;
         }
         else if (numberOfQuestionsRight <= 10 && numberOfQuestionsRight >= 8) {
@@ -95,10 +94,12 @@ public class WaitAnswer extends StateAdapter {
             challengeScore.setGold(0);
             challengeScore.setSilver(0);
             challengeScore.setBronze(1);
+            challengeScore.setRightAnswers(numberOfQuestionsRight);
             return challengeScore;
         }
         else {
             challengeScore = new Score(0, 0); // No medals
+            challengeScore.setRightAnswers(numberOfQuestionsRight);
             return challengeScore;
         }
     }

@@ -16,6 +16,7 @@ public class Score {
     private Date dateTime;
     private int duration; //Segundos
     private Level level;
+    private int rightAnswers;
     private int gold;
     private int silver;
     private int bronze;
@@ -35,8 +36,6 @@ public class Score {
         this.silver = silver;
         this.bronze = bronze;
     }
-    
-    
 
     public Date getDateTime() {
         return dateTime;
@@ -97,4 +96,13 @@ public class Score {
     public float getFloatScore() {
         return score;
     }
+
+    public int getRightAnswers() {
+        return rightAnswers;
+    }
+
+    public void setRightAnswers(int rightAnswers) {
+        this.rightAnswers = rightAnswers;
+    }
+    
 }
