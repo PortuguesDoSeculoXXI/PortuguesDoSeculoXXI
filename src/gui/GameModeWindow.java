@@ -529,7 +529,7 @@ public class GameModeWindow extends JFrame implements Observer{
         
         Box verticalBox = Box.createVerticalBox();
         
-        JLabel scoreTitle = new JLabel("<html><font size=13><center>Score: " + challengeModel.getChallengeScore(challengeModel.getChallenge().getDuration()) + "</center></font></html>");
+        JLabel scoreTitle = new JLabel("<html><font size=13><center>Score: " + challengeModel.getChallenge().getScore().getScorePoints() + "</center></font></html>");
         scoreTitle.setAlignmentX(CENTER_ALIGNMENT);
         verticalBox.add(scoreTitle);
         

@@ -105,4 +105,8 @@ public class Score {
         this.rightAnswers = rightAnswers;
     }
     
+    public int getScorePoints() {
+        return new Double((50 / duration + rightAnswers) * 100).intValue();
+    }
+    
 }

@@ -180,16 +180,14 @@ public class Controller extends Observable {
     /**
      * Proxy to DataController.insertChallengeScore.
      */
-    public void insertChallengeScore(Player player, long duration, Level level, Score score) {
+    public void insertChallengeScore(Player player, Level level, Score score) {
         if (!hasDataController())
             return;
         
         if (score == null)
             return;
-
-        long totalScore = (50 / duration + score.getRightAnswers()) * 100;
         
-        dataController.insertChallengeScore(player.getId(), new Date(), (int) duration, level, new Double(totalScore).intValue(),
+        dataController.insertChallengeScore(player.getId(), new Date(), score.getDuration(), level, score.getScorePoints(),
                 score.getGold(), score.getSilver(), score.getBronze());
     }
     

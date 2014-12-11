@@ -67,7 +67,7 @@ public class Challenge extends Observable implements ChallengeInterface {
      * This variable has the time that took to complete the challenge.
      * this should be instantiated when the challenge starts.
      */
-    private long duration;
+    private long startTime;
     /**
      * Controller for data access/store.
      */
@@ -157,12 +157,12 @@ public class Challenge extends Observable implements ChallengeInterface {
         this.score = score;
     }
 
-    public long getDuration() {
-        return duration;
+    public long getStartTime() {
+        return startTime;
     }
 
-    public void setDuration(long duration) {
-        this.duration = duration;
+    public void setStartTime(long duration) {
+        this.startTime = duration;
     }
 
     public int getNumberOfQuestionsRight() {
