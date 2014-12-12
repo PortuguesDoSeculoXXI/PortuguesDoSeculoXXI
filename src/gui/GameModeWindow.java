@@ -57,6 +57,7 @@ public class GameModeWindow extends JFrame implements Observer{
     private JLabel labelProfile;
     private JLabel labelTimeQuestion;
     private JLabel labelQuestion;
+    private JLabel labelCaption;
     private JLabel labelClarification;
     private JLabel labelAnswerResult;
     private JLabel labelGiveUp;
@@ -106,7 +107,7 @@ public class GameModeWindow extends JFrame implements Observer{
     }
     
     /**
-     * Initializae window.
+     * Initialize window.
      */
     protected void init() {
         // Init components/panels
@@ -238,7 +239,7 @@ public class GameModeWindow extends JFrame implements Observer{
         panelCenter.setLayout(new BoxLayout(panelCenter,BoxLayout.Y_AXIS));
         panelCenter.setBackground(Resources.getLogoColor());
         
-        JLabel labelCaption = new JLabel("Pergunta");
+        labelCaption = new JLabel("Pergunta");
         Font labelFont = labelCaption.getFont();
         labelCaption.setFont(new Font(labelFont.getName(), Font.PLAIN, 24));
         labelCaption.setAlignmentX(CENTER_ALIGNMENT);
@@ -453,6 +454,7 @@ public class GameModeWindow extends JFrame implements Observer{
     
     /**
      * Hide the answer result.
+     * @param refresh
      */
     public void hideAnswerResult(boolean refresh) {
         imgCenter.setVisible(false);
@@ -524,6 +526,9 @@ public class GameModeWindow extends JFrame implements Observer{
         buttonOptionA.setText(currentQuestion.getOptionA());
         buttonOptionB.setText(currentQuestion.getOptionB());
         
+        // Set question number
+        labelCaption.setText("Pergunta " + challengeModel.getCurrentQuestionNumber());
+        // Set question statement
         labelQuestion.setText("<HTML><B>"+currentQuestion.getQuestion()+"</B></HTML>");
     }
     
@@ -560,18 +565,18 @@ public class GameModeWindow extends JFrame implements Observer{
         
         jp.add(verticalBox);
         
-        int value = JOptionPane.showOptionDialog(null, jp, "Fim do desafio", JOptionPane.NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, new String[] {"Sair", "Novo Desafio"}, 1);
+        int value = JOptionPane.showOptionDialog(null, jp, "Fim do desafio", JOptionPane.NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, new String[] {"Novo Desafio"}, 1);
         
         hideAnswerResult(false);
         
         if (value == 0)
-            System.exit(0);
-        else
             challengeModel.newGame();
     }
     
     /**
      * Update event.
+     * @param t
+     * @param o
      */
     @Override
     public void update(Observable t, Object o) {

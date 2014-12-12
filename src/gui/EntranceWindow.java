@@ -16,6 +16,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -270,9 +271,9 @@ public final class EntranceWindow extends JFrame {
         jp.add(tx);
 
         String options[] = {"Cancelar", "Gravar"};
-
+        
         while (true) {
-            int value = JOptionPane.showOptionDialog(null, jp, "Novo Perfil de Utilizador", JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+            int value = JOptionPane.showOptionDialog(null, jp, "Novo Perfil de Utilizador", JOptionPane.NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[1]);
 
             // If user presses ok = 1; cancel != 1
             if (value == 1) {

@@ -92,5 +92,9 @@ public class ChallengeModel extends Observable implements ChallengeInterface {
         this.scoreWindow = scoreWindow;
         sendNotification();
     }
+
+    public int getCurrentQuestionNumber() {
+        return challenge.getCurrentQuestionNumber();
+    }
     
 }

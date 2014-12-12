@@ -494,7 +494,7 @@ public final class ConfigurationWindow extends JFrame implements Observer {
         
         jp.add(profilesList);
         
-        String options[] = {"Cancelar", "Alterar"};
+        String options[] = {"Cancelar", "Confirmar"};
         int value = JOptionPane.showOptionDialog(null, jp, "Alteração de Perfil", JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 
         // Change Current Profile
@@ -505,6 +505,8 @@ public final class ConfigurationWindow extends JFrame implements Observer {
 
     /**
      * Update state machine when a notification occurs.
+     * @param t
+     * @param o
      */
     @Override
     public void update(Observable t, Object o) {
