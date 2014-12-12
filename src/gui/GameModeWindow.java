@@ -448,6 +448,13 @@ public class GameModeWindow extends JFrame implements Observer{
      * Hide the answer result.
      */
     public void hideAnswerResult() {
+        hideAnswerResult(true);
+    }
+    
+    /**
+     * Hide the answer result.
+     */
+    public void hideAnswerResult(boolean refresh) {
         imgCenter.setVisible(false);
         imgCenter.invalidate();
 
@@ -458,13 +465,15 @@ public class GameModeWindow extends JFrame implements Observer{
         buttonOptionA.setEnabled(true);
         buttonOptionB.setEnabled(true);
         buttonOptionBoth.setEnabled(true);
+        buttonDismiss.setEnabled(true);
 
         if (timerAnswer != null) {
             timerAnswer.stop();
             timerAnswer = null;
         }
         
-        refreshGame();
+        if (refresh)
+            refreshGame();
     }
     
     /**
@@ -553,6 +562,8 @@ public class GameModeWindow extends JFrame implements Observer{
         
         int value = JOptionPane.showOptionDialog(null, jp, "Fim do desafio", JOptionPane.NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, new String[] {"Sair", "Novo Desafio"}, 1);
         
+        hideAnswerResult(false);
+        
         if (value == 0)
             System.exit(0);
         else
@@ -565,7 +576,17 @@ public class GameModeWindow extends JFrame implements Observer{
     @Override
     public void update(Observable t, Object o) {
         refreshGame();
+        
         if (challengeModel.getChallenge() != null && challengeModel.getChallenge().getCurrentState() instanceof WaitScore) {
+            if (timerAnswer != null) {
+                timerAnswer.stop();
+                timerAnswer = null;
+            }
+            if (timerQuestion != null)
+                timerQuestion.stop();
+            
+            buttonDismiss.setEnabled(false);
+            
             scoreDialog();
         }
         if (challengeModel.getChallenge() != null && challengeModel.getChallenge().getCurrentState() instanceof WaitScore && challengeModel.getChallenge() instanceof ChallengeHard) {
